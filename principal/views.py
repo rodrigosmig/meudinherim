@@ -4,5 +4,9 @@ from django.http import HttpResponseRedirect
 # Create your views here.
 
 
-def home(request):
+def index(request):
 	return render(request, 'principal/index.html')
+
+def home(request):
+	return render(request, 'principal/home.html')
+
