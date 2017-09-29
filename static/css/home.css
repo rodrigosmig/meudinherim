@@ -28,7 +28,6 @@ body {
 
 a:link, a:visited { 
     color: white;
-    cursor: auto;
 }
 
 /* Sidebar navigation */
@@ -45,7 +44,7 @@ a:link, a:visited {
 .nav-sidebar > .active > a:hover,
 .nav-sidebar > .active > a:focus {
   color: gray;
-  background-color: black;
+  background-color: mediumseagreen;
 }
 
 .main {
