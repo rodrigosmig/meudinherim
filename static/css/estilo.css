@@ -1,25 +1,26 @@
 /* css personalizado */
 
 body{
-    padding-top:0px;
-    background-color:#4a8266;
+    padding-top:80px;
+    background-color:white;
   
 
     
 }
 img#porco{
-    position: absolute;
-	left: 550px;
-	top: 100px;
+    position: fixed;
+	
+	top: -9px;
     
 }
 
-h3{
-    position: relative;
-	left: 450px;
-	top: 310px;
-    color: white;
-}
+
 p{
     outline-color: aliceblue;
 }
+
+legend{
+     border: 2px groove (internal value);
+    
+}
+
