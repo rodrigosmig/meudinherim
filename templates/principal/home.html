@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 {% load staticfiles %}
 <html>
-    <head>
-        
+    <head>      
         <title>MeuDinherim</title>
         
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,48 +12,48 @@
         <link href="{% static 'css/ie10-viewport-bug-workaround.css' %}" rel="stylesheet">
         <link href="{% static 'css/home.css' %}" rel="stylesheet">
         <script src="{% static 'js/ie-emulation-modes-warning.js' %}"></script>
-
     </head>
 
     <body>
-
-        <nav class="navbar navbar-default navbar-fixed-top" style="background-color:mediumspringgreen">
+        <nav class="navbar navbar-default navbar-fixed-top bg-faded" style="background-color:mediumspringgreen">
             <div class="container-fluid">
                 <div class="navbar-header">
+                    
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                     
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        
+                        <span class="icon-bar"></span>                    
                     </button>
                     
-                    <a class="navbar-brand" href="#">MeuDinherim</a>
-                    
-                    <p class="navbar-text navbar-right">Logado com <a href="#" class="navbar-link">Wellington Lemos</a></p>
-                    
+                    <a class="navbar-brand" href="#">MeuDinherim</a>               
                 </div>
+                
+                <span class="navbar-text navbar-right col-md-3">Logado com <a>Wellington Lemos</a> </span>              
             </div>
         </nav>
     
     <div class="container-fluid">
         <div class="row">
             
-            <!-- Barra Lateral (Esquerda) -->
-            <div class="col-sm-3 col-md-2 sidebar">
-          
+            <!-- Espaço da Barra Lateral (Esquerda) -->
+            <div class="col-sm-3 col-md-2 sidebar" id="elementoCollapsel">    
                 <ul class="nav nav-sidebar">
-                    <li><a class="MCategoria" href="#">Categoria</a></li>
-                    <li><a class="MMetas" href="#">Metas</a></li>
-                    <li><a class="MBanco" href="#">Banco</a></li>
+                    <li><a data-toggle="modal" href="#mCategoria">Categoria</a></li>
+                    <li><a data-toggle="modal" href="#mMetas">Metas</a></li>
+                    <li><a data-toggle="modal" href="#mBanco">Banco</a></li>
                 </ul>
                 <ul class="nav nav-sidebar">
-                    <li><a href="">Configuração</a></li>
+                    <li><a data-toggle="modal" href="#mConfiguracao">Configuração</a></li>
                 </ul>
+                <div class="nav nav-sidebar-footer">
+                    <button type="button" class="btn btn-lg">Cadastrar Gastos</button>
+                </div>
             </div>
             
             <!-- Área do Calendário -->
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <!-- Calendário -->
                 <h1 class="page-header">Caléndario</h1>
                 
                 <!-- Barra de Progresso -->
@@ -62,20 +61,179 @@
                     <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
                         45%
                     </div>
-
                     <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" style="width: 55%">         
                         55%
                     </div>
-                </div>
+                </div>    
             </div>
-        
         </div>
     </div>
     
-    <!-- Modais -->
-    <div id="idEntrarM" class="modal fade" role="dialog">
-            <div class="modal-dialog">
+    <!-- Modal Categoria -->
+    <div class="modal fade" id="mCategoria" tabindex="-1" role="dialog" aria-labelledby="LabelCategoria" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Título -->
+                <div class="modal-header">
+                    <h3 class="modal-title" id="LabelCategoria">Cadastrar Categoria</h3>
+                </div>
+                <!-- Campos -->
+                <div class="modal-body">
+                    <!-- Nome -->
+                    <label for="basic-url">Nome</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Digite o nome da categoria" aria-describedby="addNomeCat">
+                        <span class="input-group-addon" id="addNomeCat">Ex: Mercado</span>
+                    </div>
+                    <br>
+                    <!-- Tipo -->
+                    <label for="basic-url">Tipo</label>
+                    <div class="custom-controls-stacked">
+                        <label class="custom-control custom-radio col-sm-3">
+                            <input id="radio1" name="radio" type="radio" class="custom-control-input">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">entrada</span>
+                        </label>                
+                        <label class="custom-control custom-radio">
+                            <input id="radio2" name="radio" type="radio" class="custom-control-input">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">saída</span>
+                        </label>
+                    </div>
+                </div>
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
+    <!-- Modal de Metas -->
+    <div class="modal fade" id="mMetas" tabindex="-1" role="dialog" aria-labelledby="LabelMeta" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- Título -->
+                <div class="modal-header">
+                    <h3 class="modal-title" id="LabelMeta">Cadastrar Meta</h3>
+                </div>
+                <!-- Campos -->
+                <div class="modal-body">
+                    <label for="basic-url">Descrição</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Digite uma descrição da meta" aria-describedby="addDescMet">
+                        <span class="input-group-addon" id="addDescMet">Ex: Comprar Carro</span>
+                    </div>
+                    <br>
+                    <label for="basic-url">Valor</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Digite o valor da meta" aria-describedby="addValMet">
+                         <span class="input-group-addon" id="addValMet">Ex: 1000,00</span>
+                    </div>
+                </div>
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Banco -->
+    <div class="modal fade" id="mBanco" tabindex="-1" role="dialog" aria-labelledby="LabelBanco" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- Título -->
+                <div class="modal-header">
+                    <h3 class="modal-title" id="LabelBanco">Cadastrar Banco</h3>
+                </div>
+                <!-- Campos -->
+                <div class="modal-body">
+                    <label for="basic-url">Nome</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Digite o nome do banco" aria-describedby="addNomBan">
+                        <span class="input-group-addon" id="addNomBan">Ex: Banco do Brasil</span>
+                    </div>
+                    <br>
+                    <label for="basic-url">Agência</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Digite sua Agência" aria-describedby="addAgenBan">
+                        <span class="input-group-addon" id="addAgenBan">Ex: 12345</span>
+                    </div>
+                    <br>
+                    <label for="basic-url">Conta</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Digite o número da sua conta" aria-describedby="addConBan">
+                        <span class="input-group-addon" id="addConBan">Ex: 12345</span>
+                    </div>
+                </div>
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+    
+    <!-- Modal Configuração -->
+    <div class="modal fade" id="mConfiguracao" tabindex="-1" role="dialog" aria-labelledby="LabelConfiguracao" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- Título -->
+                <div class="modal-header">
+                    <h3 class="modal-title" id="LabelConfiguracao">Configuração</h3>
+                </div>
+                <!-- Campos -->
+                <div class="modal-body">
+                    <!-- Alterar Nome -->
+                    <label for="basic-url">Alterar Nome</label>
+                    <form class="form-inline">
+                        <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="inlineFormInput" placeholder="Nome atual">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Novo Nome">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Confirmar</button>
+                    </form>
+                    <br>
+                    <!-- Alterar Senha -->
+                    <label for="basic-url">Alterar Senha</label>
+                    <form class="form-inline">
+                        <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="inlineFormInput" placeholder="Senha atual">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Nova Senha">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Confirmar</button>
+                    </form>
+                </div>
+                
+                <div class="modal-header">
+                    <h4 class="modal-title" id="LabelExcluir">Excluir Conta</h4>
+                </div>
+                
+                <div class="modal-body">
+                    <form>
+                        <label for="basic-url">Email</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Digite seu Email" aria-describedby="addEmailEx">
+                            <span class="input-group-addon" id="addEmailEx">Ex: eu@exemplo.com</span>
+                        </div>
+                    </form>
+                    <br>
+                    <label for="basic-url">Senha</label>
+                    <form class="form-inline">
+                        <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Digite sua senha">
+                        <button type="submit" class="btn btn-primary">Confirmar</button>
+                    </form>
+                    <br>
+                <!-- Abaixo -->
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
