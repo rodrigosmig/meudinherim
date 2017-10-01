@@ -42,7 +42,20 @@
                             <div class="collapse navbar-collapse" id="elementoCollapsel">
                                 
                                 <!--
-                               
+
+                                PRA FUNCIONAR A PÁGINA É SÓ TIRAR ESSA PARTE, MAS O FORMULÁRIO DEVERIA SER
+                                ASSIM, NÃO ESTÁ RECONHECENDO A VIEW
+
+                                <form action= "{% url 'login' %}" method="post">
+            
+                                    {% csrf_token %}
+
+                                    {{ form.as_p }}
+
+                                    <input type="submit" name="" value="Logar">
+
+                                </form>
+                                                       
                                 -->
 
                                 <!--LOGIN ANTIGO -->
@@ -87,12 +100,21 @@
                         <legend><h2>Cadastrar</h2>
                             
                         <!--
+                            PRA FUNCIONAR A PÁGINA É SÓ TIRAR ESSA PARTE, MAS O FORMULÁRIO DEVERIA SER
+                            ASSIM, NÃO ESTÁ RECONHECENDO A VIEW
 
+                            <form action="{% url 'cadastro' %}" method="post">
+            
+                                {% csrf_token %}
+                                {{ form.as_p }}
 
+                                <input type="submit" name="cadastrar" value="Cadastrar">
+
+                            </form>
 
                         -->
-                        <!-- FORMULÁRIO ANTIGO -->
-                        <form name="formCadastrar" id="formC">
+                        <!-- FORMULÁRIO DE CADASTRO ANTIGO  -->
+                        <form name="formCadastrar" id="formC" method="post">
                             <p><label for="cNome">Nome:<input type="text" name="tNome" id="cNome" size="50"
                             maxlength="50"  size="45" placeholder="Informe seu nome" /></label></p>
 
@@ -108,6 +130,8 @@
                              <button type="submit" onclick="validarCadastro()" class="btn btn-primary">Confirmar</button>
                         
                         </form>
+                       
+
                         
                         
                             </legend>

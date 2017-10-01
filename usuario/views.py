@@ -25,13 +25,13 @@ def cadastro(request):
 			novo_perfil = UsuarioProfile(user = novo_usuario, email = email)
 			novo_perfil.save()
 
-			return HttpResponseRedirect('/pincipal/')
+			return HttpResponseRedirect('/principal/')
 
 	else:
 		form = UsuarioForm()
 
 	context_dict = {'form': form}
-	return render(request,'index.html',context=context_dict)
+	return render(request,'templates/principal/index.html',context=context_dict)
 
 def login(request):
 
@@ -45,20 +45,17 @@ def login(request):
 
 			usuario = authenticate(username=form_login,password=form_senha)
 
-			#return HttpResponseRedirect('/cadastro/login/cliente')
-
 			if usuario is not None:
-
-				#login(request,usuario)
-				# script com mensagem de erro 
-				return HttpResponseRedirect('/cadastro/login/'+str(usuario.userprofile.id))
-											#redirecionar para as informações dos clientes
+				
+				return HttpResponseRedirect('/home/')
+											#redirecionar para as informações dos usuarios
+											# +str(usuario.userprofile.id)
 			else:
-				return HttpResponseRedirect('/cadastro/login/cliente/')
-																		#tem q ir pro ID
+				return HttpResponseRedirect('/principal/')
+													
 	else:
 		form = LoginForm()
 
 	context_dict = {'form' : form}
 
-	return render(request,'login.html',context= context_dict)
+	return render(request,'templates/principal/index.html',context= context_dict)
