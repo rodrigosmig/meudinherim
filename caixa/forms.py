@@ -19,11 +19,12 @@ class LancamentosForm(ModelForm):
             attrs = {'class': 'form-control', 'placeholder': 'Descreva a transação'}
         )
     )
-	valor = forms.CharField(
+	valor = forms.DecimalField(
         label = 'Valor',
-        max_length = 6,
+        min_value = 0.01,
+        max_value = 9999.99,
         required = True,
-        widget = forms.TextInput(
+        widget = forms.NumberInput(
             attrs = {'class': 'form-control', 'placeholder': 'Insira o valor'}
         )
     )

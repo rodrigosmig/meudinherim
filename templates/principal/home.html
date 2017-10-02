@@ -204,8 +204,7 @@
                     </div>
                     <!-- Campos -->
                     <form method="POST">    
-                        <div class="modal-body">
-                            
+                        <div class="modal-body">                          
                                 {% csrf_token %}
                                 <fieldset>
                                     {% for campo in form %}
@@ -214,9 +213,7 @@
                                         {{ campo }}
                                     </div>
                                     {% endfor %}
-                                </fieldset>
-                            
-                        
+                                </fieldset>                        
                         </div>
                         <!-- Salvar/Cancelar -->
                         <div class="modal-footer">
