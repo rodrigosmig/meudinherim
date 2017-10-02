@@ -18,8 +18,7 @@ def cadastro(request):
 			email = form.cleaned_data['email']
 			senha = form.cleaned_data['senha']
 
-			novo_usuario = User.objects.create_user(username=login,
-													password=senha)
+			novo_usuario = User.objects.create_user(username=login,	password=senha)
 			novo_usuario.save()
 
 			novo_perfil = UsuarioProfile(user = novo_usuario, email = email)
