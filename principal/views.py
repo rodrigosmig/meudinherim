@@ -11,16 +11,17 @@ def index(request):
 def home(request):
 	template = 'principal/home.html'
 	context = {}
-	#carrega os lançamentos do banco de dados
-	lancamentos = LancamentosCaixa.objects.all()
-	eventos = []
 
 	if(request.method == 'POST'):
 		form = LancamentosForm(request.POST)
 		form.save()
+		return HttpResponseRedirect(template)
 	else:
 		form = LancamentosForm()
-		
+
+		#carrega os lançamentos do banco de dados
+		lancamentos = LancamentosCaixa.objects.all()
+		eventos = []
 
 		#separa os dados que serão utilizados no calendario em um tupla
 		for lancamento in lancamentos:
@@ -36,11 +37,11 @@ def home(request):
 			titulo = lancamento.descricao + " : " + str(lancamento.valor) 
 			eventos.append((titulo, data))
 
-	#converte para o formato json
-	eventos = [{'title': title, 'start': start} for title, start in eventos]
-	eventos = json.dumps(eventos, ensure_ascii=False)
-	
-	context['events'] = eventos
-	context['form'] = form
-	return render(request, template, context)
+		#converte a tupla para o formato json
+		eventos = [{'title': title, 'start': start} for title, start in eventos]
+		eventos = json.dumps(eventos, ensure_ascii=False)
+
+		context['events'] = eventos
+		context['form'] = form
+		return render(request, template, context)
 
