@@ -20,7 +20,7 @@ class Categoria(models.Model):
 
 	TIPOS = (
 		("1", "Entrada"),
-		("2", "SAIDA"),
+		("2", "Saida"),
 	)
 
 	tipo = models.CharField(choices = TIPOS, max_length = 2)

@@ -25,38 +25,6 @@
 
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
-        <!-- <script type="text/javascript">
-            $(document).ready(function() {
-    
-                // page is now ready, initialize the calendar...
-    
-                $('#calendar').fullCalendar(
-                    {
-                        height: 550,
-                        events: [
-                            {
-                                title  : 'event1',
-                                start  : '2017-09-08'
-                            },
-                            {
-                                title  : 'event2',
-                                start  : '2017-09-10',
-                                end    : '2017-09-11'
-                            },
-                            {
-                                title  : 'event3',
-                                start  : '2017-09-23',
-                                color  : 'red'            
-                            }
-                        ]
-                    });
-    
-               
-    
-            });
-        </script> -->
-
-
     </head>
 
     <body>
@@ -92,7 +60,7 @@
                         <li><a data-toggle="modal" href="#mConfiguracao">Configuração</a></li>
                     </ul>
                     <div class="nav nav-sidebar-footer">
-                        <button type="button" class="btn btn-lg">Cadastrar Gastos</button>
+                        <a class="btn btn-lg btn-primary" data-toggle="modal" href="#mGastos">Cadastrar Gastos</a>
                     </div>
                 </div>
                 
@@ -225,6 +193,41 @@
             </div>
         </div>    
         <!-- Modal Banco -->
+
+        <!-- Modal Gastos -->
+        <div class="modal fade" id="mGastos" tabindex="-1" role="dialog" aria-labelledby="LabelBanco" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <!-- Título -->
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="LabelBanco">Cadastrar Gastos</h3>
+                    </div>
+                    <!-- Campos -->
+                    <form method="POST">    
+                        <div class="modal-body">
+                            
+                                {% csrf_token %}
+                                <fieldset>
+                                    {% for campo in form %}
+                                    <label for="basic-url">{{ campo.label }}</label>
+                                    <div class="input-group">
+                                        {{ campo }}
+                                    </div>
+                                    {% endfor %}
+                                </fieldset>
+                            
+                        
+                        </div>
+                        <!-- Salvar/Cancelar -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>    
+        <!-- Modal Gastos -->
 
         <!-- Modal Configuração -->
         <div class="modal fade" id="mConfiguracao" tabindex="-1" role="dialog" aria-labelledby="LabelConfiguracao" aria-hidden="true">
