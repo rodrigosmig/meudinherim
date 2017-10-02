@@ -24,7 +24,25 @@
         <!--/ Para o Calendário -->
 
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        
+        <!-- Recebe eventos para carregar no calendário -->
+        <script type="text/javascript">
+            var eventos = JSON.parse("{{ events | safe |escapejs }}");
 
+            $(document).ready(function() {
+                $('#calendar').fullCalendar(
+                    {   
+                        height: 550,
+                        eventLimit: 3,
+                        events: eventos
+                });
+            });
+
+            
+
+        </script>
+        <!-- Recebe eventos para carregar no calendário -->
+        
     </head>
     
     
@@ -44,7 +62,7 @@
                         <img alt="MeuDinherim" src="{% static 'images/Logo.png' %}" height="20" >
                     </a>
                 </div>
-                                                                            <!-- usuário logado-->
+                <!-- usuário logado-->
                 <span class="navbar-text navbar-right col-md-3">Logado com <a>Wellington Lemos</a> </span>              
             </div>
         </nav>
@@ -221,7 +239,7 @@
                         <!-- Salvar/Cancelar -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button id="salvarGasto" type="submit" class="btn btn-primary">Salvar</button>
                         </div>
                     </form>
                 </div>
