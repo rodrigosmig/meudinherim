@@ -38,14 +38,10 @@
                 });
             });
 
-            
-
         </script>
-        <!-- Recebe eventos para carregar no calendário -->
-        
+        <!-- Recebe eventos para carregar no calendário -->      
     </head>
-    
-    
+      
     <body>
         <!-- Barra Superior -->
         <nav class="navbar navbar-default navbar-fixed-top bg-faded"
@@ -64,7 +60,7 @@
                     </a>
                 </div>
                 <!-- usuário logado-->
-                <span class="navbar-text navbar-right col-md-3"><p id="nomeUsuario">Logado com <a>Wellington Lemos</a> </p></span>              
+                <span class="navbar-text navbar-right"><p id="NomeUsuario">Logado com Wellington Lemos </p></span> 
             </div>
         </nav>
         <!--/ Barra Superior -->
@@ -73,14 +69,25 @@
         <div class="container-fluid">
             <div class="row">          
                 <!-- Espaço da Barra Lateral (Esquerda) -->
-                <div class="col-sm-3 col-md-2 sidebar" id="elementoCollapsel">    
+                <div class="col-sm-3 col-md-2 sidebar card-block card-2" id="elementoCollapsel">
                     <ul class="nav nav-sidebar">
-                        <li><a data-toggle="modal" href="#mCategoria">Categoria</a></li>
-                        <li><a data-toggle="modal" href="#mMetas">Metas</a></li>
-                        <li><a data-toggle="modal" href="#mBanco">Banco</a></li>
+                        <li><a href="#">Calendário</a></li>
+                    </ul>
+                    <!-- Dropdown -->
+                    <ul class="nav nav-sidebar">
+                        <li clas="dropdown">
+                            <a class="dropdown-togle" data-toggle="dropdown" href="#">Cadastrar</a>
+                            <ul class="dropdown-menu">
+                                <li><a data-toggle="modal" href="#mCategoria">Categoria</a></li>
+                                <li><a data-toggle="modal" href="#mMetas">Metas</a></li>
+                                <li><a data-toggle="modal" href="#mBanco">Banco</a></li>
+                            </ul>
+                        </li>
                     </ul>
                     <ul class="nav nav-sidebar">
-                        <li><a data-toggle="modal" href="#mConfiguracao">Configuração</a></li>
+                        <li><a href="#">Bancos</a></li>
+                        <li><a href="#">Caixa</a></li>
+                        <li><a href="#">Configurações</a></li>
                     </ul>
                     <div class="nav nav-sidebar-footer">
                         <a class="btn btn-lg btn-primary" data-toggle="modal" href="#mGastos">Cadastrar Gastos</a>
@@ -91,12 +98,10 @@
                     <!-- Calendário -->
                     <div id='calendar'></div>             
                     <!-- Barra de Progresso -->
+                    <br>
                     <div class="progress">
                         <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
                             45%
-                        </div>
-                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100" style="width: 55%">         
-                            55%
                         </div>
                     </div>    
                 </div>
@@ -247,70 +252,6 @@
             </div>
         </div>    
         <!-- Modal Gastos -->
-
-        <!-- Modal Configuração -->
-        <div class="modal fade" id="mConfiguracao" tabindex="-1" role="dialog" aria-labelledby="LabelConfiguracao" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <!-- Título -->
-                    <div class="modal-header">
-                        <h3 class="modal-title" id="LabelConfiguracao">Configuração</h3>
-                    </div>
-                    <!-- Campos -->
-                    <div class="modal-body">
-                        <!-- Alterar Nome -->
-                        <label for="basic-url">Alterar Nome</label>
-                        <form class="form-inline">
-                            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="inlineFormInput" placeholder="Nome atual">
-                            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Novo Nome">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Confirmar</button>
-                        </form>
-                        <br>
-                        <!-- Alterar Senha -->
-                        <label for="basic-url">Alterar Senha</label>
-                        <form class="form-inline">
-                            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="inlineFormInput" placeholder="Senha atual">
-                            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                                <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Nova Senha">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Confirmar</button>
-                        </form>
-                    </div>     
-                    <!-- Titulo Excluir Senha -->
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="LabelExcluir">Excluir Conta</h4>
-                    </div>
-                    <!-- Campos -->
-                    <div class="modal-body">
-                        <form>
-                            <label for="basic-url">Email</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Digite seu Email" aria-describedby="addEmailEx">
-                                <span class="input-group-addon" id="addEmailEx">Ex: eu@exemplo.com</span>
-                            </div>
-                        </form>
-                        <br>
-                        <label for="basic-url">Senha</label>
-                        <form class="form-inline">
-                            <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Digite sua senha">
-                            <button type="submit" class="btn btn-primary">Confirmar</button>
-                        </form>
-                        <br>
-                    <!-- Abaixo -->
-                    <div class="modal-footer">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--/ Modal Configuração -->
-
-<!--     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/vendor/holder.min.js' %}"></script>
-    <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script> -->
 
   </body>
 </html>
