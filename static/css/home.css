@@ -59,3 +59,12 @@ a:link, a:visited {
 .main .page-header {
   margin-top: 0;
 }
+
+nav#navHome{
+  background-color: #7dc6a1;
+}
+
+p#nomeUsuario{
+  color: white;
+  font-weight: bold;;
+}
