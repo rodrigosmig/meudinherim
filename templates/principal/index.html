@@ -1,126 +1,198 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 {% load staticfiles %}
 <html>
     <head>
         
-        <!-- Define a viewport-->
-        <title>Site</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta charset="utf-8"/>
-        
-       <!--Adicionar CSS do Bootstrap -->
-        <link href= "{% static 'css/bootstrap.min.css' %}" rel="stylesheet" media="all"/>
-        
-       <!-- css personalizado-->
-        <link href="{% static 'css/estilo.css' %}" rel="stylesheet" media="all"/>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    
+        <title>Meu Dinherim</title>
+    
+        <!-- Icone Superior-->
+        <link rel="icon" href="{% static 'images/Porco.png' %}" type="image/x-icon">
 
-        
-        
+        <!-- Fonte da Google -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+        <!-- Bootstrap Core Css -->
+        <link href="{% static 'plugins/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+        <!-- Waves Effect Css -->
+        <link href="{% static 'plugins/node-waves/waves.css' %}" rel="stylesheet" />
+
+        <!-- Animation Css -->
+        <link href="{% static 'plugins/animate-css/animate.css' %}" rel="stylesheet" />
+
+        <!-- Morris Chart Css-->
+        <link href="{% static 'plugins/morrisjs/morris.css' %}" rel="stylesheet" />
+
+        <!-- Custom Css -->
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    
+        <!-- Temas -->
+        <link href="{% static 'css/themes/all-themes.css' %}" rel="stylesheet" />
     </head>
-    <body>
-        
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="navPrincipal">
 
+    <!-- Cor da Barra Superior -->
+    <body class="theme-red">
 
-                        <div class="container-fluid">
-                            <div class="navbar-header">
-                                
-                                <button type="button" class="navbar-toggle"
-                                data-toggle="collapse" 
-                                data-target="#elementoCollapsel">
-                                
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                    
-                                </button>
-                                
-                                 <a class="navbar-brand" href="#">
-                        <img alt="MeuDinherim" src="{% static 'images/Logo.png' %}" height="20" >
-                    </a>
-                               
-
+        <!-- Barra Superior -->
+        <nav class="navbar">
+            <div class="container-fluid">
+                <!-- Logo e talz -->
+                <div class="navbar-header">
+                    <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                    <a href="javascript:void(0);" class="bars"></a>
+                    <a class="navbar-brand" href="index.html">MEU <b>DINHERIM</b></a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <br>
+                    <!-- Campos de Login -->
+                    <ul class="nav navbar-nav navbar-right">
+                        <form>
+                            <div class="row clearfix">
+                                <!-- Email -->
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <div class="form-group form-group-sm">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" placeholder=" Email">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Senha -->
+                                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <div class="form-group form-group-sm">
+                                        <div class="form-line">
+                                            <input type="password" class="form-control" placeholder=" Senha">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Botão Login -->
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                    <button type="button" class="btn btn-primary btn-sm m-l-0">LOGIN</button>
+                                </div>
                             </div>
-                             
-                            <div class="collapse navbar-collapse" id="elementoCollapsel">
-                      
-                               <form  name="formAcesso" class="navbar-form navbar-right"  >
-                                    
-                                     <p><label id="cMailA"> E-mail:<input type="email" name="tMailA" id="cMailA"    
-                                    size="50" maxlength="50"  placeholder="Insra seu E-email" /></label>
-                                         
-                                         
-                                    
-                                   <label for="cSenhaA"> Senha:<input type="password" name="tSenhaA" id="cSenhaA"
-                                    size="50" maxlength="50"  placeholder="Insira Sua Senha"/></label>
-                                        
-                                    <button type="submit" onclick="" class="btn btn-success">Acessar</button>         
-                                   </p>
-                                                                        
-                            </form>
-                            </div>    
-                        </div>                                    
-                    </nav>
-
-  
-      <div class="continer">
-            
-            <div class="row">
-                
-                <div class="col-xs-12 col-sm-6">
-                    
-                  
-                                            
-                         <img id="porco"  src="{% static 'images/porco03.png' %}" 
-                         class="img-circle img-responsive" height="50"                   
-                         />
-                    
-                    
+                        </form>    
+                    </ul>
                 </div>
-                
-                <div class="col-xs-6 col-sm-4">
-                    <div class="panel pane-default">
-                        <STRONG><h2>Cadastrar-se</h2></STRONG>
-                        
-                        <form name="formCadastrar" id="formC">
-                        
-
-                        <p><label for="cNome"><input type="text" name="tNome" id="cNome" size="50"
-                        maxlength="50"  size="45" placeholder="Informe seu nome" /
-
-                        <label id="cMail"><input type="email" name="tMail" id="cMail"    
-                        size="50"  maxlength="50" placeholder="Insira seu E-email" /></label>
-
-
-                        </p>
-
-
-                        <p><label for="cSenha" ><input type="password" name="tSenha" id="cSenha"
-                        size="50"  maxlength="50" placeholder="Informe Sua Senha"/></label></p>
-
-                        <p><label for="ccSenha" ><input type="password" name="tConfSenha" id="ccSenha"
-                        size="50"  maxlength="50" placeholder="Repita sua Senha"/></label></p>
-                        
-                             <button type="submit" onclick="validarCadastro()" class="btn btn-primary">Cadastrar</button>
-                        
-                        </form>
-                        
-                            </legend>
-                        
-                    </div>
-                                        
-                </div>
-                 
             </div>
-        </div>
-
-        
-
-        <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'js/main.js' %}"></script>
-                                
+        </nav>
+        <!--/ Barra Superior -->
+    
+        <!-- Campo Inferior da Página -->
+        <section class="content2">
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <!-- Campo Imagem -->
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <img src="{% static 'images/controleFinanceiro.png' %}" height="600px">
+                    </div>
+                    <!-- Campo de Cadastro -->
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <br><br>
+                        <div class="signup-box">
+                            <div class="card">
+                                <div class="body">
+                                    <form id="sign_up" method="POST">
+                                        <div class="logo align-center">
+                                            <h1><b>Cadastre-se</b></h1>
+                                            <br>
+                                        </div>
+                                        <!-- Nome -->
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">person</i>
+                                            </span>
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" name="namesurname" placeholder="Nome Completo" required autofocus>
+                                            </div>
+                                        </div>
+                                        <!-- Email -->
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">email</i>
+                                            </span>
+                                            <div class="form-line">
+                                                <input type="email" class="form-control" name="email" placeholder="Email" required>
+                                            </div>
+                                        </div>
+                                        <!-- Senha -->
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">lock</i>
+                                            </span>
+                                            <div class="form-line">
+                                                <input type="password" class="form-control" name="password" minlength="6" placeholder="Senha" required>
+                                            </div>
+                                        </div>
+                                        <!-- Confirme Senha -->
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="material-icons">lock</i>
+                                            </span>
+                                            <div class="form-line">
+                                                <input type="password" class="form-control" name="confirm" minlength="6" placeholder="Confirme sua Senha" required>
+                                            </div>
+                                        </div>
+                                        <!-- Resto -->
+                                        <div class="form-group">
+                                            <input type="checkbox" name="terms" id="terms" class="filled-in chk-col-pink">
+                                            <label for="terms">Eu li e concordei com o <a href="javascript:void(0);">termo de uso</a>.</label>
+                                        </div>
+                                        <button class="btn btn-block btn-lg bg-pink waves-effect" type="submit">INSCREVA-SE</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </body>
-          
+    
+    <!-- Jquery Core Js -->
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.js' %}"></script>
+
+    <!-- Select Plugin Js -->
+    <script src="{% static 'plugins/bootstrap-select/js/bootstrap-select.js' %}"></script>
+
+    <!-- Slimscroll Plugin Js -->
+    <script src="{% static 'plugins/jquery-slimscroll/jquery.slimscroll.js' %}"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="{% static 'plugins/node-waves/waves.js' %}"></script>
+
+    <!-- Jquery CountTo Plugin Js -->
+    <script src="{% static 'plugins/jquery-countto/jquery.countTo.js' %}"></script>
+
+    <!-- Morris Plugin Js -->
+    <script src="{% static 'plugins/raphael/raphael.min.js' %}"></script>
+    <script src="{% static 'plugins/morrisjs/morris.js' %}"></script>
+
+    <!-- ChartJs -->
+    <script src="{% static 'plugins/chartjs/Chart.bundle.js' %}"></script>
+
+    <!-- Flot Charts Plugin Js -->
+    <script src="{% static 'plugins/flot-charts/jquery.flot.js' %}"></script>
+    <script src="{% static 'plugins/flot-charts/jquery.flot.resize.js' %}"></script>
+    <script src="{% static 'plugins/flot-charts/jquery.flot.pie.js' %}"></script>
+    <script src="{% static 'plugins/flot-charts/jquery.flot.categories.js' %}"></script>
+    <script src="{% static 'plugins/flot-charts/jquery.flot.time.js' %}"></script>
+
+    <!-- Sparkline Chart Plugin Js -->
+    <script src="{% static 'plugins/jquery-sparkline/jquery.sparkline.js' %}"></script>
+
+    <!-- Custom Js -->
+    <script src="{% static 'js/admin.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+
+    <!-- Demo Js -->
+    <script src="{% static 'js/demo.js' %}"></script>
+
 </html>
