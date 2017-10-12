@@ -1,0 +1,37 @@
+/* css personalizado */
+
+body{
+    padding-top:50px;
+    background-color:white;
+  
+
+    
+}
+img#porco{
+    
+    
+
+	
+	  
+}
+
+
+p{
+    outline-color: aliceblue;
+}
+
+nav#navPrincipal{
+	background-color: #7dc6a1;
+}
+
+input#cMailA ,input#cSenhaA
+,input#cNome, input#cMail{
+	width: 200px;
+}
+
+input#cSenha, input#ccSenha{
+	width: 400px;
+}
+
+
+
