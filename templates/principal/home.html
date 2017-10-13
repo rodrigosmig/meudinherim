@@ -1,32 +1,27 @@
 ﻿{% extends "base.html" %}
 {% block content %}
-<section class="content">
-    <div class="container-fluid">
-
-        <!-- Calendário -->
-        <div class="row clearfix">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="card">
-                    <div id='calendar'></div>
-                </div>
-            </div>
+<!-- Calendário -->
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+            <div id='calendar'></div>
         </div>
-        <!--/ Calendário -->
-        
-        <!-- Barra de Progresso -->
-        <div class="row clearfix">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="block-header">
-                    <h3>Progresso de Metas</h3>
-                </div>
-                <div class="progress">
-                    <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: 75%">
-                            75%
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--/ Barra de Progresso -->
     </div>
-</section>
+</div>
+<!--/ Calendário -->
+
+<!-- Barra de Progresso -->
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="block-header">
+            <h3>Progresso de Metas</h3>
+        </div>
+        <div class="progress">
+            <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: 75%">
+                    75%
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ Barra de Progresso -->
 {% endblock %}
