@@ -13,7 +13,7 @@
         <link rel="icon" href="{% static 'images/Porco.png' %}" type="image/x-icon">
 
         <!-- Google Fonts -->
-        <link href="{% static 'https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext' %}" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
 
         <!-- Bootstrap Core Css -->
@@ -46,7 +46,8 @@
         <script src="{% static 'plugins/bootstrap/js/bootstrap.js' %}"></script>
 
         <!-- Select Plugin Js -->
-        <script src="{% static 'plugins/bootstrap-select/js/bootstrap-select.js' %}"></script>
+        <!-- Está comentado pq dava conflito com o form da categoria dos gastos -->
+        <!-- <script src="{% static 'plugins/bootstrap-select/js/bootstrap-select.js' %}"></script> -->
 
         <!-- Slimscroll Plugin Js -->
         <script src="{% static 'plugins/jquery-slimscroll/jquery.slimscroll.js' %}"></script>
@@ -274,12 +275,12 @@
 
 
         <!-- Modal Gastos -->
-        <div class="modal fade" id="mGastos" tabindex="-1" role="dialog" aria-labelledby="LabelBanco" aria-hidden="true">
+        <div class="modal fade" id="mGastos">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <!-- Título -->
                     <div class="modal-header">
-                        <h3 class="modal-title" id="LabelBanco">Cadastrar Gastos</h3>
+                        <h3 class="modal-title">Cadastrar Gastos</h3>
                     </div>
                     <!-- Campos -->
                     <form method="POST">    
