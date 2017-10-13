@@ -18,7 +18,6 @@
 
         <!-- Bootstrap Core Css -->
         <link href="{% static 'plugins/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
-        <!--<link href="{% static 'css/home.css' %}" rel="stylesheet">
 
         <!-- Waves Effect Css -->
         <link href="{% static 'plugins/node-waves/waves.css' %}" rel="stylesheet" />
@@ -81,15 +80,24 @@
 
         <!-- Chamadas JS -->
 
-
+        <!-- Datapicker-->
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <!-- Datapicker-->
         
         <!-- Calendário -->
         <link rel='stylesheet' href="{% static 'css/fullcalendar.css' %}" />
         <script src="{% static 'js/moment.min.js' %}"></script>
         <script src="{% static 'js/fullcalendar.js' %}"></script>
+
+        <link href="{% static 'css/base.css' %}" rel="stylesheet">   
         
-        <!-- Recebe eventos para carregar no calendário -->
         <script type="text/javascript">
+              $( function() {
+                $("#datepicker").datepicker();
+              });
+
+            //Recebe eventos para carregar no calendário
             var eventos = JSON.parse("{{ events | safe |escapejs }}");
 
             $(document).ready(function() {
@@ -102,8 +110,7 @@
             });
 
         </script>
-        <!-- Recebe eventos para carregar no calendário -->
-        
+
     </head>
 
     <!-- Cor da Barra Superior -->
@@ -181,6 +188,15 @@
                                 <span>Home</span>
                             </a>
                         </li>
+                        <!-- Adicionar Lançamento -->
+                        <li>
+                            <a data-toggle="modal" href="#mGastos">
+                                <i class="material-icons">add_shopping_cart</i>
+                                <span>Adicionar lançamento</span>
+                            </a>
+                        </li>
+                        <!-- Adicionar Lançamento -->
+
                         <!-- Cadastrar -->
                         <li>
                             <a href="javascript:void(0);" class="menu-toggle">
@@ -245,6 +261,40 @@
             </aside>
             <!--/ Sidebar Esquerda -->
         </section>
+
+
+        <!-- Modal Gastos -->
+        <div class="modal fade" id="mGastos" tabindex="-1" role="dialog" aria-labelledby="LabelBanco" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <!-- Título -->
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="LabelBanco">Cadastrar Gastos</h3>
+                    </div>
+                    <!-- Campos -->
+                    <form method="POST">    
+                        <div class="modal-body">                          
+                                {% csrf_token %}
+
+                                    {% for campo in form %}
+                                        {{ campo.label_tag }}
+                                        {{ campo }}                                    
+                                    {% endfor %}
+                      
+                        </div>
+                        <!-- Salvar/Cancelar -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>    
+        <!-- Modal Gastos -->
+
+
+
         {% block content %}{% endblock %}
     </body>
 </html>
