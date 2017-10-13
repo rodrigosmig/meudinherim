@@ -97,11 +97,27 @@
                             <div class="card">
                                 <div class="body">
                                     <form id="sign_up" method="POST">
+                                        {% csrf_token %}
                                         <div class="logo align-center">
                                             <h1><b>Cadastre-se</b></h1>
                                             <br>
                                         </div>
-                                        <!-- Nome -->
+
+                                        {{ form.non_field_errors }}
+                                        <fieldset>
+                                     
+                                                {% for field in form %}
+                                                   
+
+                                                     {{ field.label_tag }}
+                                                     {{ field }}
+                                                     {{ field.errors }}
+                                                  
+                                                {% endfor %}
+
+                                        </fieldset>
+
+                                       <!--  <!-- Nome 
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">person</i>
@@ -109,8 +125,8 @@
                                             <div class="form-line">
                                                 <input type="text" class="form-control" name="namesurname" placeholder="Nome Completo" required autofocus>
                                             </div>
-                                        </div>
-                                        <!-- Email -->
+                                        </div> -->
+                                        <!-- Email 
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">email</i>
@@ -118,8 +134,8 @@
                                             <div class="form-line">
                                                 <input type="email" class="form-control" name="email" placeholder="Email" required>
                                             </div>
-                                        </div>
-                                        <!-- Senha -->
+                                        </div> -->
+                                        <!-- Senha 
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">lock</i>
@@ -127,8 +143,8 @@
                                             <div class="form-line">
                                                 <input type="password" class="form-control" name="password" minlength="6" placeholder="Senha" required>
                                             </div>
-                                        </div>
-                                        <!-- Confirme Senha -->
+                                        </div> -->
+                                        <!-- Confirme Senha 
                                         <div class="input-group">
                                             <span class="input-group-addon">
                                                 <i class="material-icons">lock</i>
@@ -136,12 +152,12 @@
                                             <div class="form-line">
                                                 <input type="password" class="form-control" name="confirm" minlength="6" placeholder="Confirme sua Senha" required>
                                             </div>
-                                        </div>
-                                        <!-- Resto -->
+                                        </div> -->
+                                        <!-- Resto 
                                         <div class="form-group">
                                             <input type="checkbox" name="terms" id="terms" class="filled-in chk-col-pink">
                                             <label for="terms">Eu li e concordei com o <a href="javascript:void(0);">termo de uso</a>.</label>
-                                        </div>
+                                        </div>--> 
                                         <button class="btn btn-block btn-lg bg-pink waves-effect" type="submit">INSCREVA-SE</button>
                                     </form>
                                 </div>
