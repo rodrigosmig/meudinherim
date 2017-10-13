@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 {% load staticfiles %}
-<html>
+<html lang="pt-br">
 
-    <head>
+    <head >
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=Edge">
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -89,12 +89,22 @@
         <link rel='stylesheet' href="{% static 'css/fullcalendar.css' %}" />
         <script src="{% static 'js/moment.min.js' %}"></script>
         <script src="{% static 'js/fullcalendar.js' %}"></script>
+        <script src="{% static 'js/locale/pt-br.js' %}"></script>
 
         <link href="{% static 'css/base.css' %}" rel="stylesheet">   
         
         <script type="text/javascript">
               $( function() {
-                $("#datepicker").datepicker();
+                $("#datepicker").datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+                    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+                    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+                    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+                    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+                    nextText: 'Próximo',
+                    prevText: 'Anterior'
+                });
               });
 
             //Recebe eventos para carregar no calendário
