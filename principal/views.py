@@ -3,10 +3,28 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from caixa.forms import LancamentosForm
 from caixa.models import LancamentosCaixa
+from django.contrib.auth.forms import UserCreationForm
+from usuario.forms import UsuarioForm
 import json
 
+# FUNCIONANDO NORMAL
+#def index(request):
+#	return render(request, 'principal/index.html')
+
 def index(request):
-	return render(request, 'principal/index.html')
+	template = 'principal/index.html'
+
+	if request.method == 'POST':
+		form = UsuarioForm(request.POST)
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect('/principal/')
+	else:
+		form = UsuarioForm()
+		
+	context = {'form': UsuarioForm()}
+
+	return render(request, template, context)
 
 def home(request):
 	template = 'principal/home.html'
