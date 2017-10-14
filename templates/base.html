@@ -45,8 +45,9 @@
         <!-- Bootstrap Core Js -->
         <script src="{% static 'plugins/bootstrap/js/bootstrap.js' %}"></script>
 
-        <!-- Select Plugin Js -->
-        <script src="{% static 'plugins/bootstrap-select/js/bootstrap-select.js' %}"></script>
+       <!-- Select Plugin Js -->
+        <!-- Está comentado pq dava conflito com o form da categoria dos gastos -->
+        <!-- <script src="{% static 'plugins/bootstrap-select/js/bootstrap-select.js' %}"></script> -->
 
         <!-- Slimscroll Plugin Js -->
         <script src="{% static 'plugins/jquery-slimscroll/jquery.slimscroll.js' %}"></script>
@@ -91,7 +92,8 @@
         <script src="{% static 'js/fullcalendar.js' %}"></script>
         <script src="{% static 'js/locale/pt-br.js' %}"></script>
 
-        <link href="{% static 'css/base.css' %}" rel="stylesheet">   
+        <link href="{% static 'css/base.css' %}" rel="stylesheet">
+        <link href="{% static 'css/categoria.css' %}" rel="stylesheet">
         
         <script type="text/javascript">
               $( function() {
@@ -215,7 +217,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="javascript:void(0);">
+                                    <a href="{% url 'caixa:categoria' %}">
                                         <span>Categoria</span>
                                     </a>
                                 </li>

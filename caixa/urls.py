@@ -4,4 +4,5 @@ from caixa import views
 
 urlpatterns = [    
     url(r'^$', views.lancamentos, name='index'),
+    url(r'^categoria/', views.categoria, name='categoria'),
 ]
