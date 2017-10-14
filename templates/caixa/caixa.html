@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 
+
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
-            <h2 >Caixa</h2>
+         <h2 >Caixa</h2>
+          {% if lancamentos %}
+            
             <table class="table" border = '0.2'>
             <thead class="thead-inverse ">
                 <tr class="success">
@@ -15,9 +18,12 @@
                     <th>Saída</th>
                 </tr>
                 </thead>
-              
+                             
+                
                 {% for l in lancamentos %}
+
                 <tr>
+
                     <td>
                         {{ l.data }}
                     </td>
@@ -33,10 +39,17 @@
                     <td></td>
                     <td>{{ l.valor }}</td>
                     {% endif %}
+                    
                 </tr>
+                                    
                 {% endfor %}
+                {% else %}
+                    <div class="alert alert-danger">
+                    <strong>Aviso!</strong> Você não possui laçamentos.
+                    </div>
+                {% endif %}
 
-
+              
                
             </table>
         </div>
