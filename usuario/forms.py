@@ -10,10 +10,10 @@ from django.contrib.auth.models import User
 # 	senha = forms.CharField(label = 'Senha', max_length=50, widget=forms.PasswordInput())
 	
 
-# class LoginForm(forms.Form):
+class LoginForm(forms.Form):
 
-# 	login = forms.CharField(label = 'Login', max_length=50)
-# 	senha = forms.CharField(label = 'Senha', max_length=50, widget=forms.PasswordInput())
+ 	email = forms.EmailField(label = 'E-mail')
+ 	senha = forms.CharField(label = 'Senha', max_length=50, widget=forms.PasswordInput())
 
 # adicionando o campo email no formulario do cadastro
 class UsuarioForm(UserCreationForm):

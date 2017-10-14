@@ -5,7 +5,38 @@ from caixa.forms import LancamentosForm
 from caixa.models import LancamentosCaixa
 from django.contrib.auth.forms import UserCreationForm
 from usuario.forms import UsuarioForm
+from usuario.forms import LoginForm
 import json
+
+def login(request):
+
+	template = 'principal/index.html'
+
+	if request.method == 'POST':
+		form = LoginForm(request.POST)
+
+		if form.is_valid():
+
+			form_email = form.cleaned_data['email']
+			form_senha = form.cleaned_data['senha']
+
+			usuario = authenticate(username=form_email,password=form_senha)
+
+			if usuario is not None:
+				
+				return HttpResponseRedirect('/home/')
+											#redirecionar para as informações dos usuarios
+											# +str(usuario.userprofile.id)
+			else:
+				return HttpResponseRedirect('/principal/')
+													
+	else:
+		form = LoginForm()
+
+	context = {'form' : form}
+
+	return render(request,template, context)
+
 
 # FUNCIONANDO NORMAL
 #def index(request):

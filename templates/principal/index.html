@@ -52,21 +52,35 @@
                     <br>
                     <!-- Campos de Login -->
                     <ul class="nav navbar-nav navbar-right">
-                        <form>
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <!--{{ form.as_p }}-->
                             <div class="row clearfix">
                                 <!-- Email -->
+                                
+                                <!-- DEIXA OS DOIS CAMPOS AQUI, SÃO ESSES DOIS FORMS -->
                                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                   
                                     <div class="form-group form-group-sm">
-                                        <div class="form-line">
+                                        <div class="form-line" class="form-control" placeholder = "Email">
+                                             {{ form.email }}
+                                            <!--
                                             <input type="text" class="form-control" placeholder=" Email">
+                                            -->
                                         </div>
                                     </div>
                                 </div>
                                 <!-- Senha -->
+
+                                
                                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                                     <div class="form-group form-group-sm">
-                                        <div class="form-line">
+                                        <div class="form-line" class="form-control" placeholder = "Senha">
+                                            {{ form.senha }}
+                                            <!--
                                             <input type="password" class="form-control" placeholder=" Senha">
+                                           -->
                                         </div>
                                     </div>
                                 </div>
