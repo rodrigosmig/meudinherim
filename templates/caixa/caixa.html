@@ -4,7 +4,6 @@
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
             <table border = '1'>
-            	{% for l in lancamentos %}
             	<tr>
             		<th>Data</th>
             		<th>Descrição</th>
@@ -12,6 +11,7 @@
             		<th>Entrada</th>
             		<th>Saída</th>
             	</tr>
+                {% for l in lancamentos %}
             	<tr>
             		<td>
             			{{ l.data }}

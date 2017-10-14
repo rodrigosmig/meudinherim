@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Categoria</h1>
+<!-- Nav tabs -->
+<div class='card'>
+	<ul class="nav nav-tabs" role="tablist">
+		<li class="nav-item">
+	    	<a class="nav-link active" data-toggle="tab" href="#entrada" role="tab">Entrada</a>
+		</li>
+	  	<li class="nav-item">
+	    	<a class="nav-link" data-toggle="tab" href="#saida" role="tab">Saida</a>
+	  	</li>
+	  	<li class="nav-item navbar-right"">
+	    	<a class="nav-link testeadd" data-toggle="modal" href="#mCategoria" role="tab" title="Adicionar categoria">
+	    		<i class="material-icons testeadd">add</i>
+
+	    	</a>
+	  	</li>
+	</ul>
+	<!-- Tab pane Entrada -->
+	<div class="tab-content">
+		<div class="tab-pane" id="entrada" role="tabpanel">
+			<table class='tabCategoria' border = '1'>
+            	<tr>
+            		<th>Tipo</th>
+            		<th>Descrição</th>
+            	</tr>
+            	{% for c in catEntrada %}
+            	<tr>
+            		<td>
+            			{{ c.tipo }}
+            		</td>
+            		<td>
+            			{{ c.descricao }}
+            		</td>
+            	</tr>
+	            {% endfor %}
+	        </table>
+		</div>
+		<!-- Tab pane Entrada -->
+
+		<!-- Tab pane Saida -->
+	  	<div class="tab-pane" id="saida" role="tabpanel">
+	  		<table class='tabCategoria' border = '1'>
+            	<tr>
+            		<th>Tipo</th>
+            		<th>Descrição</th>
+            	</tr>
+            	{% for c in catSaida %}
+            	<tr>
+            		<td>
+            			{{ c.tipo }}
+            		</td>
+            		<td>
+            			{{ c.descricao }}
+            		</td>
+            	</tr>
+	            {% endfor %}
+	        </table>
+	  	</div>
+	</div>
+</div>
+
+<!-- Modal Cadastro Categoria -->
+<div class="modal fade" id="mCategoria">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Título -->
+            <div class="modal-header">
+                <h3 class="modal-title">Cadastrar Categoria</h3>
+            </div>
+            <!-- Campos -->
+            <form method="POST">    
+                <div class="modal-body">                          
+                        {% csrf_token %}
+
+                            {% for campo in form %}
+                                {{ campo.label_tag }}
+                                {{ campo }}                                    
+                            {% endfor %}              
+                </div>
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>    
+<!-- Modal Gastos -->
+
+    </div>
+</div>
+
+{% endblock %}

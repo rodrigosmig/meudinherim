@@ -92,7 +92,8 @@
         <script src="{% static 'js/fullcalendar.js' %}"></script>
         <script src="{% static 'js/locale/pt-br.js' %}"></script>
 
-        <link href="{% static 'css/base.css' %}" rel="stylesheet">   
+        <link href="{% static 'css/base.css' %}" rel="stylesheet">
+        <link href="{% static 'css/categoria.css' %}" rel="stylesheet">   
         
         <script type="text/javascript">
               $( function() {
@@ -221,12 +222,12 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="javascript:void(0);">
+                                    <a href="{% url 'caixa:categoria' %}">
                                         <span>Categoria</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="javascript:void(0);">
+                                    <a href="javascript:void(0) ;">
                                         <span>Banco</span>
                                     </a>
                                 </li>

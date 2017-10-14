@@ -1,0 +1,29 @@
+.tabCategoria {
+    border-collapse: collapse;
+    width: 95%;
+    margin: auto;
+}
+
+.tabCategoria th, td {
+    text-align: center;
+    padding: 8px;
+}
+
+.tabCategoria tr:nth-child(even){background-color: #f2f2f2}
+
+.tabCategoria th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.card .nav-item {
+	padding-left: 2px;
+}
+
+.nav-item .testeadd {
+	margin-top: -6px;
+}
+
+#id_tipo {
+	width: 150px;
+}

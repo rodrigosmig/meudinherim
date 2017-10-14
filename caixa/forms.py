@@ -35,7 +35,26 @@ class LancamentosForm(ModelForm):
             attrs = {'class': 'form-control'}
         )
     )
-
     class Meta:
         model = LancamentosCaixa
         fields = ['data', 'categoria', 'descricao', 'valor']
+
+
+class CategoriaForm(ModelForm):
+    tipo = forms.ChoiceField(
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        ),
+        choices = Categoria.TIPOS
+    )
+    descricao = forms.CharField(
+        label = 'Descrição',
+        max_length = 32,
+        required = True,
+        widget = forms.TextInput(
+            attrs = {'class': 'form-control', 'placeholder': 'Descreva a categoria'}
+        )
+    )
+    class Meta:
+        model = Categoria
+        fields = ['tipo', 'descricao']
