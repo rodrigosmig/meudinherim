@@ -1,37 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
+
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
-            <table border = '1'>
-            	{% for l in lancamentos %}
-            	<tr>
-            		<th>Data</th>
-            		<th>Descrição</th>
-            		<th>Categoria</th>
-            		<th>Entrada</th>
-            		<th>Saída</th>
-            	</tr>
-            	<tr>
-            		<td>
-            			{{ l.data }}
-            		</td>
-            		<td>
-            			{{ l.descricao }}
-            		</td>
-            		<td>
-            			{{ l.categoria }}
-            		</td>
-            		{% if l.categoria.tipo == '1' %}
-            		<td>{{ l.valor }}</td>
-            		{% else %}
-            		<td></td>
-            		<td>{{ l.valor }}</td>
-            		{% endif %}
-            	</tr>
-            	{% endfor %}
+            <h2 >Caixa</h2>
+            <table class="table" border = '0.2'>
+            <thead class="thead-inverse ">
+                <tr class="success">
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Entrada</th>
+                    <th>Saída</th>
+                </tr>
+                </thead>
+              
+                {% for l in lancamentos %}
+                <tr>
+                    <td>
+                        {{ l.data }}
+                    </td>
+                    <td>
+                        {{ l.descricao }}
+                    </td>
+                    <td>
+                        {{ l.categoria }}
+                    </td>
+                    {% if l.categoria.tipo == '1' %}
+                    <td>{{ l.valor }}</td>
+                    {% else %}
+                    <td></td>
+                    <td>{{ l.valor }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+
+
+               
             </table>
         </div>
+
     </div>
 </div>
 {% endblock %}
