@@ -10,11 +10,7 @@ class LancamentosForm(ModelForm):
         widget = forms.TextInput(
             attrs = {'class': 'form-control', 'id': 'datepicker'}
         )
-    )
-    # categoria = forms.ModelChoiceField(
-    #     queryset = Categoria.objects.all(),
-    #     empty_label = 'Nenhum'
-    # )
+    )    
     descricao = forms.CharField(
         label = 'Descrição',
         max_length = 32,
@@ -32,7 +28,33 @@ class LancamentosForm(ModelForm):
             attrs = {'class': 'form-control', 'placeholder': 'Insira o valor'}
         )
     )
-
+    categoria = forms.ModelChoiceField(
+        queryset = Categoria.objects.all(),
+        empty_label = 'Nenhum',
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        )
+    )
     class Meta:
         model = LancamentosCaixa
         fields = ['data', 'categoria', 'descricao', 'valor']
+
+
+class CategoriaForm(ModelForm):
+    tipo = forms.ChoiceField(
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        ),
+        choices = Categoria.TIPOS
+    )
+    descricao = forms.CharField(
+        label = 'Descrição',
+        max_length = 32,
+        required = True,
+        widget = forms.TextInput(
+            attrs = {'class': 'form-control', 'placeholder': 'Descreva a categoria'}
+        )
+    )
+    class Meta:
+        model = Categoria
+        fields = ['tipo', 'descricao']
