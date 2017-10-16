@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+{% load widget_tweaks %}
+<html>
+    <head>
+        
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    
+        <title>Meu Dinherim</title>
+    
+        <!-- Icone Superior-->
+        <link rel="icon" href="{% static 'images/Porco.png' %}" type="image/x-icon">
+
+        <!-- Fonte da Google -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+        <!-- Bootstrap Core Css -->
+        <link href="{% static 'plugins/bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+
+        <!-- Waves Effect Css -->
+        <link href="{% static 'plugins/node-waves/waves.css' %}" rel="stylesheet" />
+
+        <!-- Animation Css -->
+        <link href="{% static 'plugins/animate-css/animate.css' %}" rel="stylesheet" />
+
+        <!-- Morris Chart Css-->
+        <link href="{% static 'plugins/morrisjs/morris.css' %}" rel="stylesheet" />
+
+        <!-- Custom Css -->
+        <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    
+        <!-- Temas -->
+        <link href="{% static 'css/themes/all-themes.css' %}" rel="stylesheet" />
+    </head>
+
+    <!-- Cor da Barra Superior -->
+    <body class="theme-red">
+
+        <!-- Barra Superior -->
+        <nav class="navbar">
+            <div class="container-fluid">
+                <!-- Logo e talz -->
+                <div class="navbar-header">
+                    <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                    <a href="javascript:void(0);" class="bars"></a>
+                    <a class="navbar-brand" href="index.html">MEU <b>DINHERIM</b></a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <br>
+                    <a href="{% url 'principal:login' %}" class="navbar-right btn btn-primary btn-sm m-l-0">LOGIN</a>
+                    
+                </div>
+            </div>
+        </nav>
+        <!--/ Barra Superior -->
+    
+        <!-- Campo Inferior da Página -->
+        <section class="content2">
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <!-- Campo Imagem -->
+                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <img src="{% static 'images/controleFinanceiro.png' %}" height="600px">
+                    </div>
+                    
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                        <br><br>
+                        <div class="signup-box">
+                            <div class="card">
+                                <div class="body">
+                                    {% block content %} {% endblock %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </body>
+    
+    <!-- Jquery Core Js -->
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.js' %}"></script>
+
+    <!-- Select Plugin Js -->
+    <script src="{% static 'plugins/bootstrap-select/js/bootstrap-select.js' %}"></script>
+
+    <!-- Slimscroll Plugin Js -->
+    <script src="{% static 'plugins/jquery-slimscroll/jquery.slimscroll.js' %}"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="{% static 'plugins/node-waves/waves.js' %}"></script>
+
+    <!-- Jquery CountTo Plugin Js -->
+    <script src="{% static 'plugins/jquery-countto/jquery.countTo.js' %}"></script>
+
+    <!-- Morris Plugin Js -->
+    <script src="{% static 'plugins/raphael/raphael.min.js' %}"></script>
+    <script src="{% static 'plugins/morrisjs/morris.js' %}"></script>
+
+    <!-- ChartJs -->
+    <script src="{% static 'plugins/chartjs/Chart.bundle.js' %}"></script>
+
+    <!-- Flot Charts Plugin Js -->
+    <script src="{% static 'plugins/flot-charts/jquery.flot.js' %}"></script>
+    <script src="{% static 'plugins/flot-charts/jquery.flot.resize.js' %}"></script>
+    <script src="{% static 'plugins/flot-charts/jquery.flot.pie.js' %}"></script>
+    <script src="{% static 'plugins/flot-charts/jquery.flot.categories.js' %}"></script>
+    <script src="{% static 'plugins/flot-charts/jquery.flot.time.js' %}"></script>
+
+    <!-- Sparkline Chart Plugin Js -->
+    <script src="{% static 'plugins/jquery-sparkline/jquery.sparkline.js' %}"></script>
+
+    <!-- Custom Js -->
+    <script src="{% static 'js/admin.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+
+    <!-- Demo Js -->
+    <script src="{% static 'js/demo.js' %}"></script>
+
+</html>

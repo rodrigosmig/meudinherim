@@ -161,7 +161,7 @@
                 <!-- talz -->
                 <div class="collapse navbar-collapse" id="navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">       
-                        <li class="pull-right"><a href="javascript:void(0);" class="js-right-sidebar" data-close="true"><i class="glyphicon glyphicon-off"></i></a></li>
+                        <li class="pull-right"><a href="{% url 'principal:logout' %}" class="js-right-sidebar" data-close="true" title="Sair"><i class="glyphicon glyphicon-off"></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -177,8 +177,8 @@
                         <img src="{% static 'images/user.png' %}" width="48" height="48" alt="User" />
                     </div>
                     <div class="info-container">
-                        <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Wellington Lemos</div>
-                        <div class="email">wellington.lourenco@dce.ufpb.br</div>
+                        <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user.first_name }}</div>
+                        <div class="email">{{ user.email }}</div>
                             
                     </div>
                 </div>
