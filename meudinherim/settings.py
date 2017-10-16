@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'widget_tweaks',
     'principal',
     'caixa',
     'usuario',
@@ -130,3 +131,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#Auth
+LOGIN_URL = 'principal:login'
+LOGIN_REDIRECT_URL = 'principal:home'
+LOGOUT_URL = 'principal:sair'
