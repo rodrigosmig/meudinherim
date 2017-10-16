@@ -284,7 +284,9 @@
                                 {% csrf_token %}
 
                                     {% for campo in form %}
+                                        {% if campo.label != "User" %}
                                         {{ campo.label_tag }}
+                                        {% endif %}
                                         {{ campo }}                                    
                                     {% endfor %}
                       
