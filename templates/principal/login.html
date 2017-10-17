@@ -12,9 +12,10 @@
             <i class="material-icons">person</i>
         </span>
         <div class="form-line">
-            <!-- <input type="text" class="form-control" id="{{ form.username.id_for_label }}" name="{{ form.username.html_name }}" placeholder="Usuário" required autofocus> -->
-            {{ form.username }}
-            {{ form.username.errors }}
+             <input type="text" class="form-control" id="{{ form.username.id_for_label }}" name="{{ form.username.html_name }}" placeholder="Usuário" required autofocus> 
+            
+            <!--{{ form.username }}
+            {{ form.username.errors }}-->
         </div>
     </div>
 
@@ -22,12 +23,17 @@
         <span class="input-group-addon">
             <i class="material-icons">lock</i>
         </span>
-        <div class="form-line">
-            <!-- <input type="password" class="form-control" id="{{ form.password.id_for_label }}" name="{{ form.password.html_name }}" minlength="6" placeholder="Senha" required> -->
-            {{ form.password }}
 
+        <div class="form-line">
+       
+             <input type="password" class="form-control" id="{{ form.password.id_for_label }}" name="{{ form.password.html_name }}" minlength="6" placeholder="Senha" required> 
+            
+            <!--{{ form.password }}
+
+            {{ form.password.errors }}-->
+ 
         </div>
-        {{ form.password.errors }}
+        
     </div>
 
     <button class="btn btn-block btn-lg bg-pink waves-effect" type="submit">ENTRAR</button>
