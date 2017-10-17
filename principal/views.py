@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from caixa.forms import LancamentosForm
 from caixa.models import LancamentosCaixa
 from django.contrib.auth.forms import UserCreationForm
-from usuario.forms import UsuarioForm
-from usuario.forms import LoginForm
+from usuario.forms import UsuarioForm, LoginForm
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 import json
 
@@ -16,12 +16,14 @@ def index(request):
 	if request.method == 'POST':
 		form = UsuarioForm(request.POST)
 		if form.is_valid():
-			form.save()
-			return HttpResponseRedirect('/principal/')
+			user = form.save()
+			user = authenticate(username = user.username, password = form.cleaned_data['password1'])
+			login(request, user)
+			return redirect('principal:home')
 	else:
 		form = UsuarioForm()
 		
-	context = {'form': UsuarioForm()}
+	context = {'form': form}
 
 	return render(request, template, context)
 
