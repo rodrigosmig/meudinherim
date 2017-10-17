@@ -29,9 +29,12 @@ def index(request):
 def home(request):
 	template = 'principal/home.html'
 	context = {}
+	#id do usuario logado
+	id_user = request.user.id
 
-	#carrega os lançamentos do banco de dados
-	lancamentos = LancamentosCaixa.objects.all()
+	#carrega os lançamentos do usuário no banco de dados
+	lancamentos = LancamentosCaixa.objects.filter(user_id = id_user)
+
 	eventos = []
 
 	#separa os dados que serão utilizados no calendario em um tupla
@@ -45,7 +48,7 @@ def home(request):
 		ano = str(lancamento.data.year)
 		#concatena a data para o formato do fullcalendar
 		data = ano + "-" + mes + "-" + dia
-		titulo = lancamento.descricao + " : " + str(lancamento.valor) 
+		titulo = lancamento.descricao + " : " + " R$" + str(lancamento.valor) 
 		eventos.append((titulo, data))
 
 	#converte a tupla para o formato json
@@ -58,7 +61,10 @@ def home(request):
 	if(request.method == 'POST'):
 		form = LancamentosForm(request.POST)
 		if(form.is_valid()):
-			form.save()
+			lancamento = form.save(commit = False)
+			#relacionao o usuario logado com o lançamento
+			lancamento.user = request.user
+			lancamento.save()
 			return HttpResponseRedirect('/principal/home/')
 	else:
 		form = LancamentosForm()
