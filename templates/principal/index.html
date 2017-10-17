@@ -7,61 +7,65 @@
         <br>
     </div>
 
-    {{ form.non_field_errors }}
+    <!-- {{ form.non_field_errors }} -->
     <fieldset>
- 
+            
+            <!--
             {% for field in form %}
                
-
                  {{ field.label_tag }}
                  {{ field }}
                  {{ field.errors }}
               
-            {% endfor %}
+            {% endfor %}-->
 
     </fieldset>
 
-   <!--  <!-- Nome 
+    
     <div class="input-group">
         <span class="input-group-addon">
             <i class="material-icons">person</i>
         </span>
         <div class="form-line">
-            <input type="text" class="form-control" name="namesurname" placeholder="Nome Completo" required autofocus>
+            {{ form.username }}
+            {{ form.username.errors }}
         </div>
-    </div> -->
-    <!-- Email 
+    </div> 
+    
     <div class="input-group">
         <span class="input-group-addon">
             <i class="material-icons">email</i>
         </span>
         <div class="form-line">
-            <input type="email" class="form-control" name="email" placeholder="Email" required>
+           {{ form.email }}
+           {{ form.email.errors }}
         </div>
-    </div> -->
-    <!-- Senha 
+    </div>
+    
     <div class="input-group">
         <span class="input-group-addon">
             <i class="material-icons">lock</i>
         </span>
         <div class="form-line">
-            <input type="password" class="form-control" name="password" minlength="6" placeholder="Senha" required>
+           {{ form.password1 }}
+           {{ form.password1.errors }}
         </div>
-    </div> -->
-    <!-- Confirme Senha 
+    </div>
+    
     <div class="input-group">
         <span class="input-group-addon">
             <i class="material-icons">lock</i>
         </span>
         <div class="form-line">
-            <input type="password" class="form-control" name="confirm" minlength="6" placeholder="Confirme sua Senha" required>
+            {{ form.password2 }}
+            {{ form.password2.errors }}
         </div>
-    </div> -->
-    <!-- Resto 
+    </div>
+    <!-- 
     <div class="form-group">
         <input type="checkbox" name="terms" id="terms" class="filled-in chk-col-pink">
         <label for="terms">Eu li e concordei com o <a href="javascript:void(0);">termo de uso</a>.</label>
-    </div>--> 
+    </div> -->
     <button class="btn btn-block btn-lg bg-pink waves-effect" type="submit">INSCREVA-SE</button>
 </form>
 {% endblock %}
