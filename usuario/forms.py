@@ -25,7 +25,7 @@ class UsuarioForm(UserCreationForm):
 		for field in iter(self.fields):
 			self.fields[field].widget.attrs.update({'class': 'form-control'})
 
-		self.fields['username'].widget.attrs['placeholder'] = 'Nome'
+		self.fields['username'].widget.attrs['placeholder'] = 'Nome do usuário'
 		self.fields['email'].widget.attrs['placeholder'] = 'E-mail'
 		self.fields['password1'].widget.attrs['placeholder'] = 'Digite sua senha'
 		self.fields['password2'].widget.attrs['placeholder'] = 'Confirme sua senha'

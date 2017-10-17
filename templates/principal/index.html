@@ -7,39 +7,25 @@
         <br>
     </div>
 
-    <!-- {{ form.non_field_errors }} -->
-    <fieldset>
-            
-            <!--
-            {% for field in form %}
-               
-                 {{ field.label_tag }}
-                 {{ field }}
-                 {{ field.errors }}
-              
-            {% endfor %}-->
-
-    </fieldset>
-
-    
+    {{ form.non_field_errors }}    
     <div class="input-group">
         <span class="input-group-addon">
             <i class="material-icons">person</i>
         </span>
         <div class="form-line">
             {{ form.username }}
-            {{ form.username.errors }}
         </div>
+        <h6 class="form_erros"><strong>{{ form.username.errors }}<strong></h6>
     </div> 
-    
+
     <div class="input-group">
         <span class="input-group-addon">
             <i class="material-icons">email</i>
         </span>
         <div class="form-line">
            {{ form.email }}
-           {{ form.email.errors }}
         </div>
+        <h6 class="form_erros"><strong>{{ form.email.errors }}<strong></h6>
     </div>
     
     <div class="input-group">
@@ -48,8 +34,8 @@
         </span>
         <div class="form-line">
            {{ form.password1 }}
-           {{ form.password1.errors }}
         </div>
+        <h6 class="form_erros"><strong>{{ form.password1.errors }}<strong></h6>
     </div>
     
     <div class="input-group">
@@ -58,8 +44,9 @@
         </span>
         <div class="form-line">
             {{ form.password2 }}
-            {{ form.password2.errors }}
         </div>
+
+        <h6 class="form_erros"><strong>{{ form.password2.errors }}<strong></h6>
     </div>
     <!-- 
     <div class="form-group">
