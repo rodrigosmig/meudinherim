@@ -4,7 +4,7 @@
     margin: auto;
 }
 
-.tabCategoria th, td {
+.tabCategoria th, .tabCategoria td {
     text-align: center;
     padding: 8px;
 }

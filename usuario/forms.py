@@ -20,6 +20,15 @@ class UsuarioForm(UserCreationForm):
 
 	email = forms.EmailField(label='E-mail')
 
+	def __init__ (self, *args, **kwargs):
+		super (UsuarioForm, self).__init__(*args, **kwargs)
+		for field in iter(self.fields):
+			self.fields[field].widget.attrs.update({'class': 'form-control'})
+
+		self.fields['username'].widget.attrs['placeholder'] = 'Nome'
+		self.fields['email'].widget.attrs['placeholder'] = 'E-mail'
+		self.fields['password1'].widget.attrs['placeholder'] = 'Digite sua senha'
+		self.fields['password2'].widget.attrs['placeholder'] = 'Confirme sua senha'
 
 	# sobreescrevendo o save de UserCreationForm
 	def save (self, commit = True):
