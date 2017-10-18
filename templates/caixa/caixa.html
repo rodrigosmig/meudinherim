@@ -4,20 +4,24 @@
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="card">
-            <h2 >Caixa</h2>
-            <table class="table" border = '0.2'>
-            <thead class="thead-inverse ">
-                <tr class="success">
-                    <th>Data</th>
-                    <th>Descrição</th>
-                    <th>Categoria</th>
-                    <th>Entrada</th>
-                    <th>Saída</th>
-                </tr>
-                </thead>
+            <div class="header">
+                <h2>Caixa</h2>
+            </div>
+            <div class="body">
+                <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover dataTable js-exportable" border = '0.2'>
+                    <thead class="thead-inverse ">
+                        <tr class="success">
+                            <th>Data</th>
+                            <th>Descrição</th>
+                            <th>Categoria</th>
+                            <th>Entrada</th>
+                            <th>Saída</th>
+                        </tr>
+                    </thead>
               
-                {% for l in lancamentos %}
-                <tr>
+                    {% for l in lancamentos %}
+                    <tr>
                     <td>
                         {{ l.data }}
                     </td>
@@ -36,9 +40,9 @@
                 </tr>
                 {% endfor %}
 
-
-               
             </table>
+                </div>
+            </div>
         </div>
 
     </div>
