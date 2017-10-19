@@ -1,0 +1,5 @@
+*.pyc
+caixa/__pycache__/
+meudinherim/__pycache__/
+principal/__pycache__/
+usuario/__pycache__/
