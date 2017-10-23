@@ -55,6 +55,6 @@ def login(request):
 	else:
 		form = LoginForm()
 
-	context_dict = {'form' : form}
+	context_dict = {'form2' : form2}
 
 	return render(request,'templates/principal/index.html',context= context_dict)

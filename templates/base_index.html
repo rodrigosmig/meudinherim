@@ -51,7 +51,10 @@
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-collapse">
                     <br>
+                    {% block content2 %} 
                     <a href="{% url 'principal:login' %}" class="navbar-right btn btn-primary btn-sm m-l-0">LOGIN</a>
+                    {% endblock %}
+                    
                     
                 </div>
             </div>
@@ -72,7 +75,8 @@
                         <div class="signup-box">
                             <div class="card">
                                 <div class="body">
-                                    {% block content %} {% endblock %}
+                                    {% block content %} 
+                                    {% endblock %}
                                 </div>
                             </div>
                         </div>
