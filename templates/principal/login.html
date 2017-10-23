@@ -1,7 +1,14 @@
 {% extends "base_index.html" %}
+
+{% block content2 %}
+  <a href="{% url 'principal:index' %}" class="navbar-right btn btn-primary btn-sm m-l-0">CADASTRO</a>
+{% endblock %}
+
+
 {% block content %}
 <form method="POST">
     {% csrf_token %}
+
     <div class="logo align-center">
         <h1><b>Login</b></h1>
         <br>
