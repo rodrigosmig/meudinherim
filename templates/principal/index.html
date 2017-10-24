@@ -1,4 +1,36 @@
 ﻿{% extends "base_index.html" %}
+{% block content2 %} 
+<form  action="{% url 'principal:index' %}"  method="POST">
+    {% csrf_token %}
+
+  <div class="table-responsive">
+
+<table id="IdTableLogin" role="presentation" cellspacing="0" >
+
+    <tr>
+
+   <td> <input type="text" class="form-control" id="{{ form2.login.id_for_label }}" name="{{ form2.login.html_name }}"
+
+           placeholder="Usuário"  required autofocus></td>  
+
+    <td> <input type="password" class="form-control" id="{{ form2.senha.id_for_label }}" name="{{ form2.senha.html_name }}" minlength="6" placeholder="Senha"  required> </td> 
+
+    <td> <button  id="IdBotao" class="btn btn-primary btn-lg bg-pink waves-effect" type="submit" >ENTRAR</button></td>
+
+   
+
+    </tr>
+</table>
+</div>
+
+   
+
+    
+</form>
+
+{% endblock %}
+
+
 {% block content %}
 <form id="sign_up" method="POST">
     {% csrf_token %}

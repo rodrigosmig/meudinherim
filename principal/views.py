@@ -20,11 +20,22 @@ def index(request):
 			user = authenticate(username = user.username, password = form.cleaned_data['password1'])
 			login(request, user)
 			return redirect('principal:home')
-	else:
-		form = UsuarioForm()
-		
-	context = {'form': form}
+		else:
+			form = LoginForm(request.POST)
 
+			if form.is_valid():
+
+				form_login = form.cleaned_data['login']
+				form_senha = form.cleaned_data['senha']
+
+				usuario = authenticate(username=form_login,password=form_senha)
+
+				if usuario is not None:
+					login(request, usuario)
+					return redirect('principal:home')
+	form = UsuarioForm()
+	form2 = LoginForm()
+	context = {'form': form, 'form2':form2}
 	return render(request, template, context)
 
 @login_required
