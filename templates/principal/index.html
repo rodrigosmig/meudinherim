@@ -9,11 +9,17 @@
 
     <tr>
 
-   <td> <input type="text" class="form-control" id="{{ form2.login.id_for_label }}" name="{{ form2.login.html_name }}"
+    <td><i class="material-icons">person</i></td>   
 
-           placeholder="Usuário"  required autofocus></td>  
+   <td>  <input type="text" class="form-control" id="{{ form2.login.id_for_label }}" name="{{ form2.login.html_name }}"
 
-    <td> <input type="password" class="form-control" id="{{ form2.senha.id_for_label }}" name="{{ form2.senha.html_name }}" minlength="6" placeholder="Senha"  required> </td> 
+           placeholder="Usuário"  required autofocus></td> <td>  &nbsp; &nbsp; &nbsp; &nbsp;   </td> 
+
+
+    <td> <i class="material-icons">lock</i></td>   
+
+    <td> <input type="password" class="form-control" id="{{ form2.senha.id_for_label }}" name="{{ form2.senha.html_name }}" minlength="6" placeholder="Senha"  required> </td> <td>  &nbsp; &nbsp;  &nbsp; &nbsp;  </td>
+
 
     <td> <button  id="IdBotao" class="btn btn-primary btn-lg bg-pink waves-effect" type="submit" >ENTRAR</button></td>
 
