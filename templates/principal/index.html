@@ -1,6 +1,6 @@
 ﻿{% extends "base_index.html" %}
 {% block content2 %} 
-<form  action="{% url 'principal:index' %}"  method="POST">
+<form  action="{% url 'principal:index' %}"  method="POST" name="formLogin">
     {% csrf_token %}
 
   <div class="table-responsive">
@@ -21,15 +21,13 @@
     <td> <input type="password" class="form-control" id="{{ form2.senha.id_for_label }}" name="{{ form2.senha.html_name }}" minlength="6" placeholder="Senha"  required> </td> <td>  &nbsp; &nbsp;  &nbsp; &nbsp;  </td>
 
 
-    <td> <button  id="IdBotao" class="btn btn-primary btn-lg bg-pink waves-effect" type="submit" >ENTRAR</button></td>
+    <td> <button  id="IdBotao" class="btn btn-primary btn-lg bg-pink waves-effect" onclick="validarLogin()" type="submit" >ENTRAR</button></td>
 
    
 
     </tr>
 </table>
 </div>
-
-   
 
     
 </form>
@@ -38,7 +36,7 @@
 
 
 {% block content %}
-<form id="sign_up" method="POST">
+<form id="sign_up" method="POST" name="formCadastro">
     {% csrf_token %}
     <div class="logo align-center">
         <h1><b>Cadastre-se</b></h1>
@@ -91,6 +89,6 @@
         <input type="checkbox" name="terms" id="terms" class="filled-in chk-col-pink">
         <label for="terms">Eu li e concordei com o <a href="javascript:void(0);">termo de uso</a>.</label>
     </div> -->
-    <button class="btn btn-block btn-lg bg-pink waves-effect" type="submit">INSCREVA-SE</button>
+    <button class="btn btn-block btn-lg bg-pink waves-effect" onclick="validarCadastro()" type="submit">INSCREVA-SE</button>
 </form>
 {% endblock %}
