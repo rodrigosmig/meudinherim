@@ -33,9 +33,6 @@
 
         <!-- Temas -->
         <link href="{% static 'css/themes/all-themes.css' %}" rel="stylesheet" />
-        
-        <!-- JQuery DataTable Css -->
-        <link href="{% static 'plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
 
         <!-- Chamadas JS -->
 
@@ -79,6 +76,8 @@
         <!-- Custom Js -->
         <script src="{% static 'js/admin.js' %}"></script>
         <script src="{% static 'js/index.js' %}"></script>
+        
+        {% block dataTable %}{% endblock %}
 
         <!-- Chamadas JS -->
 
@@ -96,16 +95,9 @@
         <link href="{% static 'css/base.css' %}" rel="stylesheet">
         <link href="{% static 'css/categoria.css' %}" rel="stylesheet">
         
-        <!-- Jquery DataTable Plugin Js -->
-    <script src="{% static 'plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
-    <script src="{% static 'plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js' %}"></script>
-    <script src="{% static 'plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js' %}"></script>
-    <script src="{% static 'plugins/jquery-datatable/extensions/export/buttons.flash.min.js' %}"></script>
-    <script src="{% static 'plugins/jquery-datatable/extensions/export/jszip.min.js' %}"></script>
-    <script src="{% static 'plugins/jquery-datatable/extensions/export/pdfmake.min.js' %}"></script>
-    <script src="{% static 'plugins/jquery-datatable/extensions/export/vfs_fonts.js' %}"></script>
-    <script src="{% static 'plugins/jquery-datatable/extensions/export/buttons.html5.min.js' %}"></script>
-    <script src="{% static 'plugins/jquery-datatable/extensions/export/buttons.print.min.js' %}"></script>
+        <sript type="text/javascript">
+            
+</sript>
         
         <script type="text/javascript">
               $( function() {
@@ -131,6 +123,11 @@
                         eventLimit: 3,
                         events: eventos
                 });
+            });
+            
+            $(document).ready(function()
+            {
+                $('#tabCaixa').dataTable();
             });
 
         </script>
@@ -312,13 +309,13 @@
                 </div>
             </div>
         </div>    
-        <!-- Modal Gastos -->
+        <!--/ Modal Gastos -->
 
         <section class="content">
-            <div class="container-fluid">
-
+            <div clas="container-fluid"> 
+                
                 {% block content %}{% endblock %}
-
+            
             </div>
         </section>
     </body>

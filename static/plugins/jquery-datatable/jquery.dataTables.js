@@ -11317,7 +11317,7 @@
 				 *      } );
 				 *    } );
 				 */
-				"sNext": "Next",
+				"sNext": "Próximo",
 	
 	
 				/**
@@ -11340,7 +11340,7 @@
 				 *      } );
 				 *    } );
 				 */
-				"sPrevious": "Previous"
+				"sPrevious": "Anterior"
 			},
 	
 			/**
@@ -11395,7 +11395,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
+			"sInfo": "Mostrando _START_ de _END_ | Total _TOTAL_ ",
 	
 	
 			/**
@@ -11416,7 +11416,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfoEmpty": "Showing 0 to 0 of 0 entries",
+			"sInfoEmpty": "Mostrando 0 de 0 | Total 0 ",
 	
 	
 			/**
@@ -11438,7 +11438,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfoFiltered": "(filtered from _MAX_ total entries)",
+			"sInfoFiltered": "(Filtrado _MAX_ entradas)",
 	
 	
 			/**
@@ -11556,7 +11556,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sLengthMenu": "Show _MENU_ entries",
+			"sLengthMenu": "Mostra _MENU_ resultados",
 	
 	
 			/**
@@ -11580,7 +11580,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sLoadingRecords": "Loading...",
+			"sLoadingRecords": "Carregando...",
 	
 	
 			/**
@@ -11636,7 +11636,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sSearch": "Search:",
+			"sSearch": "Buscar:",
 	
 	
 			/**
@@ -11694,7 +11694,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sZeroRecords": "No matching records found"
+			"sZeroRecords": "Nenhum registro correspondente encontrado"
 		},
 	
 	
@@ -12928,7 +12928,6 @@
 			 *  @type boolean
 			 */
 			"bLengthChange": null,
-	
 			/**
 			 * Pagination enabled or not. Note that if this is disabled then length
 			 * changing must also be disabled.
