@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 class LoginForm(forms.Form):
 
- 	email = forms.EmailField(label = 'E-mail')
+ 	login = forms.CharField(label = 'login', max_length=50)
  	senha = forms.CharField(label = 'Senha', max_length=50, widget=forms.PasswordInput())
 
 # adicionando o campo email no formulario do cadastro
