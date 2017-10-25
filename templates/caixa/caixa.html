@@ -1,50 +1,185 @@
 {% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block dataTable  %}
+
+<!-- JQuery DataTable Css -->
+<link href="{% static 'plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
+
+<!-- Jquery DataTable Plugin Js -->
+<script src="{% static 'plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/buttons.flash.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/jszip.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/pdfmake.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/vfs_fonts.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/buttons.html5.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/buttons.print.min.js' %}"></script>
+
+<!-- Custom Js -->
+<script src="{% static 'js/jquery-datatable.js' %}"></script>
+
+{% endblock %}
+
 {% block content %}
 
-<div class="row clearfix">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div class="card">
-            <div class="header">
-                <h2>Caixa</h2>
-            </div>
-            <div class="body">
-                <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover dataTable js-exportable" border = '0.2'>
-                    <thead class="thead-inverse ">
-                        <tr class="success">
-                            <th>Data</th>
-                            <th>Descrição</th>
-                            <th>Categoria</th>
-                            <th>Entrada</th>
-                            <th>Saída</th>
-                        </tr>
-                    </thead>
-              
-                    {% for l in lancamentos %}
-                    <tr>
-                    <td>
-                        {{ l.data }}
-                    </td>
-                    <td>
-                        {{ l.descricao }}
-                    </td>
-                    <td>
-                        {{ l.categoria }}
-                    </td>
-                    {% if l.categoria.tipo == '1' %}
-                    <td>{{ l.valor }}</td>
-                    {% else %}
-                    <td></td>
-                    <td>{{ l.valor }}</td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
+<section clas="content">
+    
+    <div clas="container-fluid">     
+        <div class="block-header">
+            <h1>Caixa</h1>
+        </div>
+    </div>
+    
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Meses</h2>
+                </div>
+                <div class="body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                    
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Entrada</th>
+                                    <th>Saída</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Entrada</th>
+                                    <th>Saída</th>
+                                </tr>
+                            </tfoot>
+                            
+                            <!--
 
-            </table>
+                            O dataTable não reconheceu os comandos :/ (Pesquisando pra encontrar alguma solução)
+
+                            <tbody>
+                            {% for l in lancamentos %}
+                                <tr>
+                                    <td>
+                                        {{ l.data }}
+                                    </td>
+                                    <td>
+                                        {{ l.descricao }}
+                                    </td>
+                                    <td>
+                                        {{ l.categoria }}
+                                    </td>
+                                    {% if l.categoria.tipo == '1' %}
+                                        <td>
+                                            {{ l.valor }}
+                                        </td>
+                                    {% else %}
+                                        <td></td>
+                                    <td>
+                                        {{ l.valor }}
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            -->
+                            
+                                                                <tbody>
+                                        <tr>
+                                            <td>28/10/2017</td>
+                                            <td>Salgados</td>
+                                            <td>Universidade</td>
+                                            <td></td>
+                                            <td>R$6,25</td>
+                                        </tr>
+                                        <tr>
+                                            <td>31/10/2017</td>
+                                            <td>Pão</td>
+                                            <td>Guarabira</td>
+                                            <td></td>
+                                            <td>R$3,00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>01/11/2017</td>
+                                            <td>Geladeira quebrada</td>
+                                            <td>Casa</td>
+                                            <td></td>
+                                            <td>R$350,75</td>
+                                        </tr>
+                                        <tr>
+                                            <td>05/11/2017</td>
+                                            <td>Xerox</td>
+                                            <td>Universidade</td>
+                                            <td></td>
+                                            <td>R$350,75</td>
+                                        </tr>
+                                        <tr>
+                                            <td>07/11/2017</td>
+                                            <td>Brasilia</td>
+                                            <td>Negócios</td>
+                                            <td></td>
+                                            <td>R$350,75</td>
+                                        </tr>
+                                        <tr>
+                                            <td>20/12/2017</td>
+                                            <td>Rio de Janeiro</td>
+                                            <td>Viagem</td>
+                                            <td></td>
+                                            <td>R$350,75</td>
+                                        </tr>
+                                        <tr>
+                                            <td>12/10/2017</td>
+                                            <td>Brasilia</td>
+                                            <td>Negócios</td>
+                                            <td></td>
+                                            <td>R$350,75</td>
+                                        </tr>
+                                        <tr>
+                                            <td>26/09/2017</td>
+                                            <td>Brasilia</td>
+                                            <td>Negócios</td>
+                                            <td></td>
+                                            <td>R$350,75</td>
+                                        </tr>
+                                        <tr>
+                                            <td>30/07/2017</td>
+                                            <td>Compras</td>
+                                            <td>Mercado</td>
+                                            <td></td>
+                                            <td>R$350,75</td>
+                                        </tr>
+                                        <tr>
+                                            <td>12/11/2017</td>
+                                            <td>Almoço</td>
+                                            <td>Casa</td>
+                                            <td></td>
+                                            <td>R$350,75</td>
+                                        </tr>
+                                        <tr>
+                                            <td>09/10/2017</td>
+                                            <td>Faceburgue</td>
+                                            <td>Lanche</td>
+                                            <td></td>
+                                            <td>R$350,75</td>
+                                        </tr>
+                                    </tbody>
+                            
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-
     </div>
-</div>
+</section>
+
+
 {% endblock %}
