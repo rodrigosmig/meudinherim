@@ -21,7 +21,7 @@
 <!-- Custom Js -->
 <script src="{% static 'js/jquery-datatable.js' %}"></script>
 <script src="{% static 'js/caixa.js' %}"></script>
-
+<script>$('mydata').dataTable();</script>
 {% endblock %}
 
 {% block content %}
@@ -42,7 +42,7 @@
                 </div>
                 <div class="body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                        <table id="mydata"class="table table-bordered table-striped table-hover dataTable js-basic-example">
                     
                             <thead>
                                 <tr>
@@ -51,6 +51,7 @@
                                     <th>Categoria</th>
                                     <th>Entrada</th>
                                     <th>Saída</th>
+                                    <th>Editar</th>
                                 </tr>
                             </thead>
                             <tfoot>
@@ -60,26 +61,33 @@
                                     <th>Categoria</th>
                                     <th>Entrada</th>
                                     <th>Saída</th>
+                                    <th>Editar</th>
                                 </tr>
                             </tfoot>
 
                             <tbody>
                             {% for l in lancamentos %}
                                 <tr>
-                                    <td>{{ l.data }}</td>
-                                    <td>{{ l.descricao }}</td>
-                                    <td>{{ l.categoria }}</td>
+                                    <td>
+                                        {{ l.data }}
+                                    </td>
+                                    <td>
+                                        {{ l.descricao }}
+                                    </td>
+                                    <td>
+                                        {{ l.categoria }}
+                                    </td>
                                     
                                     {% if l.categoria.tipo == '1' %}
                                         <td>{{ l.valor }}</td>
                                         <td></td>
-                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
-                                    
+                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>        
                                     {% else %}
                                         <td></td>
-                                    
-                                    <td>{{ l.valor }}</td>
-                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                        <td>
+                                            {{ l.valor }}
+                                        </td>
+                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
                                     {% endif %}
                                 </tr>
                             {% endfor %}
@@ -97,23 +105,25 @@
 <div class="modal fade" id="editLancamento" tabindex="-1" role="dialog" aria-labelledby="LabelLancamento" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <!-- Título -->
-            <div class="modal-header">
-                <h3 class="modal-title" id="LabelLancamento">Edição de Lançamento de Caixa</h3>
-            </div>
-            <!-- Campos -->
-            <form id="form_lancamento">
-            {% csrf_token %}    
-                <div id="editLanc" class="modal-body">                          
-                    <!-- Django form será inserido aqui via Jquery -->
+            <div class="card"
+                <!-- Título -->
+                <div class="header">
+                    <h4 id="LabelLancamento">Editar | <small>Lançamento do Caixa</small></h4>
                 </div>
+                <!-- Campos -->
+                <form id="form_lancamento">
+                {% csrf_token %}    
+                    <div id="editLanc" class="modal-body">        
+                        <!-- Django form será inserido aqui via Jquery -->
+                    </div>
+                </form>     
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button class="btn btn-primary salvar">Salvar</button>
+                    <button class="btn btn-success waves-effect salvar" >Salvar</button>
                     <button class="btn btn-danger excluir">Excluir</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>    
