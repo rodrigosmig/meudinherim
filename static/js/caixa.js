@@ -53,7 +53,7 @@ $(function() {
                     nextText: 'Próximo',
                     prevText: 'Anterior'
                 });
-				$('#editLancamento').modal();
+				$('#editLancamento').modal('show');
 			},
 			error: function(erro) {
 				console.log(erro.responseText);
@@ -63,49 +63,65 @@ $(function() {
 		});
 	});
 
-	$('.salvar').click(function() {
-		//atribui o id do lancamento a variavel
-		var id = $('#datepicker').attr('data-lanc');
+	$('.salvar').click(function(evento) {
+		evento.preventDefault();
+		
+		var dados = recuperCampos();
 
+		$.ajax({
+			type: 'POST',
+			url: '/caixa/edit/',
+			data: dados,
+			success: function(msg) {
+				//mensagem de confirmação
+				alert(msg);
+				//recarregar pagina
+				location.reload();
+			},
+			error: function(msg) {
+				alert(msg);
+			},
+		});		
+	});
+
+	$('.excluir').click(function(evento) {
+		evento.preventDefault();
+
+		if(confirm("Tem certeza que deseja excluir o lançamento?")) {
+			var dados = recuperCampos();
+			$.ajax({
+				type: 'POST',
+				url: 'delete/',
+				data: dados,
+				success: function(msg) {
+					//mensagem de confirmação
+					alert(msg);
+					//recarregar pagina
+					location.reload();
+				},
+				error: function(msg) {
+					//mensagem de retorno em caso de erro
+					alert(msg)
+				},
+			});
+		}
+	})
+
+	function recuperCampos() {
+		var id = $('#datepicker').attr('data-lanc');
 		var data = $('#datepicker').val();
 		var categoria = $('#id_categoria').val();
 		var descricao = $('#id_descricao').val();
 		var valor = $('#id_valor').val();
 
-		var dados = {
-				'id': id,
-				'data': data,
-				'categoria': categoria,
-				'descricao': descricao,
-				'valor': valor,
-				'csrfmiddlewaretoken': csrftokenPOST
-			}
-
-		// $.post('/caixa/edit/', dados).done(function(msg) {
-		// 	alert(msg + " acerto");
-		// }).fail(function(msg) {
-		// 	alert(msg + " erro");
-		// });
-
-		$.ajax({
-			type: 'POST',
-			url: '/caixa/edit/',
-			data: {
-				'id': id,
-				'data': data,
-				'categoria': categoria,
-				'descricao': descricao,
-				'valor': valor,
-				'csrfmiddlewaretoken': csrftokenPOST
-			},
-			dataType: 'json',
-			success: function(msg) {
-				console.log(msg);
-			},
-			error: function(msg) {
-				console.log(msg);
-			},
-		});		
-	});
-
+		dados = {
+			'id': id,
+			'data': data,
+			'categoria': categoria,
+			'descricao': descricao,
+			'valor': valor,
+			'csrfmiddlewaretoken': csrftokenPOST
+		}
+		return dados;
+	}
 }) 

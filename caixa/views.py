@@ -37,13 +37,14 @@ def editLancamento(request):
 	if(request.method == 'POST'):
 		#id do lancamento clicado
 		idLancamento = request.POST.get('id')
-
-		lancamento = LancamentosCaixa.objects.get(pk = idLancamento)		
+		#busca o lancamento a ser alterado
+		lancamento = LancamentosCaixa.objects.get(pk = idLancamento)
+		#atribui o lancamento ao form	
 		form = LancamentosForm(request.POST, instance = lancamento)
 
 		if(form.is_valid()):
 			form.save()
-			
+			print("editou")
 			return HttpResponse("Formulário alterado com sucesso")
 		else:
 			return HttpResponse("Formulário inválido")
@@ -58,5 +59,23 @@ def editLancamento(request):
 
 	form_html = {form.as_p(), divId}
 	return HttpResponse(form_html)
+
+
+def delLancamento(request):
+	if(request.method == 'POST'):
+		#id do lancamento a ser deletado
+		idLancamento = request.POST.get('id')
+
+		#busca o lançamento
+		lancamento = LancamentosCaixa.objects.get(pk = idLancamento)		
+		
+		if(request.user.id == lancamento.user_id):
+			lancamento.delete()
+			return HttpResponse("Lançamento excluído com sucesso")
+		else:
+			return HttpResponse("Lançamento não encontrado.")
+		
+
+	return HttpResponse("Lançamento não encontrado.")
 
 	
