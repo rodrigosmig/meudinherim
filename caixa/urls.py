@@ -6,4 +6,5 @@ urlpatterns = [
     url(r'^$', views.lancamentos, name='index'),
     url(r'^categoria/', views.categoria, name='categoria'),
     url(r'^edit/', views.editLancamento, name='edit'),
+    url(r'^delete/', views.delLancamento, name='delete'),
 ]
