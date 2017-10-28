@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+<h1>Agências</h1>
+
+<div class='card'>
+	<table class='tabCategoria' border = '1'>
+    	<tr>
+    		<th>Banco</th>
+    		<th>Agência</th>
+            <th>Conta</th>
+            <th>Tipo</th>
+    	</tr>
+    	{% for ag in agencias %}
+    	<tr>
+    		<td>
+    			{{ ag.banco }}
+    		</td>
+    		<td>
+    			{% if ag.agencia == None %}
+                	    
+            	{% else %}
+            		{{ ag.agencia }}
+            	{% endif %}
+    		</td>
+            <td>
+            	{% if ag.conta == None %}
+                	    
+            	{% else %}
+            		{{ ag.conta }}
+            	{% endif %}
+            </td>
+            <td>
+                {% if ag.tipo == '1' %}
+                	Corrente
+            	{% else %}
+            		Poupança
+            	{% endif %}
+            </td>
+    	</tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+
+{% endblock %}

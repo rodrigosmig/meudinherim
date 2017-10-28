@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+<section clas="content">
+    
+    <div clas="container-fluid">     
+        <div class="block-header">
+            <h1>Banco</h1>
+        </div>
+    </div>
+    
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                <div class="header">
+                    <h2>Meses</h2>
+                </div>
+                <div class="body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                    
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Crédito</th>
+                                    <th>Débito</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for l in lancBanco %}
+                                <tr>
+                                    <td>{{ l.data }}</td>
+                                    <td>{{ l.descricao }}</td>
+                                    <td>{{ l.categoria }}</td>
+                                    
+                                    {% if l.tipo == '1' %}
+                                        <td>{{ l.valor }}</td>
+                                        <td></td>
+                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                    
+                                    {% else %}
+                                        <td></td>
+                                    
+                                    <td>{{ l.valor }}</td>
+                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
