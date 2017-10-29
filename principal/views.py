@@ -3,10 +3,14 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from caixa.forms import LancamentosForm
 from caixa.models import LancamentosCaixa
+from banco.forms import LancamentosBancoForm
+from banco.models import LancamentosBanco
 from django.contrib.auth.forms import UserCreationForm
 from usuario.forms import UsuarioForm, LoginForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django import forms
+from banco.models import ContaBanco, LancamentosBanco
 import json
 
 
@@ -67,21 +71,21 @@ def home(request):
 	#converte a tupla para o formato json
 	eventos = [{'title': title, 'start': start} for title, start in eventos]
 	eventos = json.dumps(eventos, ensure_ascii=False)
-
 	context['events'] = eventos
+
+	formCaixa = LancamentosForm()
+	formBanco = LancamentosBancoForm()
+
+	#Seleciona apenas o banco do usuario para o formulario
+	formBanco.fields['banco'] = forms.ModelChoiceField(
+		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		empty_label = 'Nenhum',
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        )
+	)
+
+	context['formLancCaixa'] = formCaixa
+	context['formLancBanco'] = formBanco
 	
-
-	if(request.method == 'POST'):
-		form = LancamentosForm(request.POST)
-		if(form.is_valid()):
-			lancamento = form.save(commit = False)
-			#relacionao o usuario logado com o lançamento
-			lancamento.user = request.user
-			lancamento.save()
-			return HttpResponseRedirect('/principal/home/')
-	else:
-		form = LancamentosForm()
-
-		
-	context['form'] = form
 	return render(request, template, context)

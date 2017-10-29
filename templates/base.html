@@ -78,6 +78,7 @@
         
         {% block staticCaixa %}{% endblock %}
         {% block staticBanco %}{% endblock %}
+        {% block staticHome %}{% endblock %}
 
         <!-- Chamadas JS -->
 
@@ -101,7 +102,20 @@
         
         <script type="text/javascript">
               $( function() {
-                $("#datepicker").datepicker({
+                $("#datepickerC").datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+                    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+                    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+                    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+                    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+                    nextText: 'Próximo',
+                    prevText: 'Anterior'
+                });
+              });
+
+              $( function() {
+                $("#datepickerB").datepicker({
                     dateFormat: 'dd/mm/yy',
                     dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
                     dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
@@ -306,7 +320,6 @@
             <!--/ Sidebar Esquerda -->
         </section>
 
-
         <!-- Modal Gastos -->
         <div class="modal fade" id="mGastos" tabindex="-1" role="dialog" aria-labelledby="LabelBanco" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -316,23 +329,56 @@
                         <h3 class="modal-title" id="LabelBanco">Cadastrar Lançamentos</h3>
                     </div>
                     <!-- Campos -->
-                    <form method="POST">    
-                        <div class="modal-body">                          
-                                {% csrf_token %}
+                    <form>    
+                        <div class="modal-body">
 
-                                    {% for campo in form %}
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#caixa" role="tab">Caixa</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#banco" role="tab">Banco</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <!-- Tab pane Caixa -->
+                                <div class="tab-pane" id="caixa" role="tabpanel">
+                                    {% for campo in formLancCaixa %}
                                         {% if campo.label != "User" %}
                                         {{ campo.label_tag }}
                                         {% endif %}
                                         {{ campo }}                                    
                                     {% endfor %}
+                                    <!-- Salvar/Cancelar -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                        <button class="btn btn-primary salvarCaixa">Salvar</button>
+                                    </div>
+                                </div>
+                                <!-- Tab pane Caixa -->
+
+                                <!-- Tab pane Banco -->
+                                <div class="tab-pane" id="banco" role="tabpanel">
+                                    {% csrf_token %}
+
+                                    {% for campo in formLancBanco %}
+                                        {% if campo.label != "User" %}
+                                        {{ campo.label_tag }}
+                                        {% endif %}
+                                        {{ campo }}                                    
+                                    {% endfor %}
+                                    <!-- Salvar/Cancelar -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                        <button class="btn btn-primary salvarBanco">Salvar</button>
+                                    </div>
+                                </div>
+                                <!-- Tab pane Banco -->
+                            </div>                               
                       
                         </div>
-                        <!-- Salvar/Cancelar -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Salvar</button>
-                        </div>
+                        
                     </form>
                 </div>
             </div>

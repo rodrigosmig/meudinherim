@@ -1,10 +1,11 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from caixa.models import LancamentosCaixa, Categoria
 from caixa.forms import CategoriaForm, LancamentosForm
 from django.http import JsonResponse
 
-
+@login_required
 def lancamentos(request):
 	#id do usuario logado
 	saldo = 0
@@ -29,6 +30,7 @@ def lancamentos(request):
 
 	return render(request, template, contexto)
 
+@login_required
 def categoria(request):
 	template = 'caixa/categoria.html'
 	catEntrada = Categoria.objects.filter(tipo = 1)
@@ -47,6 +49,21 @@ def categoria(request):
 
 	return render(request, template, contexto)
 
+
+@login_required
+def addLancamento(request):
+	if(request.method == 'POST'):	
+		form = LancamentosForm(request.POST)
+		if(form.is_valid()):
+			lancamento = form.save(commit = False)
+			#relacionao o usuario logado com o lançamento
+			lancamento.user = request.user
+			lancamento.save()
+			return HttpResponse('Lançamento efetuado com sucesso.')
+	
+	return ('Lançamento inválido')
+
+@login_required
 def editLancamento(request):
 
 	if(request.method == 'POST'):
@@ -74,7 +91,7 @@ def editLancamento(request):
 	form_html = {form.as_p(), divId}
 	return HttpResponse(form_html)
 
-
+@login_required
 def delLancamento(request):
 	if(request.method == 'POST'):
 		#id do lancamento a ser deletado

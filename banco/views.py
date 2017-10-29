@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from banco.models import ContaBanco, LancamentosBanco
 from banco.forms import ContaBancoForm, LancamentosBancoForm
 
@@ -27,6 +27,19 @@ def banco(request):
 	return render(request, template, contexto)
 
 @login_required
+def addLancamento(request):
+	if(request.method == 'POST'):
+		print('entrou no if')
+		form = LancamentosBancoForm(request.POST)
+		if(form.is_valid()):
+			lancamento = form.save(commit = False)
+			#relacionao o usuario logado com o lançamento
+			lancamento.user = request.user
+			lancamento.save()
+			return HttpResponse('Lançamento efetuado com sucesso.')
+	return HttpResponseServerError('Lançamento inválido')
+
+@login_required
 def editLancamento(request):
 	if(request.method == 'POST'):
 		#id do lancamento clicado
@@ -37,9 +50,9 @@ def editLancamento(request):
 		form = LancamentosBancoForm(request.POST, instance = lancamento)
 		if(form.is_valid()):
 			form.save()
-			return HttpResponse("Formulário alterado com sucesso")
+			return HttpResponse("Lançamento alterado com sucesso")
 		else:
-			return HttpResponse("Formulário inválido")
+			return HttpResponseServerError("Formulário inválido")
 
 	#id do lancamento clicado
 	idLancamento = request.GET.get('id')
@@ -63,7 +76,7 @@ def delLancamento(request):
 			lancamento.delete()
 			return HttpResponse("Lançamento excluído com sucesso")
 		else:
-			return HttpResponse("Lançamento não encontrado.")
+			return HttpResponseServerError("Lançamento não encontrado.")
 		
 
-	return HttpResponse("Lançamento não encontrado.")
+	return HttpResponseServerError("Lançamento não encontrado.")

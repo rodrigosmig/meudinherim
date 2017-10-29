@@ -31,19 +31,19 @@ $(function() {
 
 				//Atribui o id do lancamento a uma tag e remove a div vinda do Django
 				var id_lancamento = $('#id_lancamento').html();
-				$('#datepicker').attr('data-lanc', id_lancamento);
+				$('#datepickerC').attr('data-lanc', id_lancamento);
 				$('#id_lancamento').remove();
 
-				var data = $("#datepicker").val();
+				var data = $("#datepickerC").val();
 				dia = data.substring(8);
 				mes = data.substring(5, 7);
 				ano = data.substring(0, 4)
 				newData = dia + "/" + mes + "/" + ano
 				//alterar a data para o formato brasileiro o lancamento carregado
-				$("#datepicker").val(newData);
+				$("#datepickerC").val(newData);
 
 				//alterar para o formato brasileiro
-				$("#datepicker").datepicker({
+				$("#datepickerC").datepicker({
                     dateFormat: 'dd/mm/yy',
                     dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
                     dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
@@ -108,8 +108,8 @@ $(function() {
 	});
 
 	function recuperCampos() {
-		var id = $('#datepicker').attr('data-lanc');
-		var data = $('#datepicker').val();
+		var id = $('#datepickerC').attr('data-lanc');
+		var data = $('#datepickerC').val();
 		var categoria = $('#id_categoria').val();
 		var descricao = $('#id_descricao').val();
 		var valor = $('#id_valor').val();
