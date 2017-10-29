@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^agencia/', views.cadastroBanco, name='agencia'),
     url(r'^edit/', views.editLancamento, name='edit'),
     url(r'^delete/', views.delLancamento, name='delete'),
+    url(r'^add/', views.addLancamento, name='add'),
 ]

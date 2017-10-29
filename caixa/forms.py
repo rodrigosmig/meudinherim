@@ -8,7 +8,7 @@ class LancamentosForm(ModelForm):
         label = 'Data',
         required = True,
         widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'id': 'datepicker'}
+            attrs = {'class': 'form-control', 'id': 'datepickerC'}
         )
     )    
     descricao = forms.CharField(

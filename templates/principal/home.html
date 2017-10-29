@@ -1,5 +1,12 @@
 ﻿{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block staticHome %}
+<script src="{% static 'js/home.js' %}"></script>
+{% endblock %}
+
 {% block content %}
+
 <!-- Calendário -->
 <div class="row clearfix">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

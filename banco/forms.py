@@ -46,7 +46,7 @@ class LancamentosBancoForm(ModelForm):
 		label = 'Data',
 		required = True,
 		widget = forms.TextInput(
-			attrs = {'class': 'form-control', 'id': 'datepicker'}
+			attrs = {'class': 'form-control', 'id': 'datepickerB'}
 		)
     )
 	descricao = forms.CharField(
@@ -54,7 +54,7 @@ class LancamentosBancoForm(ModelForm):
 		max_length = 32,
 		required = True,
 		widget = forms.TextInput(
-		attrs = {'class': 'form-control', 'placeholder': 'Descreva a transação'}
+		attrs = {'class': 'form-control', 'id': 'desc_Banco', 'placeholder': 'Descreva a transação'}
         )
     )
 	tipo = forms.ChoiceField(
@@ -69,17 +69,17 @@ class LancamentosBancoForm(ModelForm):
         max_value = 9999.99,
         required = True,
         widget = forms.NumberInput(
-            attrs = {'class': 'form-control', 'placeholder': 'Insira o valor'}
+            attrs = {'class': 'form-control', 'id': 'valor_banco', 'placeholder': 'Insira o valor'}
         )
     )
 	categoria = forms.ModelChoiceField(
         queryset = Categoria.objects.all(),
         empty_label = 'Nenhum',
         widget = forms.Select(
-            attrs = {'class': 'form-control'}
+            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
         )
     )
 
 	class Meta:
 		model = LancamentosBanco
-		fields = ['data', 'tipo', 'categoria', 'descricao', 'valor']
+		fields = ['banco', 'data', 'tipo', 'categoria', 'descricao', 'valor']
