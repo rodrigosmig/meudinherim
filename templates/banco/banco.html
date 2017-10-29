@@ -4,8 +4,19 @@
 
 {% block staticBanco %}
 
-<script src="{% static 'js/banco.js' %}"></script>
+<!-- JQuery DataTable Css -->
+<link href="{% static 'plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
 
+<!-- Jquery DataTable Plugin Js -->
+<script src="{% static 'plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/buttons.flash.min.js' %}"></script>
+
+<!-- Custom Js -->
+<script src="{% static 'js/jquery-datatable.js' %}"></script>
+<script src="{% static 'js/banco.js' %}"></script>
+<script>$('dataBanco').dataTable();</script>
 {% endblock %}
 
 {% block content %}
@@ -25,7 +36,7 @@
                 </div>
                 <div class="body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                        <table id="dataBanco" class="table table-bordered table-striped table-hover dataTable js-basic-example">
                     
                             <thead>
                                 <tr>
@@ -34,8 +45,20 @@
                                     <th>Categoria</th>
                                     <th>Crédito</th>
                                     <th>Débito</th>
+                                    <th>Editar</th>
                                 </tr>
                             </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Crédito</th>
+                                    <th>Débito</th>
+                                    <th>Editar</th>
+                                </tr>
+                            </tfoot>
+                            
                             <tbody>
                             {% for l in lancBanco %}
                                 <tr>
