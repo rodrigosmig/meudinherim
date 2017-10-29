@@ -47,7 +47,7 @@ def categoria(request):
 
 	return render(request, template, contexto)
 
-def editLancamento(request):	
+def editLancamento(request):
 
 	if(request.method == 'POST'):
 		#id do lancamento clicado
@@ -59,7 +59,6 @@ def editLancamento(request):
 
 		if(form.is_valid()):
 			form.save()
-			print("editou")
 			return HttpResponse("Formulário alterado com sucesso")
 		else:
 			return HttpResponse("Formulário inválido")

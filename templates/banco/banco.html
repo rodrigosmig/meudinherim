@@ -2,6 +2,12 @@
 
 {% load staticfiles %}
 
+{% block staticBanco %}
+
+<script src="{% static 'js/banco.js' %}"></script>
+
+{% endblock %}
+
 {% block content %}
 <section clas="content">
     
@@ -59,6 +65,34 @@
         </div>
     </div>
 </section>
+
+<!-- Modal Edição de Lançamento -->
+<div class="modal fade" id="editLancamento" tabindex="-1" role="dialog" aria-labelledby="LabelLancamento" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card"
+                <!-- Título -->
+                <div class="header">
+                    <h4 id="LabelLancamento">Editar | <small>Lançamento bancário</small></h4>
+                </div>
+                <!-- Campos -->
+                <form id="form_lancamento">
+                {% csrf_token %}    
+                    <div id="editLanc" class="modal-body">        
+                        <!-- Django form será inserido aqui via Jquery -->
+                    </div>
+                </form>     
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button class="btn btn-success waves-effect salvar" >Salvar</button>
+                    <button class="btn btn-danger excluir">Excluir</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+<!-- Modal Edição de Lançamento -->
 
 
 {% endblock %}
