@@ -16,14 +16,13 @@ $(function() {
 	    }
 	    return cookieValue;
 	}
-
 	$('.openEdit').on('click', function() {
 		//atribui o id do lancamento a variavel
 		var id = $(this).attr('data-lanc');
-		//envia a solicitacao do formulario com o id do lancamento via ajax
+
 		$.ajax({
 			type: 'GET',
-			url: '/caixa/edit/',
+			url: '/banco/edit/',
 			data: {'id': id, 'csrfmiddlewaretoken': csrftokenGET},
 			success: function(lancamento) {
 				//insere o form vindo do django na div editLanc
@@ -42,7 +41,6 @@ $(function() {
 				//alterar a data para o formato brasileiro o lancamento carregado
 				$("#datepicker").val(newData);
 
-				//alterar para o formato brasileiro
 				$("#datepicker").datepicker({
                     dateFormat: 'dd/mm/yy',
                     dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
@@ -59,39 +57,16 @@ $(function() {
 				console.log(erro.responseText);
 				alert("Lançamento não encontrado. Tente novamente.");
 			},
-
 		});
-	});
 
-	$('.salvar').click(function(evento) {
-		evento.preventDefault();
-		
-		var dados = recuperCampos();
-
-		$.ajax({
-			type: 'POST',
-			url: '/caixa/edit/',
-			data: dados,
-			success: function(msg) {
-				//mensagem de confirmação
-				alert(msg);
-				//recarregar pagina
-				location.reload();
-			},
-			error: function(msg) {
-				alert(msg);
-			},
-		});		
-	});
-
-	$('.excluir').click(function(evento) {
-		evento.preventDefault();
-
-		if(confirm("Tem certeza que deseja excluir o lançamento?")) {
+		$('.salvar').click(function(evento) {
+			evento.preventDefault();
+			
 			var dados = recuperCampos();
+
 			$.ajax({
 				type: 'POST',
-				url: 'delete/',
+				url: '/banco/edit/',
 				data: dados,
 				success: function(msg) {
 					//mensagem de confirmação
@@ -100,28 +75,52 @@ $(function() {
 					location.reload();
 				},
 				error: function(msg) {
-					//mensagem de retorno em caso de erro
-					alert(msg)
+					alert(msg);
 				},
 			});
-		}
-	});
+		});
 
-	function recuperCampos() {
-		var id = $('#datepicker').attr('data-lanc');
-		var data = $('#datepicker').val();
-		var categoria = $('#id_categoria').val();
-		var descricao = $('#id_descricao').val();
-		var valor = $('#id_valor').val();
+		$('.excluir').click(function(evento) {
+			evento.preventDefault();
 
-		dados = {
-			'id': id,
-			'data': data,
-			'categoria': categoria,
-			'descricao': descricao,
-			'valor': valor,
-			'csrfmiddlewaretoken': csrftokenPOST
+			if(confirm("Tem certeza que deseja excluir o lançamento?")) {
+				var dados = recuperCampos();
+				$.ajax({
+					type: 'POST',
+					url: 'delete/',
+					data: dados,
+					success: function(msg) {
+						//mensagem de confirmação
+						alert(msg);
+						//recarregar pagina
+						location.reload();
+					},
+					error: function(msg) {
+						//mensagem de retorno em caso de erro
+						alert(msg)
+					},
+				});
+			}
+		});
+
+		function recuperCampos() {
+			var id = $('#datepicker').attr('data-lanc');
+			var data = $('#datepicker').val();
+			var tipo = $('#id_tipo').val();
+			var categoria = $('#id_categoria').val();
+			var descricao = $('#id_descricao').val();
+			var valor = $('#id_valor').val();
+
+			dados = {
+				'id': id,
+				'data': data,
+				'tipo': tipo,
+				'categoria': categoria,
+				'descricao': descricao,
+				'valor': valor,
+				'csrfmiddlewaretoken': csrftokenPOST
+			}
+			return dados;
 		}
-		return dados;
-	}
+	})
 }) 
