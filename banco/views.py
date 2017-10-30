@@ -33,6 +33,8 @@ def addLancamento(request):
 	if(request.method == 'POST'):
 		print('entrou no if')
 		form = LancamentosBancoForm(request.POST)
+		print(form.is_valid())
+		print(form)
 		if(form.is_valid()):
 			lancamento = form.save(commit = False)
 			#relacionao o usuario logado com o lançamento
@@ -74,7 +76,7 @@ def editLancamento(request):
 			queryset = Categoria.objects.filter(user_id = request.user.id),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
+	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
 	        )
 		)
 

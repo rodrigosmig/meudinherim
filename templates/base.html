@@ -128,7 +128,7 @@
               });
 
             //Recebe eventos para carregar no calendário
-            var eventos = JSON.parse("{{ events | safe |escapejs }}");
+            var eventos = JSON.parse("{{ events | safe | escapejs }}");
 
             $(document).ready(function() {
                 $('#calendar').fullCalendar(

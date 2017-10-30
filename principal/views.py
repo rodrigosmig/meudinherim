@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from caixa.forms import LancamentosForm
 from caixa.models import LancamentosCaixa, Categoria
 from banco.forms import LancamentosBancoForm
-from banco.models import LancamentosBanco
+from banco.models import LancamentosBanco, ContaBanco
 from django.contrib.auth.forms import UserCreationForm
 from usuario.forms import UsuarioForm, LoginForm
 from django.contrib.auth import authenticate, login
@@ -49,13 +49,16 @@ def home(request):
 	#id do usuario logado
 	id_user = request.user.id
 
-	#carrega os lançamentos do usuário no banco de dados
-	lancamentos = LancamentosCaixa.objects.filter(user_id = id_user)
+	eventosCaixa = []
+	eventosBanco = []
 
-	eventos = []
+	#carrega os lançamentos do caixa do usuário
+	lancamentosCaixa = LancamentosCaixa.objects.filter(user_id = id_user)
+	#carrega os lançamentos do banco do usuário
+	lancamentosBanco = LancamentosBanco.objects.filter(user_id = id_user)
 
-	#separa os dados que serão utilizados no calendario em um tupla
-	for lancamento in lancamentos:
+	#separa os dados do caixa que serão utilizados no calendario em um tupla
+	for lancamento in lancamentosCaixa:
 		dia = str(lancamento.data.day)
 		if(len(dia) == 1):
 			dia = "0" + dia
@@ -66,12 +69,35 @@ def home(request):
 		#concatena a data para o formato do fullcalendar
 		data = ano + "-" + mes + "-" + dia
 		titulo = lancamento.descricao + " : " + " R$" + str(lancamento.valor) 
-		eventos.append((titulo, data))
+		eventosCaixa.append((titulo, data))
+	
+	#converte a tupla para dicionario
+	eventosCaixa = [{'title': title, 'start': start} for title, start in eventosCaixa]
 
-	#converte a tupla para o formato json
-	eventos = [{'title': title, 'start': start} for title, start in eventos]
-	eventos = json.dumps(eventos, ensure_ascii=False)
-	context['events'] = eventos
+	#separa os dados do banco que serão utilizados no calendario em um tupla
+	for lancamento in lancamentosBanco:
+		dia = str(lancamento.data.day)
+		if(len(dia) == 1):
+			dia = "0" + dia
+		mes = str(lancamento.data.month)
+		if(len(mes) == 1):
+			mes = "0" + mes
+		ano = str(lancamento.data.year)
+		#concatena a data para o formato do fullcalendar
+		data = ano + "-" + mes + "-" + dia
+		titulo = lancamento.descricao + " : " + " R$" + str(lancamento.valor) 
+		eventosBanco.append((titulo, data))
+
+	#converte a tupla para para dicionario
+	eventosBanco = [{'title': title, 'start': start} for title, start in eventosBanco]
+	#junta os lancamento de caixa e banco
+	todosEventos = eventosBanco + eventosCaixa
+	#converte para o formato Json
+	todosEventos = json.dumps(todosEventos, ensure_ascii=False)
+
+	context['events'] = todosEventos
+	
+	# print(teste)
 
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
@@ -97,11 +123,11 @@ def home(request):
 			queryset = Categoria.objects.filter(user_id = request.user.id),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
+	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
 	        )
 		)
 
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco
-	
+
 	return render(request, template, context)
