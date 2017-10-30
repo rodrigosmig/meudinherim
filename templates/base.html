@@ -256,7 +256,8 @@
                         <!-- Adicionar Lançamento -->
 
                         <!-- Cadastrar -->
-                        <li>
+                        {% block activeCadCat %}<li>{% endblock %}
+                        {% block activeCadAg %}{% endblock %}
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">note_add</i>
                                 <span>Cadastrar</span>

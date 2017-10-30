@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from banco.models import ContaBanco, LancamentosBanco
 from banco.forms import ContaBancoForm, LancamentosBancoForm
+from django import forms
 
 @login_required
 def cadastroBanco(request):
@@ -58,12 +59,22 @@ def editLancamento(request):
 	idLancamento = request.GET.get('id')
 	lancamento = LancamentosBanco.objects.get(pk = idLancamento)
 	form = LancamentosBancoForm(instance = lancamento)
+
+	form.fields['banco'] = forms.ModelChoiceField(
+			queryset = ContaBanco.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control'}
+	        )
+		)
+
 	#retorna o id do lancamento junto com o formulario
 	divId = "<div id='id_lancamento'>" + idLancamento + "</div>"
 
 	form_html = {form.as_p(), divId}
 	return HttpResponse(form_html)
 
+@login_required
 def delLancamento(request):
 	if(request.method == 'POST'):
 		#id do lancamento a ser deletado

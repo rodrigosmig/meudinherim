@@ -43,6 +43,7 @@
                             <thead>
                                 <tr>
                                     <th>Data</th>
+                                    <th>Banco</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th>
                                     <th>Crédito</th>
@@ -53,6 +54,7 @@
                             <tfoot>
                                 <tr>
                                     <th>Data</th>
+                                    <th>Banco</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th>
                                     <th>Crédito</th>
@@ -65,6 +67,7 @@
                             {% for l in lancBanco %}
                                 <tr>
                                     <td>{{ l.data }}</td>
+                                    <td>{{ l.banco }}</td>
                                     <td>{{ l.descricao }}</td>
                                     <td>{{ l.categoria }}</td>
                                     
