@@ -1,6 +1,8 @@
 ﻿{% extends "base.html" %}
 {% load staticfiles %}
 
+{% block activeHome %}<li class="active">{% endblock %}
+
 {% block staticHome %}
 <script src="{% static 'js/home.js' %}"></script>
 {% endblock %}
@@ -32,3 +34,4 @@
 </div>
 <!--/ Barra de Progresso -->
 {% endblock %}
+
