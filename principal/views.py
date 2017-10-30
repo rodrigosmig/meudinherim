@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from caixa.forms import LancamentosForm
-from caixa.models import LancamentosCaixa
+from caixa.models import LancamentosCaixa, Categoria
 from banco.forms import LancamentosBancoForm
 from banco.models import LancamentosBanco
 from django.contrib.auth.forms import UserCreationForm
@@ -74,8 +74,16 @@ def home(request):
 	context['events'] = eventos
 
 	formCaixa = LancamentosForm()
+	#seleciona apenas as categorias do usuario logado
+	formCaixa.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control'}
+	        )
+		)
+	
 	formBanco = LancamentosBancoForm()
-
 	#Seleciona apenas o banco do usuario para o formulario
 	formBanco.fields['banco'] = forms.ModelChoiceField(
 		queryset = ContaBanco.objects.filter(user_id = request.user.id),
@@ -84,6 +92,14 @@ def home(request):
             attrs = {'class': 'form-control'}
         )
 	)
+	#seleciona apenas as categorias do usuario logado
+	formBanco.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control'}
+	        )
+		)
 
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco

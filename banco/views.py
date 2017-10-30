@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from banco.models import ContaBanco, LancamentosBanco
+from caixa.models import Categoria
 from banco.forms import ContaBancoForm, LancamentosBancoForm
 from django import forms
 
@@ -58,10 +59,19 @@ def editLancamento(request):
 	#id do lancamento clicado
 	idLancamento = request.GET.get('id')
 	lancamento = LancamentosBanco.objects.get(pk = idLancamento)
+	
 	form = LancamentosBancoForm(instance = lancamento)
-
+	#seleciona apenas os banco do usuario logado
 	form.fields['banco'] = forms.ModelChoiceField(
 			queryset = ContaBanco.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control'}
+	        )
+		)
+	#seleciona apenas as categorias do usuario logado
+	form.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control'}
