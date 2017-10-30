@@ -19,13 +19,12 @@ class LancamentosCaixa(models.Model):
 class Categoria(models.Model):
 
 	descricao = models.CharField(max_length = 32)
-
 	TIPOS = (
 		("1", "Entrada"),
 		("2", "Saida"),
 	)
-
 	tipo = models.CharField(choices = TIPOS, max_length = 2)
+	user = models.ForeignKey(User, on_delete = models.CASCADE)
 
 
 	def __str__(self):

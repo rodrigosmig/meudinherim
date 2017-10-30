@@ -41,6 +41,9 @@ $(function() {
 				//alterar a data para o formato brasileiro o lancamento carregado
 				$("#datepickerB").val(newData);
 
+				//diminui o tamanho do input
+				$('#id_banco').css('width', '150');
+
 				$("#datepickerB").datepicker({
                     dateFormat: 'dd/mm/yy',
                     dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],

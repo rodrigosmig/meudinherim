@@ -128,7 +128,7 @@
               });
 
             //Recebe eventos para carregar no calendário
-            var eventos = JSON.parse("{{ events | safe |escapejs }}");
+            var eventos = JSON.parse("{{ events | safe | escapejs }}");
 
             $(document).ready(function() {
                 $('#calendar').fullCalendar(
@@ -240,7 +240,7 @@
                     <ul class="list">
                         <li class="header">Menu de Navegação</li>
                         <!-- Home -->
-                        <li class="active">
+                        {% block activeHome %}{% endblock %}
                             <a href="{% url 'principal:home' %}">
                                 <i class="material-icons">home</i>
                                 <span>Home</span>
@@ -256,7 +256,8 @@
                         <!-- Adicionar Lançamento -->
 
                         <!-- Cadastrar -->
-                        <li>
+                        {% block activeCadCat %}<li>{% endblock %}
+                        {% block activeCadAg %}{% endblock %}
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">note_add</i>
                                 <span>Cadastrar</span>
@@ -280,14 +281,14 @@
                             </ul>
                         </li>
                         <!-- Banco -->
-                        <li>
+                        {% block activeBanco %}<li>{% endblock %}
                             <a href="{% url 'banco:banco' %}">
                                 <i class="material-icons">account_balance</i>
                                 <span>Banco</span>
                             </a>
                         </li>
                         <!-- Caixa -->
-                        <li>
+                        {% block activeCaixa %}<li>{% endblock %}
                             <a href="{% url 'caixa:index' %}">
                                 <i class="material-icons">work</i>
                                 <span>Caixa</span>

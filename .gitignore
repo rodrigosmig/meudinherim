@@ -35,4 +35,7 @@ principal/migrations/__pycache__/__init__.cpython-35.pyc
 usuario/migrations/__pycache__/0001_initial.cpython-35.pyc
 usuario/migrations/__pycache__/__init__.cpython-35.pyc
 
+banco/migrations/0001_initial.py
+caixa/migrations/0001_initial.py
+
 db.sqlite3
