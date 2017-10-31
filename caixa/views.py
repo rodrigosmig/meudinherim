@@ -14,21 +14,7 @@ def lancamentos(request):
 	template = 'caixa/caixa.html'
 	lancamentos = LancamentosCaixa.objects.filter(user_id = id_user)
 	contexto = {'lancamentos': lancamentos}
-
-	# l = LancamentosCaixa.objects.all()
-	# for l in lancamentos:
-	# 	print (l.data)
-	# 	print (l.categoria)
-
-	# 	#1 é entarda
-		
-	# 	if (l.categoria.tipo == '1'):
-	# 		saldo += l.valor
-	# 	else:
-	# 		saldo -= l.valor
-	# 	print (l.valor)
-	# 	print ("seu saldo atual é "+ str(saldo))
-
+  
 	saldo = SaldoCaixa.objects.get(user = request.user)
 
 	contexto['saldo'] = saldo.saldoAtual
