@@ -1,69 +1,120 @@
 {% extends "base.html" %}
-{% load staticfiles %}
 
 {% block activeCadCat %}<li class="active">{% endblock %}
 
+{% load staticfiles %}
+
+{% block staticCategoria %}
+
+<!-- JQuery DataTable Css -->
+<link href="{% static 'plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
+
+<!-- Jquery DataTable Plugin Js -->
+<script src="{% static 'plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/buttons.flash.min.js' %}"></script>
+
+<!-- Custom Js -->
+<script src="{% static 'js/jquery-datatable.js' %}"></script>
+<script src="{% static 'js/banco.js' %}"></script>
+<script>$('dataCategoria').dataTable();</script>
+{% endblock %}
+
 {% block content %}
-<h1>Categoria</h1>
-<!-- Nav tabs -->
-<div class='card'>
-	<ul class="nav nav-tabs" role="tablist">
-		<li class="nav-item">
-	    	<a class="nav-link active" data-toggle="tab" href="#entrada" role="tab">Entrada</a>
-		</li>
-	  	<li class="nav-item">
-	    	<a class="nav-link" data-toggle="tab" href="#saida" role="tab">Saida</a>
-	  	</li>
-	  	<li class="nav-item navbar-right"">
-	    	<a class="nav-link testeadd" data-toggle="modal" href="#mCategoria" role="tab" title="Adicionar categoria">
-	    		<i class="material-icons testeadd">add</i>
 
-	    	</a>
-	  	</li>
-	</ul>
-	<!-- Tab pane Entrada -->
-	<div class="tab-content">
-		<div class="tab-pane" id="entrada" role="tabpanel">
-			<table class='tabCategoria' border = '1'>
-            	<tr>
-            		<th>Tipo</th>
-            		<th>Descrição</th>
-            	</tr>
-            	{% for c in catEntrada %}
-            	<tr>
-            		<td>
-            			{{ c.tipo }}
-            		</td>
-            		<td>
-            			{{ c.descricao }}
-            		</td>
-            	</tr>
-	            {% endfor %}
-	        </table>
-		</div>
-		<!-- Tab pane Entrada -->
+<section class="content2">
 
-		<!-- Tab pane Saida -->
-	  	<div class="tab-pane" id="saida" role="tabpanel">
-	  		<table class='tabCategoria' border = '1'>
-            	<tr>
-            		<th>Tipo</th>
-            		<th>Descrição</th>
-            	</tr>
-            	{% for c in catSaida %}
-            	<tr>
-            		<td>
-            			{{ c.tipo }}
-            		</td>
-            		<td>
-            			{{ c.descricao }}
-            		</td>
-            	</tr>
-	            {% endfor %}
-	        </table>
-	  	</div>
-	</div>
-</div>
+    <div class="container-fluid">
+        <div class="block-header">
+            <h1>Cadastrar</h1>
+        </div>
+    </div>
+    
+    <div class="row clearfix">
+        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="card">
+                <div class="header">
+                    <h2>Categoria de Entrada</h2>
+                    <ul class="header-dropdown">
+                        <a class="nav-link testeadd" data-toggle="modal" href="#mCategoria" role="tab" title="Adicionar categoria">
+                            <i class="material-icons testeadd">add</i>
+                        </a>
+	  	            </ul>
+                </div>
+                <div class="body">
+                    <div class="table-responsive">
+                        <table id="dataCategoria"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                            <thead>
+                                <tr>
+                                    <th>Descrição</th>
+                                    <th>Editar</th>
+            	               </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+            		              <th>Descrição</th>
+            		              <th>Editar</th>
+            	               </tr>     
+                            </tfoot>
+                            
+                            <tbody>
+                                {% for c in catEntrada %}
+                                <tr>
+                                    <td>{{ c.descricao }}</td>
+                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="card">
+                <div class="header">
+                    <h2>Categoria de Saída</h2>
+                    <ul class="header-dropdown">
+                        <a class="nav-link testeadd" data-toggle="modal" href="#mCategoria" role="tab" title="Adicionar categoria">
+                            <i class="material-icons testeadd">add</i>
+                        </a>
+	  	            </ul>
+                </div>
+                <div class="body">
+                    <div class="table-responsive">
+                        <table id="dataCategoria2"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                        
+                            <thead>
+                                <tr>
+            		              <th>Descrição</th>
+            		              <th>Editar</th>
+            	               </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+            		              <th>Descrição</th>
+            		              <th>Editar</th>
+            	               </tr>   
+                            </tfoot>
+                            
+                            <tbody>
+                                {% for c in catSaida %}
+                                <tr>
+                                    <td>{{ c.descricao }}</td>
+                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</section>
 
 <!-- Modal Cadastro Categoria -->
 <div class="modal fade" id="mCategoria">
@@ -90,10 +141,6 @@
                 </div>
             </form>
         </div>
-    </div>
-</div>    
-<!-- Modal Gastos -->
-
     </div>
 </div>
 

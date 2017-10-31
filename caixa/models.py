@@ -31,4 +31,12 @@ class Categoria(models.Model):
 
 		return self.descricao
 
+class SaldoCaixa(models.Model):
+	saldoAnterior = models.DecimalField(max_digits = 8, decimal_places = 2)
+	saldoAtual = models.DecimalField(max_digits = 8, decimal_places = 2)
+	user = models.ForeignKey(User, on_delete = models.CASCADE)
+
+	def __str__(self):
+		return str(self.saldoAtual)
+
 
