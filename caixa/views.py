@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from caixa.models import LancamentosCaixa, Categoria
 from caixa.forms import CategoriaForm, LancamentosForm
 from django.http import JsonResponse
+from django import forms
 
 @login_required
 def lancamentos(request):
@@ -91,6 +92,15 @@ def editLancamento(request):
 	idLancamento = request.GET.get('id')
 	lancamento = LancamentosCaixa.objects.get(pk = idLancamento)
 	form = LancamentosForm(instance = lancamento)
+
+	#seleciona apenas as categorias do usuario logado
+	form.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control'}
+	        )
+		)
 
 	#retorna o id do lancamento junto com o formulario
 	divId = "<div id='id_lancamento'>" + idLancamento + "</div>"
