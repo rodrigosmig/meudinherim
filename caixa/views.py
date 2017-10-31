@@ -20,6 +20,8 @@ def lancamentos(request):
 	for l in lancamentos:
 		print (l.data)
 		print (l.categoria)
+
+		#1 é entarda
 		
 		if (l.categoria.tipo == '1'):
 			saldo += l.valor
@@ -27,6 +29,8 @@ def lancamentos(request):
 			saldo -= l.valor
 		print (l.valor)
 		print ("seu saldo atual é "+ str(saldo))
+
+	contexto['saldo'] = saldo
 
 	return render(request, template, contexto)
 
