@@ -35,7 +35,13 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
-                    <h2>Meses</h2>
+                    
+                    {% if saldo < 0  %}
+                        <h2 style="color: red"> Saldo: {{ saldo }}</h2>
+                    {% else %}
+                         <h2  style="color: blue"> Saldo: {{ saldo }}</h2>
+                    {% endif %}
+
                 </div>
                 <div class="body">
                     <div class="table-responsive">
@@ -51,6 +57,7 @@
                                     <th>Editar</th>
                                 </tr>
                             </thead>
+                            
                             <tfoot>
                                 <tr>
                                     <th>Data</th>
@@ -59,6 +66,7 @@
                                     <th>Entrada</th>
                                     <th>Saída</th>
                                     <th>Editar</th>
+                                   
                                 </tr>
                             </tfoot>
 
@@ -87,6 +95,7 @@
                                         <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
                                     {% endif %}
                                 </tr>
+
                             {% endfor %}
                             </tbody>
                             
