@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from caixa.forms import LancamentosForm
-from caixa.models import LancamentosCaixa, Categoria
+from caixa.models import LancamentosCaixa, Categoria, SaldoCaixa
 from banco.forms import LancamentosBancoForm
 from banco.models import LancamentosBanco, ContaBanco
 from django.contrib.auth.forms import UserCreationForm
@@ -126,6 +126,10 @@ def home(request):
 	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
 	        )
 		)
+
+	#busca o saldo de Caixa do usuario e atribui ao contexto
+	saldo = SaldoCaixa.objects.get(user = request.user)
+	context['saldoCaixa'] = saldo.saldoAtual
 
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco

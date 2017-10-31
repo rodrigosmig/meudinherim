@@ -75,6 +75,7 @@
         <!-- Custom Js -->
         <script src="{% static 'js/admin.js' %}"></script>
         <script src="{% static 'js/index.js' %}"></script>
+        <script src="{% static 'js/base.js' %}"></script>
         
         {% block staticCaixa %}{% endblock %}
         {% block staticBanco %}{% endblock %}
@@ -182,16 +183,16 @@
                     <a class="navbar-brand" href="{% url 'principal:home' %}">MEU <b>DINHERIM</b></a>
                 </div>
                 
-                <!-- Infobox --->
-                <!--
+
+                <!-- Infobox -->
                 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                     <div class="info-box-4 btn-xs" >
-                        <div class="icon">
+                        <div class="icon">                            
                             <i class="material-icons">account_balance</i>
                         </div>
                         <div class="content">
-                            <div class="text">Banco</div>
-                            <div class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">125</div>
+                            <div class="text">Saldo Banco</div>
+                            <div class="text count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">125</div>
                         </div>        
                     </div>
                 </div>
@@ -201,13 +202,13 @@
                             <i class="material-icons">work</i>
                         </div>
                         <div class="content" >
-                            <div class="text">Caixa</div>
-                            <div class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20">125</div>
+                            <div class="text">Saldo Caixa</div>
+                            <div class="number">{{ saldoCaixa }}</div>
                         </div>
                     </div>
                 </div>
-                -->
-                <!--/ Infobox --->
+                <!-- Infobox -->
+ 
                 
                 <!-- talz -->
                 <div class="collapse navbar-collapse" id="navbar-collapse">
