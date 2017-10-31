@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
-from banco.models import ContaBanco, LancamentosBanco
+from banco.models import ContaBanco, LancamentosBanco, SaldoBanco
 from caixa.models import Categoria
 from banco.forms import ContaBancoForm, LancamentosBancoForm
 from django import forms
@@ -24,19 +24,33 @@ def banco(request):
 	id_user = request.user.id
 	template = 'banco/banco.html'
 	lancamentos = LancamentosBanco.objects.filter(user_id = id_user)
-	contexto = {'lancBanco': lancamentos}
+	saldo = SaldoBanco.objects.get(user = request.user)
+
+	contexto = {'lancBanco': lancamentos,'saldoBanco' : saldo}
 
 	return render(request, template, contexto)
 
 @login_required
 def addLancamento(request):
 	if(request.method == 'POST'):
-		print('entrou no if')
+		
 		form = LancamentosBancoForm(request.POST)
-		print(form.is_valid())
-		print(form)
+		
 		if(form.is_valid()):
 			lancamento = form.save(commit = False)
+
+			saldo = SaldoBanco.objects.get(user = request.user)
+
+			saldo.saldoAnterior = saldo.saldoAtual
+
+			if (lancamento.tipo == "1"):
+				
+				saldo.saldoAtual += lancamento.valor
+			else:
+				saldo.saldoAtual -= lancamento.valor
+
+			saldo.save()
+
 			#relacionao o usuario logado com o lançamento
 			lancamento.user = request.user
 			lancamento.save()
@@ -46,14 +60,32 @@ def addLancamento(request):
 @login_required
 def editLancamento(request):
 	if(request.method == 'POST'):
+
+		id_user = request.user.id
+
 		#id do lancamento clicado
 		idLancamento = request.POST.get('id')
 		#busca o lancamento a ser alterado
 		lancamento = LancamentosBanco.objects.get(pk = idLancamento)
 		#atribui o lancamento ao form	
 		form = LancamentosBancoForm(request.POST, instance = lancamento)
+
 		if(form.is_valid()):
 			form.save()
+
+			saldoBanco = SaldoBanco.objects.get(user = request.user)
+			lancamentos = LancamentosBanco.objects.filter(user_id = id_user)
+
+			saldo = 0
+			for l in lancamentos:
+				if (l.tipo == '1'):
+					saldo += l.valor
+				else:
+					saldo -= l.valor
+			
+			saldoBanco.saldoAtual = saldo 
+			saldoBanco.save()
+
 			return HttpResponse("Lançamento alterado com sucesso")
 		else:
 			return HttpResponseServerError("Formulário inválido")
@@ -88,7 +120,12 @@ def editLancamento(request):
 
 @login_required
 def delLancamento(request):
+
+
 	if(request.method == 'POST'):
+		
+		id_user = request.user.id
+
 		#id do lancamento a ser deletado
 		idLancamento = request.POST.get('id')
 
@@ -97,6 +134,21 @@ def delLancamento(request):
 
 		if(request.user.id == lancamento.user_id):
 			lancamento.delete()
+
+
+			saldoBanco = SaldoBanco.objects.get(user=request.user)
+			lancamentos = LancamentosBanco.objects.filter(user_id=id_user)
+
+			saldo = 0
+			for l in lancamentos:
+				if(l.tipo == '1'):
+					saldo += l.valor
+				else:
+					saldo -= l.valor
+
+			saldoBanco.saldoAtual = saldo 
+			saldoBanco.save()
+
 			return HttpResponse("Lançamento excluído com sucesso")
 		else:
 			return HttpResponseServerError("Lançamento não encontrado.")
