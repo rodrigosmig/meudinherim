@@ -1,50 +1,97 @@
 {% extends "base.html" %}
-{% load staticfiles %}
 
 {% block activeCadAg %}<li class="active">{% endblock %}
 
+{% load staticfiles %}
+
+{% block staticAgencia  %}
+
+<!-- JQuery DataTable Css -->
+<link href="{% static 'plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
+
+<!-- Jquery DataTable Plugin Js -->
+<script src="{% static 'plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-datatable/extensions/export/buttons.flash.min.js' %}"></script>
+
+<!-- Custom Js -->
+<script src="{% static 'js/jquery-datatable.js' %}"></script>
+<script>$('dataAgencia').dataTable();</script>
+
+{% endblock %}
+
 {% block content %}
-<h1>Agências</h1>
-
-<div class='card'>
-	<table class='tabCategoria' border = '1'>
-    	<tr>
-    		<th>Banco</th>
-    		<th>Agência</th>
-            <th>Conta</th>
-            <th>Tipo</th>
-    	</tr>
-    	{% for ag in agencias %}
-    	<tr>
-    		<td>
-    			{{ ag.banco }}
-    		</td>
-    		<td>
-    			{% if ag.agencia == None %}
-                	    
-            	{% else %}
-            		{{ ag.agencia }}
-            	{% endif %}
-    		</td>
-            <td>
-            	{% if ag.conta == None %}
-                	    
-            	{% else %}
-            		{{ ag.conta }}
-            	{% endif %}
-            </td>
-            <td>
-                {% if ag.tipo == '1' %}
-                	Corrente
-            	{% else %}
-            		Poupança
-            	{% endif %}
-            </td>
-    	</tr>
-        {% endfor %}
-    </table>
-
-</div>
-
+    
+<section class="content2">
+    
+    <div class="container-fluid">
+        <div class="block-header">
+            <h1>Cadastrar</h1>
+        </div>
+    </div>
+    
+    <div class="row clearfix">
+        <div class="card">
+            <div class="header">
+                <h2>Agência Bancária</h2>
+                <ul class="header-dropdown">
+                    <a class="nav-link testeadd" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar agencia">
+                        <i class="material-icons testeadd">add</i>
+                    </a>
+	  	            </ul>
+            </div>
+            <div class="body">
+                <div class="table-responsive">
+                    <table id="dataAgencia"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                            
+                        <thead>
+                            <th>Banco</th>
+                            <th>Agência</th>
+                            <th>Conta</th>
+                            <th>Tipo</th>
+                            <th>Editar</th>
+                        </thead>
+                        <tfoot>
+                            <th>Banco</th>
+                            <th>Agência</th>
+                            <th>Conta</th>
+                            <th>Tipo</th>
+                            <th>Editar</th>
+                        </tfoot>
+                            
+                        <tbody>
+                            {% for ag in agencias %}
+                            <tr>
+                                <td>{{ ag.banco }}</td>
+                                <td>
+                                    {% if ag.agencia == None %}
+                                    {% else %}
+                                        {{ ag.agencia }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if ag.conta == None %}
+                                    {% else %}
+                                        {{ ag.conta }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if ag.tipo == '1' %}
+                                        Corrente
+                                    {% else %}
+                                        Poupança
+                                    {% endif %}
+                                </td>
+                                <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}
