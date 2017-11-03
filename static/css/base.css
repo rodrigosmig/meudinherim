@@ -6,3 +6,36 @@
 	padding: 10px;
 }
 
+#infoBoxBanco{
+	background: #F33122;  
+	max-height: 60px; 
+	width: 80pt;
+	margin-top:-15px;  
+	left: 70% 
+}
+
+
+#infoBoxCaixa{
+	background:#F33122;  
+	max-height: 60px; 	
+	width: 80pt; 
+	margin-top:-15px; 
+
+}
+
+#iconsInfoBox{
+
+	font-size:30px; 
+	color: white; 
+	 max-height: 60px;
+}
+
+#textInfoBox{
+	color: white; 
+	font-size:10pt;
+}
+
+#numberInfoBox{
+	color: white; 
+	font-size:10pt;
+}
