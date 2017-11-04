@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from caixa.models import LancamentosCaixa, Categoria, SaldoCaixa
+from banco.models import SaldoBanco
 from caixa.forms import CategoriaForm, LancamentosForm
 from django.http import JsonResponse
 from django import forms
@@ -14,10 +15,14 @@ def lancamentos(request):
 	template = 'caixa/caixa.html'
 	lancamentos = LancamentosCaixa.objects.filter(user_id = id_user)
 	contexto = {'lancamentos': lancamentos}
-  
-	saldo = SaldoCaixa.objects.get(user = request.user)
+  	
+  	#busca o saldo de Caixa do usuario e atribui ao contexto
+	saldoC = SaldoCaixa.objects.get(user = request.user)
+	contexto['saldoCaixa'] = saldoC.saldoAtual
 
-	contexto['saldo'] = saldo.saldoAtual
+	#busca o saldo de Banco do usuario e atribui ao contexto
+	saldoB = SaldoBanco.objects.get(user = request.user)
+	contexto['saldoBanco'] = saldoB.saldoAtual
 
 	return render(request, template, contexto)
 
@@ -40,6 +45,14 @@ def categoria(request):
 		form = CategoriaForm()
 
 	contexto = {'catEntrada': catEntrada, 'catSaida': catSaida, 'form': form}
+
+	#busca o saldo de Caixa do usuario e atribui ao contexto
+	saldoC = SaldoCaixa.objects.get(user = request.user)
+	contexto['saldoCaixa'] = saldoC.saldoAtual
+
+	#busca o saldo de Banco do usuario e atribui ao contexto
+	saldoB = SaldoBanco.objects.get(user = request.user)
+	contexto['saldoBanco'] = saldoB.saldoAtual
 
 	return render(request, template, contexto)
 

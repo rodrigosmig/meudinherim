@@ -188,14 +188,13 @@
 
                 <!--Infobox -->
                <div class="col-lg-6 col-md-4 col-sm-5 col-xs-9" >
-                        <div id="infoBoxBanco"  class="info-box-2 btn-xs"    >
+                        <div id="infoBoxBanco"  class="info-box-2 btn-xs">
                             <div class="icon">
                                 <i id="iconsInfoBox" class="material-icons" >account_balance</i>
                             </div>
                             <div class="content">
                                 <div id="textInfoBox" class="text" >Banco</div>
-                                <div id="numberInfoBox" class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20"
-                                >125</div>
+                                <div id="numberInfoBox" class="number">{{ saldoBanco }}</div>
                             </div>        
                         </div>
                     </div>
@@ -207,9 +206,7 @@
                             </div>
                             <div class="content">
                                 <div  id="textInfoBox" class="text"  >Caixa</div>
-                                <div  id="numberInfoBox" class="number count-to" data-from="0" data-to="125" data-speed="1000" data-fresh-interval="20"
-                               
-                                >125</div>
+                                <div  id="numberInfoBox" class="number">{{ saldoCaixa }}</div>
                             </div>        
                         </div>
                     </div>

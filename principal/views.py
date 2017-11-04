@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from caixa.forms import LancamentosForm
 from caixa.models import LancamentosCaixa, Categoria, SaldoCaixa
 from banco.forms import LancamentosBancoForm
-from banco.models import LancamentosBanco, ContaBanco
+from banco.models import LancamentosBanco, ContaBanco, SaldoBanco
 from django.contrib.auth.forms import UserCreationForm
 from usuario.forms import UsuarioForm, LoginForm
 from django.contrib.auth import authenticate, login
@@ -128,8 +128,12 @@ def home(request):
 		)
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
-	saldo = SaldoCaixa.objects.get(user = request.user)
-	context['saldoCaixa'] = saldo.saldoAtual
+	saldoC = SaldoCaixa.objects.get(user = request.user)
+	context['saldoCaixa'] = saldoC.saldoAtual
+
+	#busca o saldo de Banco do usuario e atribui ao contexto
+	saldoB = SaldoBanco.objects.get(user = request.user)
+	context['saldoBanco'] = saldoB.saldoAtual
 
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco
