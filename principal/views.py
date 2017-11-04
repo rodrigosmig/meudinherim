@@ -89,7 +89,7 @@ def home(request):
 		eventosBanco.append((titulo, data))
 
 	#converte a tupla para para dicionario
-	eventosBanco = [{'title': title, 'start': start} for title, start in eventosBanco]
+	eventosBanco = [{'title': title, 'start': start, 'color': 'yellow', 'textColor': 'black'} for title, start in eventosBanco]
 	#junta os lancamento de caixa e banco
 	todosEventos = eventosBanco + eventosCaixa
 	#converte para o formato Json
