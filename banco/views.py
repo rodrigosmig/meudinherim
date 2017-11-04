@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from banco.models import ContaBanco, LancamentosBanco, SaldoBanco
-from caixa.models import Categoria
+from caixa.models import Categoria, SaldoCaixa
 from banco.forms import ContaBancoForm, LancamentosBancoForm
 from django import forms
 
@@ -14,9 +14,17 @@ def cadastroBanco(request):
 	agencias = ContaBanco.objects.filter(user_id = id_user)
 	form_agencia = ContaBancoForm()
 
-	context = {'formAgencia': form_agencia, 'agencias': agencias}
+	contexto = {'formAgencia': form_agencia, 'agencias': agencias}
 
-	return render(request, template, context)
+	#busca o saldo de Caixa do usuario e atribui ao contexto
+	saldoC = SaldoCaixa.objects.get(user = request.user)
+	contexto['saldoCaixa'] = saldoC.saldoAtual
+
+	#busca o saldo de Banco do usuario e atribui ao contexto
+	saldoB = SaldoBanco.objects.get(user = request.user)
+	contexto['saldoBanco'] = saldoB.saldoAtual
+
+	return render(request, template, contexto)
 
 @login_required
 def banco(request):
@@ -24,9 +32,11 @@ def banco(request):
 	id_user = request.user.id
 	template = 'banco/banco.html'
 	lancamentos = LancamentosBanco.objects.filter(user_id = id_user)
-	saldo = SaldoBanco.objects.get(user = request.user)
 
-	contexto = {'lancBanco': lancamentos,'saldoBanco' : saldo}
+	saldoB = SaldoBanco.objects.get(user = request.user)
+	saldoC = SaldoCaixa.objects.get(user = request.user)
+
+	contexto = {'lancBanco': lancamentos,'saldoBanco' : saldoB.saldoAtual, 'saldoCaixa': saldoC.saldoAtual}
 
 	return render(request, template, contexto)
 
