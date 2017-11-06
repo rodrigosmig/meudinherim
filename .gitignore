@@ -38,5 +38,6 @@ caixa/migrations/0002_saldocaixa.py
 
 banco/migrations/0001_initial.py
 caixa/migrations/0001_initial.py
-
-db.sqlite3
+banco/migrations/0001_initial.py
+banco/migrations/0002_saldobanco.py
+caixa/migrations/0001_initial.py

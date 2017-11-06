@@ -5,6 +5,7 @@ from caixa.forms import LancamentosForm
 from caixa.models import LancamentosCaixa, Categoria, SaldoCaixa
 from banco.forms import LancamentosBancoForm
 from banco.models import LancamentosBanco, ContaBanco, SaldoBanco
+from contas_a_pagar.models import ContasAPagar
 from django.contrib.auth.forms import UserCreationForm
 from usuario.forms import UsuarioForm, LoginForm
 from django.contrib.auth import authenticate, login
@@ -51,11 +52,14 @@ def home(request):
 
 	eventosCaixa = []
 	eventosBanco = []
+	eventosCPagar = []
 
 	#carrega os lançamentos do caixa do usuário
 	lancamentosCaixa = LancamentosCaixa.objects.filter(user_id = id_user)
 	#carrega os lançamentos do banco do usuário
 	lancamentosBanco = LancamentosBanco.objects.filter(user_id = id_user)
+	#carrega as contas a pagar do usuário
+	contasAPagar = ContasAPagar.objects.filter(user_id = id_user)
 
 	#separa os dados do caixa que serão utilizados no calendario em um tupla
 	for lancamento in lancamentosCaixa:
@@ -90,8 +94,41 @@ def home(request):
 
 	#converte a tupla para para dicionario
 	eventosBanco = [{'title': title, 'start': start, 'color': 'yellow', 'textColor': 'black'} for title, start in eventosBanco]
+
+
+
+	#separa os dados do banco que serão utilizados no calendario em um tupla
+	for lancamento in contasAPagar:
+		dia = str(lancamento.data.day)
+		if(len(dia) == 1):
+			dia = "0" + dia
+		mes = str(lancamento.data.month)
+		if(len(mes) == 1):
+			mes = "0" + mes
+		ano = str(lancamento.data.year)
+		#concatena a data para o formato do fullcalendar
+		data = ano + "-" + mes + "-" + dia
+		titulo = lancamento.descricao + " : " + " R$" + str(lancamento.valor) 
+		eventosCPagar.append((titulo, data))
+
+	#converte a tupla para para dicionario
+	eventosCPagar = [{'title': title, 'start': start, 'color': 'red'} for title, start in eventosCPagar]
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 	#junta os lancamento de caixa e banco
-	todosEventos = eventosBanco + eventosCaixa
+	todosEventos = eventosBanco + eventosCaixa + eventosCPagar
 	#converte para o formato Json
 	todosEventos = json.dumps(todosEventos, ensure_ascii=False)
 
