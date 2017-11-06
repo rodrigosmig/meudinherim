@@ -4,19 +4,25 @@
 
 {% load staticfiles %}
 
-{% block datepicker %}
+{% block staticContasPagar %}
+<script src="{% static 'js/contas_a_pagar.js' %}"></script>
+{% endblock %}
+
+{% block datepickerCP %}
+<script type="text/javascript">
 $( function() {
-	$("#datepickerCP").datepicker({
-	    dateFormat: 'dd/mm/yy',
-	    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
-	    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
-	    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-	    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-	    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-	    nextText: 'Próximo',
-	    prevText: 'Anterior'
-	});
+    $("#datepickerCP").datepicker({
+        dateFormat: 'dd/mm/yy',
+        dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+        dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+        dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+        monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+        monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+        nextText: 'Próximo',
+        prevText: 'Anterior'
+    });
 });
+</script>
 {% endblock %}
 
 {% block content %}
@@ -46,6 +52,8 @@ $( function() {
                                     <th>Descrição</th>
                                     <th>Categoria</th>
                                     <th>Valor</th>
+                                    <th>Editar</th>
+                                    <th>Pago</th>
                                 </tr>
                             </thead>
                             <tfoot>
@@ -54,6 +62,8 @@ $( function() {
                                     <th>Descrição</th>
                                     <th>Categoria</th>
                                     <th>Valor</th>
+                                    <th>Editar</th>
+                                    <th>Pago</th>
                                 </tr>
                             </tfoot>
                             
@@ -65,9 +75,17 @@ $( function() {
                                     <td>{{ cp.descricao }}</td>
                                     <td>{{ cp.valor }}</td>
                                     <td>
-                                    	<i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i>
+                                    	<i class="material-icons"><a data-toggle="modal" href="#editContasPagar"><span class="openEdit" data-lanc="{{ cp.id }}">edit</span></a></i>
                                     </td>
-
+                                    {% if cp.paga == False %}
+                                        <td>
+                                            <i class="material-icons"><a data-toggle="modal" href=""><span class="openPay" data-lanc="{{ cp.id }}">close</span></a></i>
+                                        </td>
+                                    {% else %}
+                                        <td>
+                                            <i class="material-icons"><a data-toggle="modal" href=""><span class="openPay" data-lanc="{{ cp.id }}">done</span></a></i>
+                                        </td>
+                                    {% endif %}
                                 </tr>
                             {% endfor %}
                             </tbody>
@@ -107,5 +125,35 @@ $( function() {
         </div>
     </div>
 </div>
+
+<!-- Modal Edição de Contas a Pagar -->
+<div class="modal fade" id="editContasPagar" tabindex="-1" role="dialog" aria-labelledby="LabelContasPagar" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card"
+                <!-- Título -->
+                <div class="header">
+                    <h4 id="LabelContasPagar">Editar | <small>Conta a Pagar</small></h4>
+                </div>
+                <!-- Campos -->
+                <form id="form_lancamento">
+                {% csrf_token %}    
+                    <div id="editContPag" class="modal-body">        
+                        <!-- Django form será inserido aqui via Jquery -->
+                    </div>
+                </form>     
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button class="btn btn-success waves-effect salvar" >Salvar</button>
+                    <button class="btn btn-danger excluir">Excluir</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+<!-- Modal Edição de Lançamento -->
+
+
 
 {% endblock %}
