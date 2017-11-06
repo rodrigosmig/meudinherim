@@ -36,8 +36,3 @@ usuario/migrations/__pycache__/0001_initial.cpython-35.pyc
 usuario/migrations/__pycache__/__init__.cpython-35.pyc
 caixa/migrations/0002_saldocaixa.py
 
-banco/migrations/0001_initial.py
-caixa/migrations/0001_initial.py
-banco/migrations/0001_initial.py
-banco/migrations/0002_saldobanco.py
-caixa/migrations/0001_initial.py
