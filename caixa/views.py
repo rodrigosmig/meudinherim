@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from caixa.models import LancamentosCaixa, Categoria, SaldoCaixa
 from banco.models import SaldoBanco
 from caixa.forms import CategoriaForm, LancamentosForm
@@ -96,9 +96,6 @@ def editLancamento(request):
 		#busca o lancamento a ser alterado
 		lancamento = LancamentosCaixa.objects.get(pk = idLancamento)
 		
-		valorAtual = lancamento.valor
-		categoriaAtual = lancamento.categoria.tipo
-
 		#atribui o lancamento ao form	
 		form = LancamentosForm(request.POST, instance = lancamento)
 
@@ -119,8 +116,6 @@ def editLancamento(request):
 								
 			saldoCaixa.saldoAtual = saldo
 			saldoCaixa.save()
-
-			print(saldoCaixa.saldoAtual)
 
 			return HttpResponse("Formulário alterado com sucesso")
 		else:

@@ -95,9 +95,7 @@ def home(request):
 	#converte a tupla para para dicionario
 	eventosBanco = [{'title': title, 'start': start, 'color': 'yellow', 'textColor': 'black'} for title, start in eventosBanco]
 
-
-
-	#separa os dados do banco que serão utilizados no calendario em um tupla
+	#separa os dados do contas a pagar que serão utilizados no calendario em um tupla
 	for lancamento in contasAPagar:
 		dia = str(lancamento.data.day)
 		if(len(dia) == 1):
@@ -114,20 +112,8 @@ def home(request):
 	#converte a tupla para para dicionario
 	eventosCPagar = [{'title': title, 'start': start, 'color': 'red'} for title, start in eventosCPagar]
 
-
-
-
-
-
-
-
-
-
-
-
-
 	
-	#junta os lancamento de caixa e banco
+	#junta os lancamento de caixa, banco e contas a pagar
 	todosEventos = eventosBanco + eventosCaixa + eventosCPagar
 	#converte para o formato Json
 	todosEventos = json.dumps(todosEventos, ensure_ascii=False)

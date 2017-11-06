@@ -82,6 +82,7 @@
         {% block staticHome %}{% endblock %}
         {% block staticCategoria %}{% endblock %}
         {% block staticAgencia %}{% endblock %}
+        {% block staticContasPagar %}{% endblock %}
 
         <!-- Chamadas JS -->
 
@@ -103,54 +104,8 @@
             
 </sript>
         
-        <script type="text/javascript">
-              $( function() {
-                $("#datepickerC").datepicker({
-                    dateFormat: 'dd/mm/yy',
-                    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
-                    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
-                    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-                    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-                    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-                    nextText: 'Próximo',
-                    prevText: 'Anterior'
-                });
-              });
-
-              $( function() {
-                $("#datepickerB").datepicker({
-                    dateFormat: 'dd/mm/yy',
-                    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
-                    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
-                    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-                    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-                    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
-                    nextText: 'Próximo',
-                    prevText: 'Anterior'
-                });
-              });
-
-              {% block datepicker %}{% endblock %}
-
-            //Recebe eventos para carregar no calendário
-            var eventos = JSON.parse("{{ events | safe | escapejs }}");
-
-            $(document).ready(function() {
-                $('#calendar').fullCalendar(
-                    {   
-                        theme: 'jquery-ui',
-                        height: 550,
-                        eventLimit: 3,
-                        events: eventos
-                });
-            });
-            
-            $(document).ready(function()
-            {
-                $('#tabCaixa').dataTable();
-            });
-
-        </script>
+        {% block scriptHome %}{% endblock %}
+        {% block datepickerCP %}{% endblock %}
 
     </head>
 

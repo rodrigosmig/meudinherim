@@ -22,7 +22,7 @@ class ContasAPagarForm(ModelForm):
 	valor = forms.DecimalField(
 		label = 'Valor',
         min_value = 0.01,
-        max_value = 9999.99,
+        max_value = 999999.99,
         required = True,
         widget = forms.NumberInput(
             attrs = {'class': 'form-control', 'placeholder': 'Insira o valor'}
