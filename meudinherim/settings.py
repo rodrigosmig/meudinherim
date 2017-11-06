@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'principal',
     'caixa',
     'banco',
+    'contas_a_pagar',
     'usuario',
 ]
 

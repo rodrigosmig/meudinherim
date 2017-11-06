@@ -130,6 +130,8 @@
                 });
               });
 
+              {% block datepicker %}{% endblock %}
+
             //Recebe eventos para carregar no calendário
             var eventos = JSON.parse("{{ events | safe | escapejs }}");
 
@@ -297,6 +299,13 @@
                             <a href="{% url 'caixa:index' %}">
                                 <i class="material-icons">work</i>
                                 <span>Caixa</span>
+                            </a>
+                        </li>
+                        <!-- Contas a Pagar -->
+                        {% block activecontasPagar %}<li>{% endblock %}
+                            <a href="{% url 'contas_a_pagar:index' %}">
+                                <i class="material-icons">payment</i>
+                                <span>Contas a Pagar</span>
                             </a>
                         </li>
                         <!-- Divisão -->
