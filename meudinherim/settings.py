@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'banco',
     'contas_a_pagar',
     'usuario',
+    'metas',
+
 ]
 
 MIDDLEWARE = [

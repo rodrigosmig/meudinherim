@@ -263,24 +263,23 @@
                         <!-- Adicionar Lançamento -->
 
                         <!-- Cadastrar -->
-                        {% block activeCadCat %}<li>{% endblock %}
-                        {% block activeCadAg %}{% endblock %}
+                        {% block activeCad %}<li>{% endblock %}
                             <a href="javascript:void(0);" class="menu-toggle">
                                 <i class="material-icons">note_add</i>
                                 <span>Cadastrar</span>
                             </a>
                             <ul class="ml-menu">
-                                <li>
-                                    <a href="javascript:void(0);">
+                                {% block activeMeta %}<li>{% endblock %}
+                                    <a href="{% url 'metas:metas' %}">
                                         <span>Metas</span>
                                     </a>
                                 </li>
-                                <li>
+                                {% block activeCategoria %}<li>{% endblock %}                                
                                     <a href="{% url 'caixa:categoria' %}">
                                         <span>Categoria</span>
                                     </a>
                                 </li>
-                                <li>
+                                 {% block activeAgencia %}<li>{% endblock %}  
                                     <a href="{% url 'banco:agencia' %}">
                                         <span>Agência Bancária</span>
                                     </a>
@@ -403,7 +402,8 @@
         <section class="content">
             <div clas="container-fluid"> 
                 
-                {% block content %}{% endblock %}
+                {% block content %}
+                {% endblock %}
             
             </div>
         </section>
