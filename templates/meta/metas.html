@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block activeMeta %}<li class="active">{% endblock %}
+{% block activeCad %}<li class="active">{% endblock %}
+
+{% load staticfiles %}
+
+
+{% block content %}
+
+<section class="content2">
+    
+    <div class="container-fluid">     
+        <div class="block-header">
+            <h1>Cadastrar</h1>
+        </div>
+    </div>
+    
+    <div class="row clearfix">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="card">
+                 <div class="header">
+                <h2>Metas</h2>
+
+                <ul class="header-dropdown">
+                    
+                    <a class="nav-link testeadd" data-toggle="modal" href="" role="tab" title="Adicionar Meta" data-target="#adicionaMeta">
+                        <i class="material-icons testeadd">add</i>
+                    </a>
+
+                </ul>
+                
+                <div class="body">
+                    <div class="table-responsive">
+                        <table id="mydata"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                    
+                            <thead>
+                                <tr>
+                                    <th>Data Início</th>
+                                    <th>Título</th>
+                                    <th>Progresso</th>
+                                    <th>Data Fim</th>
+                                    <th>Editar</th>
+
+                                    
+                                </tr>
+                            </thead>
+                            
+                            <tfoot>
+                               <tr>
+                                    <th>Data Inicio</th>
+                                    <th>Título</th>
+                                    <th>Progresso</th>
+                                    <th>Data Fim</th>
+                                    <th>Editar</th>
+                                </tr>
+                            </tfoot>
+
+                            <tbody>
+                           
+                                <tr>
+
+                                    <td>
+                                    06/11/2017
+                                    </td>
+                                    
+                                    <td>
+                                    Comprar Carro
+                                        
+
+                                    <td>
+
+                                    <div class="row clearfix">
+                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="progress">
+                                         <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: 75%">
+                                        75%
+                                         </div>
+                                        </div>
+                                       </div>
+                                    </div>  
+
+                                    </td>
+                                        
+                                    <td>
+                                    06/11/2018
+                                    </td>
+                                     
+                                    <td>
+                                   
+                                    <i class="material-icons"><a  data-toggle="modal" data-target="#editarMeta" href="" 
+
+                                    ><span class="openEdit" data-lanc="editProgesso">edit</span></a></i>
+
+
+                                    </td>        
+                                                                  
+                                           
+                                        
+                                </tr>
+
+                           
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Modal Editar Meta -->
+<div id="editarMeta" class="modal fade" role="dialog"  tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+    <div class="card">
+      <div class="modal-header">
+       
+        <div class="header">
+        <h4 >Editar | <small>Metas</small></h4>
+        </div>
+      </div>
+      <div class="modal-body">
+        
+        <p>Adicionar Valor: </p>
+        <input type="number" name="">
+
+      </div>
+
+      <!-- Salvar/Cancelar -->
+               
+     <div class="modal-footer">
+        <button class="btn btn-success waves-effect salvar" >Salvar</button>
+        <button class="btn btn-danger excluir">Excluir</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+    </div>
+
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+
+
+<!-- Modal Adicionar Meta -->
+<div id="adicionaMeta" class="modal fade" role="dialog"  tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+    <div class="card">
+      <div class="modal-header">
+       
+        <div class="header">
+        <h4 >Adicionar | <small>Meta</small></h4>
+        </div>
+      </div>
+      <div class="modal-body">
+        <p>Título da Meta:</p>
+        <input type="text" name="">
+        
+        <p>Valor da Meta: </p>
+        <input type="number" name="">
+
+       
+
+      </div>
+
+      <!-- Salvar/Cancelar -->
+               
+     <div class="modal-footer">
+        <button class="btn btn-success waves-effect salvar" >Salvar</button>
+        <button class="btn btn-danger excluir">Excluir</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+    </div>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}
