@@ -310,8 +310,8 @@
                         <!-- Divisão -->
                         <li class="header"></li>
                         <!-- Configurações -->
-                        <li>
-                            <a href="#">
+                        {% block activeConfig %}<li>{% endblock %}
+                            <a href="{% url 'config:config' %}">
                                 <i class="material-icons">settings</i>
                                 <span>Configurações</span>
                             </a>

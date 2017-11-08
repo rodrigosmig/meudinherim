@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'contas_a_pagar',
     'usuario',
     'metas',
+    'config',
 ]
 
 MIDDLEWARE = [
