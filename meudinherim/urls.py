@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^caixa/', include('caixa.urls', namespace='caixa')),
     url(r'^banco/', include('banco.urls', namespace='banco')),
     url(r'^contas_a_pagar/', include('contas_a_pagar.urls', namespace='contas_a_pagar')),
-     url(r'^metas/', include('metas.urls', namespace='metas'))
+    url(r'^metas/', include('metas.urls', namespace='metas')),
+    url(r'^config/', include('config.urls', namespace='config'))
 ]
