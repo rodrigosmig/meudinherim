@@ -3,9 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from contas_a_pagar.forms import ContasAPagarForm
 from contas_a_pagar.models import ContasAPagar
-from caixa.models import Categoria, SaldoCaixa
-from banco.models import SaldoBanco
+from caixa.models import Categoria, SaldoCaixa, LancamentosCaixa
+from banco.models import SaldoBanco, ContaBanco
 from django import forms
+from django.core import serializers
+import json
 
 @login_required
 def contasAPagar(request):
@@ -139,3 +141,71 @@ def delContasPagar(request):
 		
 
 	return HttpResponseServerError("Conta não encontrado.")
+
+#funcao que retorna as agencias do usuario solicitado no pagamento de contas
+@login_required
+def banco(request):
+	if(request.method == 'POST'):
+		#id do usuario
+		id_user = request.user.id
+		bancos = ContaBanco.objects.filter(user_id = id_user)
+		
+		bancosJson = serializers.serialize('json', bancos, use_natural_foreign_keys=False, use_natural_primary_keys=False)
+
+		return HttpResponse(bancosJson, content_type="application/json")
+
+	return HttpResponseServerError("Banco não encontrado")
+
+
+def pagamento(request):
+	if(request.method == 'POST'):
+		#id do usuario
+		id_user = request.user.id
+
+		tipoPagamento = request.POST.get('banco')
+
+		#busca o saldo do usuario logado
+		saldo = SaldoCaixa.objects.get(user = request.user)
+		#atribui o valor do saldo anterior
+		saldo.saldoAnterior = saldo.saldoAtual
+		
+		idConta = request.POST.get('id')
+
+		#busca a conta a pagar
+		conta = ContasAPagar.objects.get(pk = idConta)
+
+		#verifica se o pagamento é no caixa ou no banco
+		if(tipoPagamento == ""):
+			
+			#cadastra o lancamento do caixa de acordo com os dados da conta
+			caixa = LancamentosCaixa()
+
+			caixa.data = conta.data
+			caixa.categoria = conta.categoria
+			caixa.descricao = conta.descricao
+			caixa. valor = conta.valor
+			caixa.user = request.user
+
+			#atribui o novo saldo de acordo com a categoria do lançamento
+			if(caixa.categoria.tipo == "1"):
+				saldo.saldoAtual += caixa.valor
+			else:
+				saldo.saldoAtual -= caixa.valor
+			
+			caixa.save()
+			saldo.save()
+	
+		else:
+
+			bancos = ContaBanco.objects.filter(user_id = id_user)
+
+			for banco in bancos:
+				if(banco.banco == tipoPagamento):
+					print(banco.banco)
+					print("imprimiu")
+		
+		
+		conta.paga = True
+		conta.save()
+		
+		return HttpResponse("Pagamento efetuado com sucesso")
