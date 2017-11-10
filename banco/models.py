@@ -1,5 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core import serializers
+from django.core.serializers.json import DjangoJSONEncoder
+import json
 
 class ContaBanco(models.Model):
 	banco = models.CharField(max_length = 32)
@@ -12,8 +15,11 @@ class ContaBanco(models.Model):
 	tipo = models.CharField(choices = TIPOS, max_length = 2)
 	user = models.ForeignKey(User, on_delete = models.CASCADE)
 
+	def natural_key(self):
+		return (self.id, self.banco)
+
 	def __str__(self):
-		return self.banco
+		return str(self.id)
 
 
 class LancamentosBanco(models.Model):
@@ -41,3 +47,4 @@ class SaldoBanco(models.Model):
 
 	def __str__(self):
 		return str(self.saldoAtual)
+
