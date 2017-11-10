@@ -5,6 +5,8 @@ from contas_a_pagar.forms import ContasAPagarForm
 from contas_a_pagar.models import ContasAPagar
 from caixa.models import Categoria, SaldoCaixa, LancamentosCaixa
 from banco.models import SaldoBanco, ContaBanco, LancamentosBanco
+from banco.forms import LancamentosBancoForm
+from caixa.forms import LancamentosForm
 from django import forms
 from django.core import serializers
 import json
@@ -35,6 +37,36 @@ def contasAPagar(request):
 	        )
 		)
 
+	formCaixa = LancamentosForm()
+	#seleciona apenas as categorias do usuario logado
+	formCaixa.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control'}
+	        )
+		)
+	
+	formBanco = LancamentosBancoForm()
+	#Seleciona apenas o banco do usuario para o formulario
+	formBanco.fields['banco'] = forms.ModelChoiceField(
+		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		empty_label = 'Nenhum',
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        )
+	)
+	#seleciona apenas as categorias do usuario logado
+	formBanco.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
+	        )
+		)
+
+
+
 	context = {'contPagar': contas, 'contPagarForm': form}
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
@@ -44,6 +76,10 @@ def contasAPagar(request):
 	#busca o saldo de Banco do usuario e atribui ao contexto
 	saldoB = SaldoBanco.objects.get(user = request.user)
 	context['saldoBanco'] = saldoB.saldoAtual
+
+	#para adicionar lancamento
+	context['formLancCaixa'] = formCaixa
+	context['formLancBanco'] = formBanco
 
 	return render(request, template, context)
 
