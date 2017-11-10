@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerEr
 from contas_a_pagar.forms import ContasAPagarForm
 from contas_a_pagar.models import ContasAPagar
 from caixa.models import Categoria, SaldoCaixa, LancamentosCaixa
-from banco.models import SaldoBanco, ContaBanco
+from banco.models import SaldoBanco, ContaBanco, LancamentosBanco
 from django import forms
 from django.core import serializers
 import json
@@ -164,10 +164,15 @@ def pagamento(request):
 
 		tipoPagamento = request.POST.get('banco')
 
-		#busca o saldo do usuario logado
-		saldo = SaldoCaixa.objects.get(user = request.user)
+		#busca o saldo do caixa do usuario logado
+		saldoCaixa = SaldoCaixa.objects.get(user = request.user)
 		#atribui o valor do saldo anterior
-		saldo.saldoAnterior = saldo.saldoAtual
+		saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
+
+		#busca o saldo de Banco do usuario logado
+		saldoBanco = SaldoBanco.objects.get(user = request.user)
+		#atribui o valor do saldo anterior
+		saldoBanco.saldoAnterior = saldoBanco.saldoAtual
 		
 		idConta = request.POST.get('id')
 
@@ -186,25 +191,33 @@ def pagamento(request):
 			caixa. valor = conta.valor
 			caixa.user = request.user
 
-			#atribui o novo saldo de acordo com a categoria do lançamento
-			if(caixa.categoria.tipo == "1"):
-				saldo.saldoAtual += caixa.valor
-			else:
-				saldo.saldoAtual -= caixa.valor
+			#diminui o saldo do usuário
+			saldoCaixa.saldoAtual -= caixa.valor
 			
 			caixa.save()
-			saldo.save()
+			saldoCaixa.save()
 	
 		else:
 
-			bancos = ContaBanco.objects.filter(user_id = id_user)
+			agencias = ContaBanco.objects.filter(user_id = id_user)
 
-			for banco in bancos:
-				if(banco.banco == tipoPagamento):
-					print(banco.banco)
-					print("imprimiu")
-		
-		
+			for agencia in agencias:
+				if(agencia.banco == tipoPagamento):
+					banco = LancamentosBanco()
+
+					banco.banco = agencia
+					banco.data = conta.data
+					banco.tipo = '2'
+					banco.categoria = conta.categoria
+					banco.descricao = conta.descricao
+					banco. valor = conta.valor
+					banco.user = request.user
+					
+					saldoBanco.saldoAtual -= banco.valor
+
+					banco.save()
+					saldoBanco.save()
+
 		conta.paga = True
 		conta.save()
 		

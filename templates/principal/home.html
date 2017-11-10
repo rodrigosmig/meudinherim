@@ -8,6 +8,10 @@
 {% endblock %}
 
 {% block scriptHome %}
+<link rel='stylesheet' href="{% static 'css/fullcalendar.css' %}" />
+<script src="{% static 'js/moment.min.js' %}"></script>
+<script src="{% static 'js/fullcalendar.js' %}"></script>
+<script src="{% static 'js/locale/pt-br.js' %}"></script>
 <script type="text/javascript">
     $( function() {
         $("#datepickerC").datepicker({

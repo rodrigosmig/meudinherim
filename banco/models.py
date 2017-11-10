@@ -19,7 +19,7 @@ class ContaBanco(models.Model):
 		return (self.id, self.banco)
 
 	def __str__(self):
-		return str(self.id)
+		return str(self.banco)
 
 
 class LancamentosBanco(models.Model):
