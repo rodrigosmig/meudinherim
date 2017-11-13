@@ -26,7 +26,10 @@ class Categoria(models.Model):
 	tipo = models.CharField(choices = TIPOS, max_length = 2)
 	user = models.ForeignKey(User, on_delete = models.CASCADE)
 
-
+	#utilizado para enviar o id e descricao quando serializado
+	def natural_key(self):
+		return (self.id, self.descricao)
+		
 	def __str__(self):
 
 		return self.descricao
