@@ -5,3 +5,7 @@
 div.body {
 	clear: right;
 }
+
+#datepicker-alter_caixa {
+	width: 150px;
+}
