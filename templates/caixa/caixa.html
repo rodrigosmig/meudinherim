@@ -90,7 +90,7 @@
 
             <div id="card_atual" class="card">
                 <div class="header">                    
-                    {% if saldo < 0  %}
+                    {% if saldoCaixa < 0  %}
                         <h1 class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</h1>
                     {% else %}
                          <h1 class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</h1>
@@ -106,8 +106,7 @@
                                     <th>Data</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th>
-                                    <th>Entrada</th>
-                                    <th>Saída</th>
+                                    <th>Valor</th>
                                     <th>Editar</th>
                                 </tr>
                             </thead>
@@ -117,8 +116,7 @@
                                     <th>Data</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th>
-                                    <th>Entrada</th>
-                                    <th>Saída</th>
+                                    <th>Valor</th>
                                     <th>Editar</th>
                                    
                                 </tr>
@@ -138,16 +136,13 @@
                                     </td>
                                     
                                     {% if l.categoria.tipo == '1' %}
-                                        <td>{{ l.valor }}</td>
-                                        <td></td>
-                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>        
+                                        <td style="color: blue">{{ l.valor }}</td>
+      
                                     {% else %}
-                                        <td></td>
-                                        <td>
-                                            {{ l.valor }}
-                                        </td>
-                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                        <td style="color: red">{{ l.valor }}</td>
+                                        
                                     {% endif %}
+                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
                                 </tr>
 
                             {% endfor %}
