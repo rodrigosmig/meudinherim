@@ -3,9 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from contas_a_pagar.forms import ContasAPagarForm
 from contas_a_pagar.models import ContasAPagar
-from caixa.models import Categoria, SaldoCaixa
-from banco.models import SaldoBanco
+from caixa.models import Categoria, SaldoCaixa, LancamentosCaixa
+from banco.models import SaldoBanco, ContaBanco, LancamentosBanco
+from banco.forms import LancamentosBancoForm
+from caixa.forms import LancamentosForm
 from django import forms
+from django.core import serializers
+import json
 
 @login_required
 def contasAPagar(request):
@@ -33,6 +37,36 @@ def contasAPagar(request):
 	        )
 		)
 
+	formCaixa = LancamentosForm()
+	#seleciona apenas as categorias do usuario logado
+	formCaixa.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control'}
+	        )
+		)
+	
+	formBanco = LancamentosBancoForm()
+	#Seleciona apenas o banco do usuario para o formulario
+	formBanco.fields['banco'] = forms.ModelChoiceField(
+		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		empty_label = 'Nenhum',
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        )
+	)
+	#seleciona apenas as categorias do usuario logado
+	formBanco.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
+	        )
+		)
+
+
+
 	context = {'contPagar': contas, 'contPagarForm': form}
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
@@ -42,6 +76,10 @@ def contasAPagar(request):
 	#busca o saldo de Banco do usuario e atribui ao contexto
 	saldoB = SaldoBanco.objects.get(user = request.user)
 	context['saldoBanco'] = saldoB.saldoAtual
+
+	#para adicionar lancamento
+	context['formLancCaixa'] = formCaixa
+	context['formLancBanco'] = formBanco
 
 	return render(request, template, context)
 
@@ -139,3 +177,84 @@ def delContasPagar(request):
 		
 
 	return HttpResponseServerError("Conta não encontrado.")
+
+#funcao que retorna as agencias do usuario solicitado no pagamento de contas
+@login_required
+def banco(request):
+	if(request.method == 'POST'):
+		#id do usuario
+		id_user = request.user.id
+		bancos = ContaBanco.objects.filter(user_id = id_user)
+		
+		bancosJson = serializers.serialize('json', bancos, use_natural_foreign_keys=False, use_natural_primary_keys=False)
+
+		return HttpResponse(bancosJson, content_type="application/json")
+
+	return HttpResponseServerError("Banco não encontrado")
+
+
+def pagamento(request):
+	if(request.method == 'POST'):
+		#id do usuario
+		id_user = request.user.id
+
+		tipoPagamento = request.POST.get('banco')
+
+		#busca o saldo do caixa do usuario logado
+		saldoCaixa = SaldoCaixa.objects.get(user = request.user)
+		#atribui o valor do saldo anterior
+		saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
+
+		#busca o saldo de Banco do usuario logado
+		saldoBanco = SaldoBanco.objects.get(user = request.user)
+		#atribui o valor do saldo anterior
+		saldoBanco.saldoAnterior = saldoBanco.saldoAtual
+		
+		idConta = request.POST.get('id')
+
+		#busca a conta a pagar
+		conta = ContasAPagar.objects.get(pk = idConta)
+
+		#verifica se o pagamento é no caixa ou no banco
+		if(tipoPagamento == ""):
+			
+			#cadastra o lancamento do caixa de acordo com os dados da conta
+			caixa = LancamentosCaixa()
+
+			caixa.data = conta.data
+			caixa.categoria = conta.categoria
+			caixa.descricao = conta.descricao
+			caixa. valor = conta.valor
+			caixa.user = request.user
+
+			#diminui o saldo do usuário
+			saldoCaixa.saldoAtual -= caixa.valor
+			
+			caixa.save()
+			saldoCaixa.save()
+	
+		else:
+
+			agencias = ContaBanco.objects.filter(user_id = id_user)
+
+			for agencia in agencias:
+				if(agencia.banco == tipoPagamento):
+					banco = LancamentosBanco()
+
+					banco.banco = agencia
+					banco.data = conta.data
+					banco.tipo = '2'
+					banco.categoria = conta.categoria
+					banco.descricao = conta.descricao
+					banco. valor = conta.valor
+					banco.user = request.user
+					
+					saldoBanco.saldoAtual -= banco.valor
+
+					banco.save()
+					saldoBanco.save()
+
+		conta.paga = True
+		conta.save()
+		
+		return HttpResponse("Pagamento efetuado com sucesso")

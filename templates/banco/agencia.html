@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block activeCadAg %}<li class="active">{% endblock %}
+{% block activeCad %}<li class="active">{% endblock %}
+
+{% block activeAgencia %}<li class="active">{% endblock %}
 
 {% load staticfiles %}
 
@@ -39,7 +41,7 @@
                     <a class="nav-link testeadd" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar agencia">
                         <i class="material-icons testeadd">add</i>
                     </a>
-	  	        </ul>
+	  	          </ul>
             </div>
             <div class="body">
                 <div class="table-responsive">

@@ -2,18 +2,36 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from caixa.models import LancamentosCaixa, Categoria, SaldoCaixa
-from banco.models import SaldoBanco
+from banco.models import SaldoBanco, ContaBanco
 from caixa.forms import CategoriaForm, LancamentosForm
+from banco.forms import LancamentosBancoForm
 from django.http import JsonResponse
 from django import forms
+from datetime import datetime
+from django.core import serializers
+import json
 
 @login_required
 def lancamentos(request):
 	#id do usuario logado
-	saldo = 0
 	id_user = request.user.id
+
+	if(request.method == 'POST'):
+		mes = request.POST.get('mes')
+		lancamentos = LancamentosCaixa.objects.filter(data__month = mes).filter(user_id = id_user)
+
+		lancJson = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+
+		return HttpResponse(lancJson, content_type="application/json")
+
+	#armazena a data atual
+	hoje = datetime.today()
+	saldo = 0	
 	template = 'caixa/caixa.html'
-	lancamentos = LancamentosCaixa.objects.filter(user_id = id_user)
+	
+	#seleciona os lancamentos do mes atual
+	lancamentos = LancamentosCaixa.objects.filter(data__month = hoje.month).filter(user_id = id_user)
+	
 	contexto = {'lancamentos': lancamentos}
   	
   	#busca o saldo de Caixa do usuario e atribui ao contexto
@@ -23,6 +41,39 @@ def lancamentos(request):
 	#busca o saldo de Banco do usuario e atribui ao contexto
 	saldoB = SaldoBanco.objects.get(user = request.user)
 	contexto['saldoBanco'] = saldoB.saldoAtual
+
+
+	formCaixa = LancamentosForm()
+	#seleciona apenas as categorias do usuario logado
+	formCaixa.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control'}
+	        )
+		)
+	
+	formBanco = LancamentosBancoForm()
+	#Seleciona apenas o banco do usuario para o formulario
+	formBanco.fields['banco'] = forms.ModelChoiceField(
+		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		empty_label = 'Nenhum',
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        )
+	)
+	#seleciona apenas as categorias do usuario logado
+	formBanco.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
+	        )
+		)
+
+	#para adicionar lancamento
+	contexto['formLancCaixa'] = formCaixa
+	contexto['formLancBanco'] = formBanco
 
 	return render(request, template, contexto)
 
@@ -55,6 +106,38 @@ def categoria(request):
 	#busca o saldo de Banco do usuario e atribui ao contexto
 	saldoB = SaldoBanco.objects.get(user = request.user)
 	contexto['saldoBanco'] = saldoB.saldoAtual
+
+	formCaixa = LancamentosForm()
+	#seleciona apenas as categorias do usuario logado
+	formCaixa.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control'}
+	        )
+		)
+	
+	formBanco = LancamentosBancoForm()
+	#Seleciona apenas o banco do usuario para o formulario
+	formBanco.fields['banco'] = forms.ModelChoiceField(
+		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		empty_label = 'Nenhum',
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        )
+	)
+	#seleciona apenas as categorias do usuario logado
+	formBanco.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
+	        )
+		)
+
+	#para adicionar lancamento
+	contexto['formLancCaixa'] = formCaixa
+	contexto['formLancBanco'] = formBanco
 
 	return render(request, template, contexto)
 
@@ -121,7 +204,7 @@ def editLancamento(request):
 
 			return HttpResponse("Formulário alterado com sucesso")
 		else:
-			return HttpResponse("Formulário inválido")
+			return HttpResponseServerError("Formulário inválido")
 
 	#id do lancamento clicado
 	idLancamento = request.GET.get('id')
@@ -133,9 +216,36 @@ def editLancamento(request):
 			queryset = Categoria.objects.filter(user_id = request.user.id),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
+	            attrs = {'class': 'form-control', 'id': 'id_categoria-alter_caixa'}
 	        )
 		)
+
+	form.fields['descricao'] = forms.CharField(
+        label = 'Descrição',
+        max_length = 32,
+        required = True,
+        widget = forms.TextInput(
+            attrs = {'class': 'form-control', 'placeholder': 'Descreva a transação', 'id': 'id_descricao-alter_caixa'}
+        )
+    )
+
+	form.fields['valor'] = forms.DecimalField(
+		label = 'Valor',
+		min_value = 0.01,
+		max_value = 9999.99,
+		required = True,
+		widget = forms.NumberInput(
+            attrs = {'class': 'form-control', 'id': 'id_valor-alter_caixa'}
+        )
+    )
+
+	form.fields['data'] = forms.DateField(
+        label = 'Data',
+        required = True,
+        widget = forms.TextInput(
+            attrs = {'class': 'form-control', 'id': 'datepicker-alter_caixa'}
+        )
+    )  
 
 	#retorna o id do lancamento junto com o formulario
 	divId = "<div id='id_lancamento'>" + idLancamento + "</div>"

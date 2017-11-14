@@ -18,7 +18,7 @@
 <!-- Custom Js -->
 <script src="{% static 'js/jquery-datatable.js' %}"></script>
 <script src="{% static 'js/caixa.js' %}"></script>
-<script>$('mydata').dataTable();</script>
+
 {% endblock %}
 
 {% block content %}
@@ -30,21 +30,29 @@
             <h1>Caixa</h1>
         </div>
     </div>
+
+    <div>
+        <!-- Caixa para filtrar por mês -->
+        <select id=lanc_meses>
+        <!-- meses adicionados vi jquery -->
+        </select>
+        <!-- Caixa para filtrar por mês -->
+    </div>
     
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="card">
+
+            <div id="card_change" class="card">
                 <div class="header">                    
                     {% if saldo < 0  %}
                         <h1 class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</h1>
                     {% else %}
                          <h1 class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</h1>
                     {% endif %}
-
                 </div>
                 <div class="body">
                     <div class="table-responsive">
-                        <table id="mydata"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                        <table id="dataCaixaChange" class="table table-bordered table-striped table-hover dataTable js-basic-exampleds">
                     
                             <thead>
                                 <tr>
@@ -69,11 +77,56 @@
                                 </tr>
                             </tfoot>
 
+                            <tbody id="table_lanc">
+                            <!-- Inserido por Jquery -->
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div>                
+            </div>
+
+
+
+            <div id="card_atual" class="card">
+                <div class="header">                    
+                    {% if saldoCaixa < 0  %}
+                        <h1 class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</h1>
+                    {% else %}
+                         <h1 class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</h1>
+                    {% endif %}
+
+                </div>
+                <div class="body">
+                    <div class="table-responsive">
+                        <table id="mydata"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                    
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Valor</th>
+                                    <th>Editar</th>
+                                </tr>
+                            </thead>
+                            
+                            <tfoot>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Valor</th>
+                                    <th>Editar</th>
+                                   
+                                </tr>
+                            </tfoot>
+
                             <tbody>
                             {% for l in lancamentos %}
                                 <tr>
                                     <td>
-                                        {{ l.data }}
+                                        {{ l.data | date:"d/m/Y" }}
                                     </td>
                                     <td>
                                         {{ l.descricao }}
@@ -83,16 +136,13 @@
                                     </td>
                                     
                                     {% if l.categoria.tipo == '1' %}
-                                        <td>{{ l.valor }}</td>
-                                        <td></td>
-                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>        
+                                        <td style="color: blue">{{ l.valor }}</td>
+      
                                     {% else %}
-                                        <td></td>
-                                        <td>
-                                            {{ l.valor }}
-                                        </td>
-                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                        <td style="color: red">{{ l.valor }}</td>
+                                        
                                     {% endif %}
+                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
                                 </tr>
 
                             {% endfor %}

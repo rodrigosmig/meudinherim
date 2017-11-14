@@ -6,6 +6,7 @@
 
 {% block staticContasPagar %}
 <script src="{% static 'js/contas_a_pagar.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/contas_a_pagar.css' %}">
 {% endblock %}
 
 {% block datepickerCP %}
@@ -40,7 +41,7 @@ $( function() {
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
-                	<i class="material-icons"><a data-toggle="modal" href="#contas_a_pagar" title="adicionar">add</a></i>
+                	<i class="material-icons"><a data-toggle="modal" href="#contas_a_pagar" title="Adicionar">add</a></i>
                 </div>
                 <div class="body">
                     <div class="table-responsive">
@@ -69,21 +70,21 @@ $( function() {
                             
                             <tbody>
                             {% for cp in contPagar %}
-                                <tr>
-                                    <td>{{ cp.data }}</td>
-                                    <td>{{ cp.categoria }}</td>
-                                    <td>{{ cp.descricao }}</td>
-                                    <td>{{ cp.valor }}</td>
+                                <tr id="{{ cp.id }}">
+                                    <td class="conta_data">{{ cp.data }}</td>
+                                    <td class="conta_cat" data-id_cat="{{ cp.categoria.id }}">{{ cp.categoria }}</td>
+                                    <td class="conta_desc">{{ cp.descricao }}</td>
+                                    <td class="conta_val">{{ cp.valor }}</td>
                                     <td>
-                                    	<i class="material-icons"><a data-toggle="modal" href="#editContasPagar"><span class="openEdit" data-lanc="{{ cp.id }}">edit</span></a></i>
+                                    	<i class="material-icons"><a data-toggle="modal" href="#editContasPagar" title="Clique para editar"><span class="openEdit" data-cp="{{ cp.id }}">edit</span></a></i>
                                     </td>
                                     {% if cp.paga == False %}
                                         <td>
-                                            <i class="material-icons"><a data-toggle="modal" href=""><span class="openPay" data-lanc="{{ cp.id }}">close</span></a></i>
+                                            <i class="material-icons"><a data-toggle="modal" href="#pagamentoConta" style="color: red" title="Clique para pagar"><span class="openPay" data-cp="{{ cp.id }}">close</span></a></i>
                                         </td>
                                     {% else %}
                                         <td>
-                                            <i class="material-icons"><a data-toggle="modal" href=""><span class="openPay" data-lanc="{{ cp.id }}">done</span></a></i>
+                                            <i class="material-icons" style="color: green"><span data-cp="{{ cp.id }}">done</span></i>
                                         </td>
                                     {% endif %}
                                 </tr>
@@ -153,6 +154,45 @@ $( function() {
     </div>
 </div>    
 <!-- Modal Edição de Lançamento -->
+
+
+<!-- Modal Pagamento de conta -->
+<div class="modal fade" id="pagamentoConta">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Título -->
+            <div class="modal-header">
+                <h2 class="modal-title">Pagamento de Conta</h2>
+            </div>
+            <!-- Campos -->
+            <form method="POST">    
+                <div class="modal-body">                   
+                    <fieldset>
+                        <legend>Conta para Pagamento:</legend>
+
+                        <div>
+                            <input name="conta" type="radio" id="carteira" data-tipo="caixa" class="form-control conta_select" checked />
+                            <label for="carteira">Caixa</label>
+                            <input name="conta" type="radio" id="bancos" data-tipo="banco" class="form-control conta_select" />
+                            <label for="bancos">Banco</label>
+                        </div>
+
+                        
+
+                        <div id="campos_conta">
+                            <!-- Inserir campos via Jquery -->     
+                        </div>
+                    </fieldset>            
+                </div>
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary pagar">Pagar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 
