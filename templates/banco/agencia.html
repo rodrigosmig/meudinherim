@@ -17,7 +17,7 @@
 
 <!-- Custom Js -->
 <script src="{% static 'js/jquery-datatable.js' %}"></script>
-<script>$('dataAgencia').dataTable();</script>
+<script src="{% static 'js/agencia.js' %}"></script>
 
 {% endblock %}
 
@@ -39,7 +39,7 @@
                     <a class="nav-link testeadd" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar agencia">
                         <i class="material-icons testeadd">add</i>
                     </a>
-	  	            </ul>
+	  	        </ul>
             </div>
             <div class="body">
                 <div class="table-responsive">
@@ -83,7 +83,7 @@
                                         Poupança
                                     {% endif %}
                                 </td>
-                                <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                <td><i class="material-icons"><a data-toggle="modal" href="#editAg"><span class="openEdit" data-ag="{{ ag.id }}">edit</span></a></i></td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -93,5 +93,71 @@
         </div>
     </div>
 </section>
+
+
+<!-- Modal Cadastro Agencias Bancarias -->
+
+<div class="modal fade" id="mAgencia">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Título -->
+            <div class="modal-header">
+                <h3 class="modal-title">Cadastrar Agência Bancária</h3>
+            </div>
+            <!-- Campos -->
+            <form method="POST">    
+                <div class="modal-body">                          
+                        {% csrf_token %}
+
+                            {% for campo in formAgencia %}
+                                {{ campo.label_tag }}
+                                {{ campo }}                                
+                            {% endfor %}              
+                </div>
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button  class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Edição Agencias Bancarias -->
+
+<div class="modal fade" id="editAg">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Título -->
+            <div class="modal-header">
+                <h4 id="LabelLancamento">Editar | <small>Agência Bancária</small> </h4>
+              
+            </div>
+            <!-- Campos -->
+            <form id="form_agencia" method="POST">    
+                                 
+                {% csrf_token %}
+                 <div id="editAgencia" class="modal-body">        
+                <!-- Django form será inserido aqui via Jquery -->
+                 </div>
+            </form>                    
+               
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button class="btn btn-success waves-effect salvarAg">Salvar</button>
+                    <button class="btn btn-danger excluirAg">Excluir</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                </div>
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+
 
 {% endblock %}

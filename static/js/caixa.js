@@ -64,6 +64,7 @@ $(function() {
 	});
 
 	$('.salvar').click(function(evento) {
+		
 		evento.preventDefault();
 		
 		var dados = recuperCampos();

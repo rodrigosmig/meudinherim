@@ -8,6 +8,15 @@ from django import forms
 
 @login_required
 def cadastroBanco(request):
+
+	if (request.method == 'POST'):
+		form = ContaBancoForm(request.POST)
+		if (form.is_valid):
+			bancos = form.save(commit = False)
+			bancos.user = request.user 
+			bancos.save()
+			return HttpResponseRedirect('/banco/agencia')
+
 	id_user = request.user.id
 
 	template = 'banco/agencia.html'
@@ -36,7 +45,9 @@ def banco(request):
 	saldoB = SaldoBanco.objects.get(user = request.user)
 	saldoC = SaldoCaixa.objects.get(user = request.user)
 
-	contexto = {'lancBanco': lancamentos,'saldoBanco' : saldoB.saldoAtual, 'saldoCaixa': saldoC.saldoAtual}
+
+	contexto = {'lancBanco': lancamentos,'saldoBanco' : saldoB.saldoAtual,
+	 'saldoCaixa': saldoC.saldoAtual}
 
 	return render(request, template, contexto)
 
@@ -69,6 +80,7 @@ def addLancamento(request):
 
 @login_required
 def editLancamento(request):
+
 	if(request.method == 'POST'):
 
 		id_user = request.user.id
@@ -131,7 +143,6 @@ def editLancamento(request):
 @login_required
 def delLancamento(request):
 
-
 	if(request.method == 'POST'):
 		
 		id_user = request.user.id
@@ -165,3 +176,95 @@ def delLancamento(request):
 		
 
 	return HttpResponseServerError("Lançamento não encontrado.")
+
+def editAgencia(request):
+
+	if (request.method == 'POST'):
+
+		id_usuario = request.user.id 
+
+		# id da agencia clicada
+		idAgencia = request.POST.get('id')
+	
+		agencia = ContaBanco.objects.get(pk = idAgencia)
+
+		form = ContaBancoForm(request.POST,instance = agencia)
+
+		print (idAgencia+" dentro do post")
+		if (form.is_valid()):
+			form.save()
+
+			return HttpResponse("Agência alterada com sucesso")
+
+		else:
+
+			return HttpResponseServerError("Formulário inválido")
+
+	# id da agencia clicada
+	idAgencia = request.GET.get('idAgencia')
+
+	print (idAgencia+" depois do post")
+
+	agencia = ContaBanco.objects.get(pk = idAgencia)
+	
+	form = ContaBancoForm(instance = agencia)
+
+	# redefine id do campo banco
+	form.fields['banco'] = forms.CharField(
+			#queryset = ContaBanco.objects.filter(user_id = request.user.id),
+			label = 'Banco',
+			max_length = 32,
+			required = True,
+	        widget = forms.TextInput(
+	            attrs = {'class': 'form-control', 'id':'id_banco-alter_banco', 'placeholder': 'Nome do Banco'}
+	        )
+	)
+
+	form.fields['agencia'] = forms.CharField(
+			label = 'Agência',
+			max_length = 12,
+			required = False,
+	        widget = forms.TextInput(
+	            attrs = {'class': 'form-control', 'id':'id_agencia-alter_agencia', 'placeholder': 'Nome da Agência'}
+	        )
+	)
+
+	form.fields['conta'] = forms.CharField(
+			label = 'Conta',
+			max_length = 32,
+			required = False,
+	        widget = forms.TextInput(
+	            attrs = {'class': 'form-control', 'id':'id_conta-alter_conta', 'placeholder': 'Número da Conta'}
+	        )
+	)
+
+	form.fields['tipo'] = forms.ChoiceField(
+
+		widget = forms.Select(
+			attrs = {'class': 'form-control', 'id':'id_tipo-alter_tipo'}
+		),
+		choices = ContaBanco.TIPOS
+	)
+	temp = 'id_agencia-alter_agencia'
+	#retorna o id do agencia junto com o formulario
+	divId = "<div id=temp>" + idAgencia + "</div>"
+	form_html = {form.as_p(), divId}
+	return HttpResponse(form_html)
+
+
+def delAgencia(request):
+
+	if (request.method == 'POST'):
+		
+		id_usuario = request.user.id 
+
+		idAgencia =  request.POST.get('id')
+
+		agencia = ContaBanco.objects.get(pk = idAgencia)
+
+		if(id_usuario == agencia.user.id):
+			agencia.delete()
+			return HttpResponse("Agência excluída")
+		else:
+			return HttpResponseServerError("não econtrado")
+	return HttpResponseServerError("não econtrado")
