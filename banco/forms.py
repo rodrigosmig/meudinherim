@@ -8,7 +8,7 @@ class ContaBancoForm(ModelForm):
 		label = 'Banco',
 		max_length = 32,
 		required = True,
-		widget = forms.NumberInput(
+		widget = forms.TextInput(
 			attrs = {'class': 'form-control', 'placeholder': 'Nome do Banco'}
 		)
     )

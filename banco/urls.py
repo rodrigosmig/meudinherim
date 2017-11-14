@@ -8,4 +8,6 @@ urlpatterns = [
     url(r'^edit/', views.editLancamento, name='edit'),
     url(r'^delete/', views.delLancamento, name='delete'),
     url(r'^add/', views.addLancamento, name='add'),
+   	url(r'^editag/', views.editAgencia, name='editag'),
+   	url(r'^delag/', views.delAgencia, name='delag'),
 ]

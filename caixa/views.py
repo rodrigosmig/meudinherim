@@ -79,10 +79,6 @@ def lancamentos(request):
 
 @login_required
 def categoria(request):
-	id_user = request.user.id
-	template = 'caixa/categoria.html'
-	catEntrada = Categoria.objects.filter(tipo = 1).filter(user_id = id_user)
-	catSaida = Categoria.objects.filter(tipo = 2).filter(user_id = id_user)
 	
 	if(request.method == 'POST'):
 		form = CategoriaForm(request.POST)
@@ -92,8 +88,14 @@ def categoria(request):
 			categoria.save()
 			return HttpResponseRedirect('/caixa/categoria')
 
-	else:
-		form = CategoriaForm()
+
+	id_user = request.user.id
+	template = 'caixa/categoria.html'
+	catEntrada = Categoria.objects.filter(tipo = 1).filter(user_id = id_user)
+	catSaida = Categoria.objects.filter(tipo = 2).filter(user_id = id_user)
+
+
+	form = CategoriaForm()
 
 	contexto = {'catEntrada': catEntrada, 'catSaida': catSaida, 'form': form}
 
