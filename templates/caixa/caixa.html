@@ -30,25 +30,24 @@
             <h1>Caixa</h1>
         </div>
     </div>
-
-    <div>
-        <!-- Caixa para filtrar por mês -->
-        <select id=lanc_meses>
-        <!-- meses adicionados vi jquery -->
-        </select>
-        <!-- Caixa para filtrar por mês -->
-    </div>
     
     <div class="row clearfix">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-
             <div id="card_change" class="card">
-                <div class="header">                    
-                    {% if saldo < 0  %}
-                        <h1 class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</h1>
-                    {% else %}
-                         <h1 class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</h1>
-                    {% endif %}
+                <div class="header">
+
+                    <!-- Caixa para filtrar por mês -->
+                    <select id="lanc_meses_change" class="meses_change">
+                    <!-- meses adicionados via jquery -->
+                    </select>
+                    <!-- Caixa para filtrar por mês -->
+
+                    <ul class="header-dropdown">                  
+                        {% if saldoCaixa < 0  %}
+                            <h2 class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</h2>
+                        {% else %}
+                            <h2 class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</h2>
+                        {% endif %}
+                    </ul>
                 </div>
                 <div class="body">
                     <div class="table-responsive">
@@ -59,8 +58,7 @@
                                     <th>Data</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th>
-                                    <th>Entrada</th>
-                                    <th>Saída</th>
+                                    <th>Valor</th>
                                     <th>Editar</th>
                                 </tr>
                             </thead>
@@ -71,9 +69,7 @@
                                     <th>Descrição</th>
                                     <th>Categoria</th>
                                     <th>Entrada</th>
-                                    <th>Saída</th>
-                                    <th>Editar</th>
-                                   
+                                    <th>Valor</th>
                                 </tr>
                             </tfoot>
 
@@ -86,16 +82,22 @@
                 </div>                
             </div>
 
-
-
             <div id="card_atual" class="card">
-                <div class="header">                    
-                    {% if saldoCaixa < 0  %}
-                        <h1 class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</h1>
-                    {% else %}
-                         <h1 class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</h1>
-                    {% endif %}
+                <div class="header">
 
+                    <!-- Caixa para filtrar por mês -->
+                    <select id="lanc_meses" class="meses_change">
+                    <!-- meses adicionados vi jquery -->
+                    </select>
+                    <!-- Caixa para filtrar por mês -->
+
+                    <ul class="header-dropdown">
+                        {% if saldoCaixa < 0  %}
+                            <h2 class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</h2>
+                        {% else %}
+                            <h2 class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</h2>
+                        {% endif %}
+                    </ul>
                 </div>
                 <div class="body">
                     <div class="table-responsive">

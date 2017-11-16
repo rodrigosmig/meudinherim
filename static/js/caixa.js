@@ -145,9 +145,10 @@ $(function() {
 		}
 	}
 	$('#lanc_meses').html(conteudo);
+	$('#lanc_meses_change').html(conteudo);
 
-	$('#lanc_meses').on('change', function() {
-		
+	$('.meses_change').on('change', function() {
+
 		$('#card_atual').hide();
 		$('#card_change').show();
 
@@ -160,6 +161,7 @@ $(function() {
 			datatype: 'json',
 			success: function(lancamentos) {
 				var table = $('#dataCaixaChange').DataTable();
+				console.log(lancamentos)
 
 				var rows = table.clear().draw();					
 
@@ -173,11 +175,16 @@ $(function() {
 						ano = data.substring(0, 4)
 						newData = dia + "/" + mes + "/" + ano
 
+						if(lancamentos[x].fields.categoria[1] === "1") {
+							var categoria = "<span style='color: blue' >" + lancamentos[x].fields.valor + "</span>";
+						}else{
+							var categoria = "<span style='color: red' >" + lancamentos[x].fields.valor + "</span>";
+						}
+
 						table.row.add([newData,
 						lancamentos[x].fields.descricao,
 						lancamentos[x].fields.categoria[1],
-						lancamentos[x].fields.valor,
-						"teste",
+						categoria,
 						"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
 						]).draw(false);
 

@@ -176,37 +176,36 @@
                     <a href="javascript:void(0);" class="bars"></a>
                     <a class="navbar-brand" href="{% url 'principal:home' %}">MEU <b>DINHERIM</b></a>
                 </div>
+                
+                <!-- Itens que ficaram no DropDown ao diminiur a tela -->
+                <div class="collapse navbar-collapse" id="navbar-collapse">
 
-                <!--Infobox -->
-               <div class="col-lg-6 col-md-4 col-sm-5 col-xs-9" >
+                    <!--Infobox -->
+                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-1">
                         <div id="infoBoxBanco"  class="info-box-2 btn-xs">
                             <div class="icon">
                                 <i id="iconsInfoBox" class="material-icons" >account_balance</i>
                             </div>
                             <div class="content">
-                                <div id="textInfoBox" class="text" >Banco</div>
+                                <div id="textInfoBox" class="text">Banco</div>
                                 <div id="numberInfoBox" class="number">{{ saldoBanco }}</div>
                             </div>        
                         </div>
                     </div>
 
-                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2"  >
+                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
                         <div id="infoBoxCaixa" class="info-box-2 btn-xs">
                             <div class="icon">
-                                  <i id="iconsInfoBox" class="material-icons" >work</i>
+                                <i id="iconsInfoBox" class="material-icons" >work</i>
                             </div>
                             <div class="content">
-                                <div  id="textInfoBox" class="text"  >Caixa</div>
+                                <div  id="textInfoBox" class="text">Caixa</div>
                                 <div  id="numberInfoBox" class="number">{{ saldoCaixa }}</div>
                             </div>        
                         </div>
                     </div>
+                    <!--/Infobox -->
 
-                    <!--Infobox -->
-
-                
-                <!-- talz -->
-                <div class="collapse navbar-collapse" id="navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">       
                         <li class="pull-right"><a href="{% url 'principal:logout' %}" class="js-right-sidebar" data-close="true" title="Sair"><i class="glyphicon glyphicon-off"></i></a></li>
                     </ul>

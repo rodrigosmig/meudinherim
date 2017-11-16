@@ -28,7 +28,7 @@ class Categoria(models.Model):
 
 	#utilizado para enviar o id e descricao quando serializado
 	def natural_key(self):
-		return (self.id, self.descricao)
+		return (self.id, self.tipo, self.descricao)
 		
 	def __str__(self):
 
