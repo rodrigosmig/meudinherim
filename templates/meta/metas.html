@@ -174,12 +174,15 @@
         </div>
       </div>
 
+      <form method="POST">
       <div class="modal-body">
-        <p>Título da Meta:</p>
-        <input type="text" name="">
-        
-        <p>Valor da Meta: </p>
-        <input type="number" name="">
+         {% csrf_token %}
+            
+            {% for campo in formCad %}
+                {{ campo.label_tag }}
+                {{ campo }}
+
+            {% endfor %}
 
        
 
@@ -188,10 +191,11 @@
       <!-- Salvar/Cancelar -->
                
      <div class="modal-footer">
-        <button class="btn btn-success waves-effect salvar" >Salvar</button>
-        <button class="btn btn-danger excluir">Excluir</button>
+        <button type="submit" class="btn btn-success waves-effect salvar" >Salvar</button>
+       
         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
     </div>
+    </form>
 
     </div>
 
