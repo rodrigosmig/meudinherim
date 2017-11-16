@@ -17,6 +17,16 @@ def metas(request):
 	id_user = request.user.id
 	template='meta/metas.html'
 
+	if(request.method == 'POST'):
+		form = CadastrarMetasForm(request.POST)
+		print('entrou') 
+		if(form.is_valid()):
+			cadastroMeta=form.save(commit = False)
+			cadastroMeta.user=request.user
+			cadastroMeta.save()
+			return HttpResponse('/metas')	
+
+
 	contexto = {}
 
 	metas = Metas.objects.filter(user_id = id_user)
@@ -31,14 +41,8 @@ def metas(request):
 	contexto['saldoBanco'] = saldoB.saldoAtual
 
 
+	form = CadastrarMetasForm() 	
+
+	contexto['formCad'] = form
 
 	return render(request, template, contexto)
-
-
-@login_required
-def cadastroMeta(request):
-
-	pass
-
-
-
