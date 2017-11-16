@@ -40,6 +40,7 @@
                                     <th>Título</th>
                                     <th>Progresso</th>
                                     <th>Data Fim</th>
+                                    <th>Valor da Meta</th>
                                     <th>Editar</th>
 
                                     
@@ -52,20 +53,21 @@
                                     <th>Título</th>
                                     <th>Progresso</th>
                                     <th>Data Fim</th>
+                                    <th>Valor da Meta</th>
                                     <th>Editar</th>
                                 </tr>
                             </tfoot>
 
                             <tbody>
-                           
+                            {% for l in formMetas %}
                                 <tr>
 
                                     <td>
-                                    06/11/2017
+                                    {{ l.dataInicio }}
                                     </td>
                                     
                                     <td>
-                                    Comprar Carro
+                                    {{ l.titulo }}
                                         
 
                                     <td>
@@ -73,7 +75,7 @@
                                     <div class="row clearfix">
                                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="progress">
-                                         <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: 75%">
+                                         <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: {{ l.progresso }}%">
                                         75%
                                          </div>
                                         </div>
@@ -83,9 +85,14 @@
                                     </td>
                                         
                                     <td>
-                                    06/11/2018
+                                   {{ l.dataFim }}
                                     </td>
                                      
+                                     <td>
+                                        R$ {{ l.valor}}
+
+                                     </td>
+
                                     <td>
                                    
                                     <i class="material-icons"><a  data-toggle="modal" data-target="#editarMeta" href="" 
@@ -98,6 +105,7 @@
                                            
                                         
                                 </tr>
+                                {% endfor %}
 
                            
                             </tbody>
@@ -125,9 +133,13 @@
         </div>
       </div>
       <div class="modal-body">
+
+
         
         <p>Adicionar Valor: </p>
         <input type="number" name="">
+
+
 
       </div>
 
@@ -161,6 +173,7 @@
         <h4 >Adicionar | <small>Meta</small></h4>
         </div>
       </div>
+
       <div class="modal-body">
         <p>Título da Meta:</p>
         <input type="text" name="">
