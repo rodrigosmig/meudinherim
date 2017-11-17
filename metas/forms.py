@@ -2,13 +2,13 @@ from django.forms import ModelForm
 from django import forms
 from metas.models import Metas
 
-class CadastrarMetasForm(ModelForm):
+class MetasForm(ModelForm):
     
     dataInicio = forms.DateField(
         label = 'Data Inicio',
         required = True,
         widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'id': 'datepickerMI', 'placeholder': 'Inicio da meta'}
+            attrs = {'class': 'form-control', 'id': 'datepickerMI', 'placeholder': 'Insira a início da meta'}
         )
     )
 
@@ -16,7 +16,7 @@ class CadastrarMetasForm(ModelForm):
         label = 'Data Fim',
         required = True,
         widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'id': 'datepickerMF', 'placeholder': 'Fim da meta'}
+            attrs = {'class': 'form-control', 'id': 'datepickerMF', 'placeholder': 'Insira a fim da meta'}
             )
         )
 
@@ -25,7 +25,7 @@ class CadastrarMetasForm(ModelForm):
         max_length = 40,
         required = True,
         widget = forms.TextInput(
-        attrs = {'class': 'form-control', 'placeholder': 'Título da meta'}
+        attrs = {'class': 'form-control', 'placeholder': 'Insira o título da meta'}
         )
     )
 
@@ -40,5 +40,5 @@ class CadastrarMetasForm(ModelForm):
     )
 
     class Meta:
-        model= Metas
-        fields=['dataInicio', 'dataFim', 'titulo', 'valor']
+        model = Metas
+        fields =['dataInicio', 'dataFim', 'titulo', 'valor']
