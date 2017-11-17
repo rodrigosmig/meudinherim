@@ -5,6 +5,9 @@
 
 {% load staticfiles %}
 
+{% block staticMetas %}
+<script src="{% static 'js/metas.js' %}"></script>
+{% endblock %}
 
 {% block content %}
 
@@ -25,7 +28,7 @@
                 <ul class="header-dropdown">
                     
                     <a class="nav-link testeadd" data-toggle="modal" href="" role="tab" title="Adicionar Meta" data-target="#adicionaMeta">
-                        <i class="material-icons testeadd">add</i>
+                        <i class="material-icons testeadd">note_add</i>
                     </a>
 
                 </ul>
@@ -59,24 +62,22 @@
                             </tfoot>
 
                             <tbody>
-                            {% for l in formMetas %}
+                            {% for m in formMetas %}
                                 <tr>
 
                                     <td>
-                                    {{ l.dataInicio }}
+                                      {{ m.dataInicio }}
                                     </td>
                                     
                                     <td>
-                                    {{ l.titulo }}
-                                        
-
+                                      {{ m.titulo }}                                      
                                     <td>
 
                                     <div class="row clearfix">
                                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="progress">
-                                         <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: {{ l.progresso }}%">
-                                        75%
+                                         <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: {{ m.progresso | cut:',' }}%">
+                                        {{ m.progresso }}%
                                          </div>
                                         </div>
                                        </div>
@@ -85,25 +86,21 @@
                                     </td>
                                         
                                     <td>
-                                   {{ l.dataFim }}
+                                   {{ m.dataFim }}
                                     </td>
                                      
                                      <td>
-                                        R$ {{ l.valor}}
+                                        R$ {{ m.valor}}
 
                                      </td>
 
                                     <td>
                                    
-                                    <i class="material-icons"><a  data-toggle="modal" data-target="#editarMeta" href="" 
+                                    <i class="material-icons"><a  data-toggle="modal" data-target="#editMeta" href="" 
 
-                                    ><span class="openEdit" data-lanc="editProgesso">edit</span></a></i>
+                                    ><span class="openEdit" data-meta="{{ m.id }}">edit</span></a></i>
 
-
-                                    </td>        
-                                                                  
-                                           
-                                        
+                                    </td>   
                                 </tr>
                                 {% endfor %}
 
@@ -119,93 +116,65 @@
 </section>
 
 
-<!-- Modal Editar Meta -->
-<div id="editarMeta" class="modal fade" role="dialog"  tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-    <div class="card">
-      <div class="modal-header">
-       
-        <div class="header">
-        <h4 >Editar | <small>Metas</small></h4>
-        </div>
-      </div>
-      <div class="modal-body">
-
-
-        
-        <p>Adicionar Valor: </p>
-        <input type="number" name="">
-
-
-
-      </div>
-
-      <!-- Salvar/Cancelar -->
-               
-     <div class="modal-footer">
-        <button class="btn btn-success waves-effect salvar" >Salvar</button>
-        <button class="btn btn-danger excluir">Excluir</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-    </div>
-
-    </div>
-
-  </div>
-</div>
-</div>
-
-
-
-
-<!-- Modal Adicionar Meta -->
-<div id="adicionaMeta" class="modal fade" role="dialog"  tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-    <div class="card">
-      <div class="modal-header">
-       
-        <div class="header">
-        <h4 >Adicionar | <small>Meta</small></h4>
-        </div>
-      </div>
-
-      <form method="POST">
-      <div class="modal-body">
-         {% csrf_token %}
+<!-- Modal Cadastrar Meta -->
+<div class="modal fade" id="adicionaMeta">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Título -->
+            <div class="modal-header">
+                <div class="header">
+                    <h4 >Adicionar | <small>Meta</small></h4>
+                </div>
+            </div>
+            <!-- Campos -->
+            <form method="POST">    
+                <div class="modal-body">                          
+                  {% csrf_token %}
             
-            {% for campo in formCad %}
-                {{ campo.label_tag }}
-                {{ campo }}
+                    {% for campo in formCad %}
+                        {{ campo.label_tag }}
+                        {{ campo }}
 
-            {% endfor %}
-
-       
-
-      </div>
-
-      <!-- Salvar/Cancelar -->
-               
-     <div class="modal-footer">
-        <button type="submit" class="btn btn-success waves-effect salvar" >Salvar</button>
-       
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                    {% endfor %}                
+                </div>
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button  class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
     </div>
-    </form>
-
-    </div>
-
-  </div>
 </div>
 
 
-
-
-
+<!-- Modal Edição de Meta -->
+<div class="modal fade" id="editMeta" tabindex="-1" role="dialog" aria-labelledby="LabelMeta" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card"
+                <!-- Título -->
+                <div class="header">
+                    <h4 id="LabelMeta">Editar | <small>Meta</small></h4>
+                </div>
+                <!-- Campos -->
+                <form>
+                {% csrf_token %}    
+                    <div id="editMetaForm" class="modal-body">        
+                        <!-- Django form será inserido aqui via Jquery -->
+                    </div>
+                </form>     
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button class="btn btn-success waves-effect salvar" >Salvar</button>
+                    <button class="btn btn-danger excluir">Excluir</button>
+                    <button type="button" class="btn btn-primaryid" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+<!-- Modal Edição de Meta -->
 
 
 

@@ -68,7 +68,6 @@ $(function() {
 		evento.preventDefault();
 		
 		var dados = recuperCampos();
-		console.log(dados);
 
 		$.ajax({
 			type: 'POST',

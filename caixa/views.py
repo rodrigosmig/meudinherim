@@ -183,7 +183,6 @@ def editLancamento(request):
 		
 		#atribui o lancamento ao form	
 		form = LancamentosForm(request.POST, instance = lancamento)
-
 		
 		if(form.is_valid()):
 			form.save()
@@ -279,8 +278,6 @@ def delLancamento(request):
 								
 			saldoCaixa.saldoAtual = saldo
 			saldoCaixa.save()
-
-			print(saldoCaixa.saldoAtual)
 
 			return HttpResponse("Lançamento excluído com sucesso")
 		else:

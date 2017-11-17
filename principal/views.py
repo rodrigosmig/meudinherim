@@ -12,6 +12,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django import forms
 from banco.models import ContaBanco, LancamentosBanco
+from metas.models import Metas
 import json
 
 
@@ -48,18 +49,18 @@ def home(request):
 	template = 'principal/home.html'
 	context = {}
 	#id do usuario logado
-	id_user = request.user.id
+	user = request.user
 
 	eventosCaixa = []
 	eventosBanco = []
 	eventosCPagar = []
 
 	#carrega os lançamentos do caixa do usuário
-	lancamentosCaixa = LancamentosCaixa.objects.filter(user_id = id_user)
+	lancamentosCaixa = LancamentosCaixa.objects.filter(user = user)
 	#carrega os lançamentos do banco do usuário
-	lancamentosBanco = LancamentosBanco.objects.filter(user_id = id_user)
+	lancamentosBanco = LancamentosBanco.objects.filter(user = user)
 	#carrega as contas a pagar do usuário
-	contasAPagar = ContasAPagar.objects.filter(user_id = id_user)
+	contasAPagar = ContasAPagar.objects.filter(user = user)
 
 	#separa os dados do caixa que serão utilizados no calendario em um tupla
 	for lancamento in lancamentosCaixa:
@@ -125,7 +126,7 @@ def home(request):
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
 	formCaixa.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
+			queryset = Categoria.objects.filter(user = user),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control'}
@@ -135,7 +136,7 @@ def home(request):
 	formBanco = LancamentosBancoForm()
 	#Seleciona apenas o banco do usuario para o formulario
 	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		queryset = ContaBanco.objects.filter(user = user),
 		empty_label = 'Nenhum',
         widget = forms.Select(
             attrs = {'class': 'form-control'}
@@ -143,7 +144,7 @@ def home(request):
 	)
 	#seleciona apenas as categorias do usuario logado
 	formBanco.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
+			queryset = Categoria.objects.filter(user = user),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
@@ -151,14 +152,24 @@ def home(request):
 		)
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
-	saldoC = SaldoCaixa.objects.get(user = request.user)
+	saldoC = SaldoCaixa.objects.get(user = user)
 	context['saldoCaixa'] = saldoC.saldoAtual
 
 	#busca o saldo de Banco do usuario e atribui ao contexto
-	saldoB = SaldoBanco.objects.get(user = request.user)
+	saldoB = SaldoBanco.objects.get(user = user)
 	context['saldoBanco'] = saldoB.saldoAtual
 
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco
+
+	metas = Metas.objects.filter(user = user)
+
+	for m in metas:
+		#calculo do progresso da meta
+		progresso = ((saldoB.saldoAtual + saldoC.saldoAtual) / m.valor) * 100
+		m.progresso = round(progresso, 2)
+		m.save()
+
+	context['metas'] = metas
 
 	return render(request, template, context)

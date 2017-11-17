@@ -12,7 +12,21 @@
 <script src="{% static 'js/moment.min.js' %}"></script>
 <script src="{% static 'js/fullcalendar.js' %}"></script>
 <script src="{% static 'js/locale/pt-br.js' %}"></script>
+{% endblock %}
 
+{% block staticCalendario %}
+//Recebe eventos para carregar no calendário
+var eventos = JSON.parse("{{ events | safe | escapejs }}");
+
+$(document).ready(function() {
+    $('#calendar').fullCalendar(
+        {   
+            theme: 'jquery-ui',
+            height: 550,
+            eventLimit: 3,
+            events: eventos
+    });
+});
 {% endblock %}
 
 {% block content %}
@@ -32,11 +46,14 @@
         <div class="block-header">
             <h3>Progresso de Metas</h3>
         </div>
+        {% for m in metas %}
+        <h4>{{ m.titulo }}</h4>
         <div class="progress">
-            <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: 75%">
-                    75%
+            <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: {{ m.progresso | cut:',' }}%">
+                    {{ m.progresso }}
             </div>
         </div>
+        {% endfor %}
     </div>
 </div>
 <!--/ Barra de Progresso -->
