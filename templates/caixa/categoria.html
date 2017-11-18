@@ -18,8 +18,7 @@
 
 <!-- Custom Js -->
 <script src="{% static 'js/jquery-datatable.js' %}"></script>
-<script src="{% static 'js/banco.js' %}"></script>
-<script>$('dataCategoria').dataTable();</script>
+<script src="{% static 'js/categoria.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -45,7 +44,7 @@
                 </div>
                 <div class="body">
                     <div class="table-responsive">
-                        <table id="dataCategoria"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                        <table id="dataCategoria" class="table table-bordered table-striped table-hover dataTable js-basic-example">
                             <thead>
                                 <tr>
                                     <th>Descrição</th>
@@ -63,7 +62,7 @@
                                 {% for c in catEntrada %}
                                 <tr>
                                     <td>{{ c.descricao }}</td>
-                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                    <td><i class="material-icons"><a data-toggle="modal" href="#editCategoria"><span class="openEdit" data-cat="{{ c.id }}">edit</span></a></i></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -85,7 +84,7 @@
                 </div>
                 <div class="body">
                     <div class="table-responsive">
-                        <table id="dataCategoria2"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                        <table id="dataCategoria2" class="table table-bordered table-striped table-hover dataTable js-basic-example">
                         
                             <thead>
                                 <tr>
@@ -104,7 +103,7 @@
                                 {% for c in catSaida %}
                                 <tr>
                                     <td>{{ c.descricao }}</td>
-                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                    <td><i class="material-icons"><a data-toggle="modal" href="#editCategoria"><span class="openEdit" data-cat="{{ c.id }}">edit</span></a></i></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -123,7 +122,9 @@
         <div class="modal-content">
             <!-- Título -->
             <div class="modal-header">
-                <h3 class="modal-title">Cadastrar Categoria</h3>
+                <div class="header">
+                    <h4 >Adicionar | <small>Categoria</small></h4>
+                </div>
             </div>
             <!-- Campos -->
             <form method="POST">    
@@ -145,5 +146,33 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Edição de Categoria -->
+<div class="modal fade" id="editCategoria" tabindex="-1" role="dialog" aria-labelledby="LabelCategoria" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card"
+                <!-- Título -->
+                <div class="header">
+                    <h4 id="LabelCategoria">Editar | <small>Categoria</small></h4>
+                </div>
+                <!-- Campos -->
+                <form>
+                {% csrf_token %}    
+                    <div id="editCate" class="modal-body">        
+                        <!-- Django form será inserido aqui via Jquery -->
+                    </div>
+                </form>     
+                <!-- Salvar/Cancelar -->
+                <div class="modal-footer">
+                    <button class="btn btn-success waves-effect salvar" >Salvar</button>
+                    <button class="btn btn-danger excluir">Excluir</button>
+                    <button type="button" class="btn btn-primaryid" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+<!-- Modal Edição de Categoria -->
 
 {% endblock %}
