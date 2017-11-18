@@ -89,28 +89,27 @@ def categoria(request):
 			return HttpResponseRedirect('/caixa/categoria')
 
 
-	id_user = request.user.id
+	user = request.user
 	template = 'caixa/categoria.html'
-	catEntrada = Categoria.objects.filter(tipo = 1).filter(user_id = id_user)
-	catSaida = Categoria.objects.filter(tipo = 2).filter(user_id = id_user)
-
+	catEntrada = Categoria.objects.filter(tipo = 1).filter(user = user)
+	catSaida = Categoria.objects.filter(tipo = 2).filter(user = user)
 
 	form = CategoriaForm()
 
 	contexto = {'catEntrada': catEntrada, 'catSaida': catSaida, 'form': form}
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
-	saldoC = SaldoCaixa.objects.get(user = request.user)
+	saldoC = SaldoCaixa.objects.get(user = user)
 	contexto['saldoCaixa'] = saldoC.saldoAtual
 
 	#busca o saldo de Banco do usuario e atribui ao contexto
-	saldoB = SaldoBanco.objects.get(user = request.user)
+	saldoB = SaldoBanco.objects.get(user = user)
 	contexto['saldoBanco'] = saldoB.saldoAtual
 
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
 	formCaixa.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
+			queryset = Categoria.objects.filter(user = user),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control'}
@@ -120,7 +119,7 @@ def categoria(request):
 	formBanco = LancamentosBancoForm()
 	#Seleciona apenas o banco do usuario para o formulario
 	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		queryset = ContaBanco.objects.filter(user = user),
 		empty_label = 'Nenhum',
         widget = forms.Select(
             attrs = {'class': 'form-control'}
@@ -128,7 +127,7 @@ def categoria(request):
 	)
 	#seleciona apenas as categorias do usuario logado
 	formBanco.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
+			queryset = Categoria.objects.filter(user = user),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
@@ -141,6 +140,70 @@ def categoria(request):
 
 	return render(request, template, contexto)
 
+@login_required
+def editCategoria(request):
+	user = request.user
+
+	if(request.method == 'POST'):
+		idCategoria = request.POST.get('id')
+		print(idCategoria)
+		categoria = Categoria.objects.get(pk = idCategoria)
+		form = CategoriaForm(request.POST, instance = categoria)
+
+		if(form.is_valid()):
+			form.save()
+			return HttpResponse('Categoria alterada com sucesso.')
+		else:
+			return HttpResponseServerError("Dados inválidos.")
+
+	#id do lancamento clicado
+	idCategoria = request.GET.get('id')
+
+	lancamento = Categoria.objects.get(pk = idCategoria)
+
+	form = CategoriaForm(instance = lancamento)
+
+	form.fields['tipo'] = forms.ChoiceField(
+        widget = forms.Select(
+            attrs = {'class': 'form-control', 'id': 'id_tipo-alter_categoria'}
+        ),
+        choices = Categoria.TIPOS
+    )
+	
+	form.fields['descricao'] = forms.CharField(
+        label = 'Descrição',
+        max_length = 32,
+        required = True,
+        widget = forms.TextInput(
+            attrs = {'class': 'form-control', 'id': 'id_descricao-alter_categoria', 'placeholder': 'Descreva a categoria'}
+        )
+    )
+
+	#retorna o id da categoria junto com o formulario
+	divId = "<div id='id-alter_categoria'>" + idCategoria + "</div>"
+
+	form_html = {form.as_p(), divId}
+	return HttpResponse(form_html)
+
+@login_required
+def delCategoria(request):
+	if(request.method == 'POST'):
+		#usuario logado
+		user = request.user
+		#id do lancamento a ser deletado
+		idCategoria = request.POST.get('id')
+
+		#busca a Categoria
+		categoria = Categoria.objects.get(pk = idCategoria)		
+		
+		if(user == categoria.user):
+			categoria.delete()
+			
+			return HttpResponse("Categoria excluída com sucesso")
+		else:
+			return HttpResponseServerError("Categoria não encontrado.")		
+
+	return HttpResponseServerError("Conta não encontrado.")
 
 @login_required
 def addLancamento(request):

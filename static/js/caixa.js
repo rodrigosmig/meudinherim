@@ -76,6 +76,7 @@ $(function() {
 			success: function(msg) {
 				//mensagem de confirmação
 				alert(msg);
+				console.log(msg.responseText);
 				//recarregar pagina
 				location.reload();
 			},
@@ -193,7 +194,7 @@ $(function() {
 			error: function(msg) {
 				//mensagem de retorno em caso de erro
 				alert('erro')
-				console.log(msg)
+				console.log(msg.responseText);
 				
 			},
 		});
