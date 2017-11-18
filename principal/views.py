@@ -7,11 +7,12 @@ from banco.forms import LancamentosBancoForm
 from banco.models import LancamentosBanco, ContaBanco, SaldoBanco
 from contas_a_pagar.models import ContasAPagar
 from django.contrib.auth.forms import UserCreationForm
-from usuario.forms import UsuarioForm, LoginForm
+from usuario.forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django import forms
-from banco.models import ContaBanco, LancamentosBanco
+from banco.models import ContaBanco, LancamentosBanco, SaldoBanco
+from caixa.models import SaldoCaixa
 from metas.models import Metas
 import json
 
@@ -20,13 +21,30 @@ def index(request):
 	template = 'principal/index.html'
 
 	if request.method == 'POST':
-		form = UsuarioForm(request.POST)
+		form = RegisterForm(request.POST)
 		if form.is_valid():
+			print("Usuário")
 			user = form.save()
+
+			#criar saldo caixa para o usuario
+			saldoC = SaldoCaixa()
+			saldoC.saldoAnterior = 0
+			saldoC.saldoAtual = 0
+			saldoC.user = user
+			saldoC.save()
+
+			#criar saldo banco para o usuario
+			saldoB = SaldoBanco()
+			saldoB.saldoAnterior = 0
+			saldoB.saldoAtual = 0
+			saldoB.user = user
+			saldoB.save()
+
 			user = authenticate(username = user.username, password = form.cleaned_data['password1'])
 			login(request, user)
 			return redirect('principal:home')
 		else:
+			print("Login")
 			form = LoginForm(request.POST)
 
 			if form.is_valid():
@@ -39,7 +57,7 @@ def index(request):
 				if usuario is not None:
 					login(request, usuario)
 					return redirect('principal:home')
-	form = UsuarioForm()
+	form = RegisterForm()
 	form2 = LoginForm()
 	context = {'form': form, 'form2':form2}
 	return render(request, template, context)

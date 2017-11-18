@@ -16,12 +16,12 @@ class LoginForm(forms.Form):
  	senha = forms.CharField(label = 'Senha', max_length=50, widget=forms.PasswordInput())
 
 # adicionando o campo email no formulario do cadastro
-class UsuarioForm(UserCreationForm):
+class RegisterForm(UserCreationForm):
 
 	email = forms.EmailField(label='E-mail')
 
 	def __init__ (self, *args, **kwargs):
-		super (UsuarioForm, self).__init__(*args, **kwargs)
+		super (RegisterForm, self).__init__(*args, **kwargs)
 		for field in iter(self.fields):
 			self.fields[field].widget.attrs.update({'class': 'form-control'})
 
@@ -33,7 +33,7 @@ class UsuarioForm(UserCreationForm):
 	# sobreescrevendo o save de UserCreationForm
 	def save (self, commit = True):
 
-		user = super(UsuarioForm, self).save(commit=False)
+		user = super(RegisterForm, self).save(commit=False)
 		user.email = self.cleaned_data['email']
 		if commit:
 			user.save()
@@ -46,3 +46,16 @@ class UsuarioForm(UserCreationForm):
 		if User.objects.filter(email=email).exists():
 			raise forms.ValidationError('Já existe um usuário com esse e-mail')
 		return email
+
+
+class EditAccountsForm(forms.ModelForm):
+	def clean_email(self):
+		email = self.cleaned_data['email']
+		queryset = User.objects.filter(email = email).exclude(pk = self.instance.pk)
+		if(queryset.exists()):
+			raise forms.ValidationError('Já existe usuário com este email')
+		return email
+
+	class Meta:
+		model = User
+		fields = ['username', 'email', 'first_name', 'last_name']
