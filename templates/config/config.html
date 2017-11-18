@@ -19,23 +19,22 @@
                     <h2>Dados do Usuário</h2>
                 </div>
                 <div class="body">
-                    <form class="form-horizontal">
+                    <form class="form" method="POST">
+                        {% csrf_token %}
                         <!-- Foto do Usuário -->
                         <div class="row clearfix">
                             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
                                 <label>Foto de Perfil</label>
                             </div>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
-                                <form action="/" method="post" enctype="multipart/form-data">
-                                    <div class="dz-message">
-                                        <div class="drag-icon-cph">
-                                            <i class="material-icons">touch_app</i>
-                                        </div>
+                                <div class="dz-message">
+                                    <div class="drag-icon-cph">
+                                        <i class="material-icons">touch_app</i>
                                     </div>
-                                    <div class="fallback">
-                                        <input name="file" type="file" />
-                                    </div>
-                                </form> 
+                                </div>
+                                <div class="fallback">
+                                    <input name="file" type="file" />
+                                </div>
                             </div>
                         </div>
                         <!-- Nome do Usuário -->
@@ -46,7 +45,7 @@
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
                                 <div class="form-group">
                                     <div class="form-line">
-                                        <input type="text" class="form-control">
+                                        {{ formConfig.first_name }}
                                     </div>
                                 </div>
                             </div>
@@ -59,27 +58,27 @@
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
                                 <div class="form-group">
                                     <div class="form-line">
-                                        <input type="text" class="form-control">
+                                        {{ formConfig.username }}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Senha -->
+                        <!-- Email -->
                         <div class="row clearfix">
                             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
-                                <label>Senha</label>
+                                <label>Email</label>
                             </div>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
                                 <div class="form-group">
                                     <div class="form-line">
-                                        <input type="password" class="form-control">
+                                        {{ formConfig.email }}
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row clearfix">
                             <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-4 col-xs-offset-5">
-                                <button type="button" class="btn btn-primary m-t-15 waves-effect">SALVAR</button>
+                                <button type="submit" class="btn btn-primary m-t-15 waves-effect">SALVAR</button>
                             </div>
                         </div>
                     </form>
@@ -95,21 +94,22 @@
                     <h2>Dado de Acesso</h2>
                 </div>
                 <div class="body">
-                    <form class="form-horizontal">
-                        <!-- Email do Usuário -->
+                    <form class="form-horizontal" method="POST">
+                        {% csrf_token %}
+                        <!-- Senha do Usuário -->
                         <div class="row clearfix">
                             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
-                                <label>Email</label>
+                                <label>Senha</label>
                             </div>
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
                                 <div class="form-group">
                                     <div class="form-line">
-                                        <input type="text" class="form-control">
+                                        {{ formConfig2.password2 }}
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-4 col-xs-offset-5">
-                                <button type="button" class="btn btn-primary m-t-15 waves-effect">CONFIRMAR</button>
+                                <button type="submit" class="btn btn-primary m-t-15 waves-effect">CONFIRMAR</button>
                             </div>
                         </div>
                     </form>
