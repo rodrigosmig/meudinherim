@@ -53,6 +53,10 @@ $(document).ready(function() {
                     {{ m.progresso }}
             </div>
         </div>
+        {% empty %}
+            <div class="l-box">
+                <p>Sem metas cadastradas</p>
+            </div>
         {% endfor %}
     </div>
 </div>
