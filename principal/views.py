@@ -14,6 +14,7 @@ from django import forms
 from banco.models import ContaBanco, LancamentosBanco, SaldoBanco
 from caixa.models import SaldoCaixa
 from metas.models import Metas
+from usuario.models import UsuarioProfile
 import json
 
 
@@ -39,6 +40,11 @@ def index(request):
 			saldoB.saldoAtual = 0
 			saldoB.user = user
 			saldoB.save()
+
+			#criar registro na tabela de foto
+			userFoto = UsuarioProfile()
+			userFoto.user = user
+			userFoto.save()
 
 			user = authenticate(username = user.username, password = form.cleaned_data['password1'])
 			login(request, user)
@@ -68,6 +74,9 @@ def home(request):
 	context = {}
 	#id do usuario logado
 	user = request.user
+
+	userProfile = UsuarioProfile.objects.get(user = user)
+	context['profile'] = userProfile
 
 	eventosCaixa = []
 	eventosBanco = []

@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from metas.forms import MetasForm
 from metas.models import Metas
+from usuario.models import UsuarioProfile
 import json
 
 @login_required
@@ -48,6 +49,9 @@ def metas(request):
 	form = MetasForm() 	
 
 	contexto['formCad'] = form
+
+	userProfile = UsuarioProfile.objects.get(user = request.user)
+	contexto['profile'] = userProfile
 
 	return render(request, template, contexto)
 

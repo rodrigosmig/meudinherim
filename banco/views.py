@@ -6,6 +6,7 @@ from caixa.models import Categoria, SaldoCaixa
 from banco.forms import ContaBancoForm, LancamentosBancoForm
 from caixa.forms import LancamentosForm
 from django import forms
+from usuario.models import UsuarioProfile
 
 @login_required
 def cadastroBanco(request):
@@ -33,6 +34,9 @@ def cadastroBanco(request):
 	#busca o saldo de Banco do usuario e atribui ao contexto
 	saldoB = SaldoBanco.objects.get(user = request.user)
 	contexto['saldoBanco'] = saldoB.saldoAtual
+
+	userProfile = UsuarioProfile.objects.get(user = request.user)
+	contexto['profile'] = userProfile
 
 	return render(request, template, contexto)
 
@@ -81,6 +85,9 @@ def banco(request):
 	#para adicionar lancamento
 	contexto['formLancCaixa'] = formCaixa
 	contexto['formLancBanco'] = formBanco
+
+	userProfile = UsuarioProfile.objects.get(user = request.user)
+	contexto['profile'] = userProfile
 
 	return render(request, template, contexto)
 

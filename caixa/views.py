@@ -10,6 +10,7 @@ from django import forms
 from datetime import datetime
 from django.core import serializers
 import json
+from usuario.models import UsuarioProfile
 
 @login_required
 def lancamentos(request):
@@ -75,6 +76,9 @@ def lancamentos(request):
 	contexto['formLancCaixa'] = formCaixa
 	contexto['formLancBanco'] = formBanco
 
+	userProfile = UsuarioProfile.objects.get(user = request.user)
+	contexto['profile'] = userProfile
+
 	return render(request, template, contexto)
 
 @login_required
@@ -137,6 +141,9 @@ def categoria(request):
 	#para adicionar lancamento
 	contexto['formLancCaixa'] = formCaixa
 	contexto['formLancBanco'] = formBanco
+
+	userProfile = UsuarioProfile.objects.get(user = user)
+	contexto['profile'] = userProfile
 
 	return render(request, template, contexto)
 
