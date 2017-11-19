@@ -230,6 +230,7 @@ def pagamento(request):
 			caixa.descricao = conta.descricao
 			caixa. valor = conta.valor
 			caixa.user = request.user
+			caixa.conta_a_pagar = conta
 
 			#diminui o saldo do usuário
 			saldoCaixa.saldoAtual -= caixa.valor
@@ -252,6 +253,7 @@ def pagamento(request):
 					banco.descricao = conta.descricao
 					banco. valor = conta.valor
 					banco.user = request.user
+					banco.conta_a_pagar = conta
 					
 					saldoBanco.saldoAtual -= banco.valor
 

@@ -137,12 +137,12 @@ $(function() {
 	
 	
 	for(var x = 0; x <= mesAtual; x++) {
-		if(x === mesAtual) {
-			conteudo += "<option value =" + (x + 1) + " selected>" + meses[x] + "</option>";
-		}
-		else {
-			conteudo += "<option value =" + (x + 1) + ">" + meses[x] + "</option>";
-		}
+		// if(x === mesAtual) {
+		// 	conteudo += "<option value =" + (x + 1) + " selected>" + meses[x] + "</option>";
+		// }
+		// else {
+		conteudo += "<option value =" + (x + 1) + ">" + meses[x] + "</option>";
+		// }
 	}
 	$('#lanc_meses').html(conteudo);
 	$('#lanc_meses_change').html(conteudo);
