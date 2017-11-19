@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load staticfiles %}
+
 {% block activeConfig %}<li class="active">{% endblock %}
 
 {% block content %}
@@ -18,6 +20,17 @@
                 <div class="header">
                     <h2>Dados do Usuário</h2>
                 </div>
+                {% csrf_token %}
+                {% if success %}
+                <p>Os dados foram alterados com sucesso</p>
+                {% endif %}
+
+                <!-- retorno de erros -->
+                {% if erros %}
+                    <ul><li>{{ mensagem }}</li></ul>
+                {% endif %}
+
+                <!-- retorno de erros -->
                 <div class="body">
                     <form class="form" method="POST">
                         {% csrf_token %}
@@ -45,8 +58,9 @@
                             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
                                 <div class="form-group">
                                     <div class="form-line">
-                                        {{ formConfig.first_name }}
+                                         {{ formConfig.first_name.errors }}
                                     </div>
+                                    {{ formConfig.first_name }}
                                 </div>
                             </div>
                         </div>
@@ -59,7 +73,9 @@
                                 <div class="form-group">
                                     <div class="form-line">
                                         {{ formConfig.username }}
+
                                     </div>
+                                    {{ formConfig.username.errors }}
                                 </div>
                             </div>
                         </div>
@@ -73,51 +89,55 @@
                                     <div class="form-line">
                                         {{ formConfig.email }}
                                     </div>
+                                    {{ formConfig.email.errors }}
                                 </div>
                             </div>
                         </div>
                         <div class="row clearfix">
                             <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-4 col-xs-offset-5">
                                 <button type="submit" class="btn btn-primary m-t-15 waves-effect">SALVAR</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row clearfix">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="card">
-                <div class="header">
-                    <h2>Dado de Acesso</h2>
-                </div>
-                <div class="body">
-                    <form class="form-horizontal" method="POST">
-                        {% csrf_token %}
-                        <!-- Senha do Usuário -->
-                        <div class="row clearfix">
-                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
-                                <label>Senha</label>
-                            </div>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
-                                <div class="form-group">
-                                    <div class="form-line">
-                                        {{ formConfig2.password2 }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-4 col-xs-offset-5">
-                                <button type="submit" class="btn btn-primary m-t-15 waves-effect">CONFIRMAR</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+                                <a class="btn btn-primary m-t-15 waves-effect alterar-senha" data-toggle="modal" href="#editSenha" title="Alterar senha">ALTERAR SENHA</a>
 
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>    
 </section>
+
+<!-- Modal Edição de Senha -->
+<div class="modal fade" id="editSenha" tabindex="-1" role="dialog" aria-labelledby="LabelSenha" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card"
+                <!-- Título -->
+                <div class="header">
+                    <h4 id="LabelSenha">Editar | <small>Senha</small></h4>
+                </div>
+                <!-- Campos -->
+                <form method="POST" action="/config/edit-senha/">
+                    {% csrf_token %}    
+                        <div id="editPass" class="modal-body">        
+                            {% for campo in formSenha %}
+                                {{ campo.label_tag }}
+                                {{ campo }} 
+                                {{ campo.errors }}                                   
+                            {% endfor %} 
+                        </div>
+                         
+                    <!-- Salvar/Cancelar -->
+                    <div class="modal-footer">
+                        <button type='submit' class="btn btn-success waves-effect salvar" >Salvar</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>    
+<!-- Modal Edição de Senha -->
     
 {% endblock %}

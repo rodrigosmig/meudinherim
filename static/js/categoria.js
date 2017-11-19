@@ -49,10 +49,6 @@ $(function() {
 		var tipo = $('#id_tipo-alter_categoria').val();
 		var desc = $('#id_descricao-alter_categoria').val();
 
-		console.log(id);
-		console.log(tipo);
-		console.log(desc);
-
 		$.ajax({
 			type: 'POST',
 			url: '/caixa/edit-categoria/',
