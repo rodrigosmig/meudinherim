@@ -20,7 +20,6 @@
                 <div class="header">
                     <h2>Dados do Usuário</h2>
                 </div>
-                {% csrf_token %}
                 {% if success %}
                 <p>Os dados foram alterados com sucesso</p>
                 {% endif %}
@@ -34,22 +33,7 @@
                 <div class="body">
                     <form class="form" method="POST">
                         {% csrf_token %}
-                        <!-- Foto do Usuário -->
-                        <div class="row clearfix">
-                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
-                                <label>Foto de Perfil</label>
-                            </div>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
-                                <div class="dz-message">
-                                    <div class="drag-icon-cph">
-                                        <i class="material-icons">touch_app</i>
-                                    </div>
-                                </div>
-                                <div class="fallback">
-                                    <input name="file" type="file" />
-                                </div>
-                            </div>
-                        </div>
+                        
                         <!-- Nome do Usuário -->
                         <div class="row clearfix">
                             <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
@@ -98,11 +82,36 @@
                                 <button type="submit" class="btn btn-primary m-t-15 waves-effect">SALVAR</button>
                                 <a class="btn btn-primary m-t-15 waves-effect alterar-senha" data-toggle="modal" href="#editSenha" title="Alterar senha">ALTERAR SENHA</a>
 
-
                             </div>
                         </div>
                     </form>
                 </div>
+            </div>
+            <div class="card">
+
+                <!-- Foto do Usuário -->
+                <div class="row clearfix">
+                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
+                        <label>Foto de Perfil</label>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
+                        <div class="dz-message">
+                            <div class="drag-icon-cph">
+                                <i class="material-icons">touch_app</i>
+                            </div>
+                        </div>
+                        <form class="form" method="POST" action="/config/edit-foto/" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="fallback">
+                                {{ formFoto.foto }}
+                            </div>
+                            <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-4 col-xs-offset-5">
+                                <button type="submit" class="btn btn-primary m-t-15 waves-effect">SALVAR</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>    

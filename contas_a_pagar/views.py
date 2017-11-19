@@ -8,6 +8,7 @@ from banco.models import SaldoBanco, ContaBanco, LancamentosBanco
 from banco.forms import LancamentosBancoForm
 from caixa.forms import LancamentosForm
 from django import forms
+from usuario.models import UsuarioProfile
 from django.core import serializers
 import json
 
@@ -80,6 +81,9 @@ def contasAPagar(request):
 	#para adicionar lancamento
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco
+
+	userProfile = UsuarioProfile.objects.get(user = request.user)
+	context['profile'] = userProfile
 
 	return render(request, template, context)
 
