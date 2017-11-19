@@ -23,6 +23,7 @@ def metas(request):
 		if(form.is_valid()):
 			cadastroMeta=form.save(commit = False)
 			cadastroMeta.user=request.user
+			cadastroMeta.progresso = 0
 			cadastroMeta.save()
 			return HttpResponseRedirect('/metas/')	
 
