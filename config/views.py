@@ -6,6 +6,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordChangeForm
 from usuario.forms import EditAccountsForm, UsuarioProfileForm
 from usuario.models import UsuarioProfile
+from banco.models import ContaBanco, LancamentosBanco, SaldoBanco
+from caixa.models import Categoria, SaldoCaixa
+from banco.forms import ContaBancoForm, LancamentosBancoForm
+from caixa.forms import LancamentosForm
+from django import forms
+
+
 
 @login_required
 def config(request):
@@ -63,6 +70,14 @@ def config(request):
 
     userProfile = UsuarioProfile.objects.get(user = request.user)
     contexto['profile'] = userProfile
+
+    #busca o saldo de Caixa do usuario e atribui ao contexto
+    saldoC = SaldoCaixa.objects.get(user = request.user)
+    contexto['saldoCaixa'] = saldoC.saldoAtual
+
+    #busca o saldo de Banco do usuario e atribui ao contexto
+    saldoB = SaldoBanco.objects.get(user = request.user)
+    contexto['saldoBanco'] = saldoB.saldoAtual
     
     return render(request, template, contexto)
 
