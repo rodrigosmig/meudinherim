@@ -263,10 +263,12 @@ def editLancamento(request):
 			saldo = 0
 			
 			for l in lancamentos:
+				print(saldo)
 				if (l.categoria.tipo == '1'):
 					saldo += l.valor
 				else:
 					saldo -= l.valor
+
 								
 			saldoCaixa.saldoAtual = saldo
 			saldoCaixa.save()

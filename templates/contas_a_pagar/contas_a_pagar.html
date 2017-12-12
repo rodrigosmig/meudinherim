@@ -8,7 +8,7 @@
 <!-- JQuery DataTable Css -->
 <link href="{% static 'plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
 
-<link href="{% static 'css/banco.css' %}" rel="stylesheet">
+<link href="{% static 'css/contas_a_pagar.css' %}" rel="stylesheet">
 
 <!-- Jquery DataTable Plugin Js -->
 <script src="{% static 'plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
@@ -98,7 +98,7 @@ $( function() {
                                         </td>
                                     {% else %}
                                         <td>
-                                            <i class="material-icons" style="color: green"><span data-cp="{{ cp.id }}">done</span></i>
+                                            <i class="material-icons pago"><span class="cancelPay" data-cp="{{ cp.id }}"><a data-toggle="modal" href="" title="Clique para cancelar o pagamento">done</span></i>
                                         </td>
                                     {% endif %}
                                 </tr>

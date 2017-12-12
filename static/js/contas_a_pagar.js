@@ -77,13 +77,20 @@ $(function() {
 			url: '/contas_a_pagar/edit/',
 			data: dados,
 			success: function(msg) {
+				$('#editContasPagar').modal('hide');
 				//mensagem de confirmação
-				alert(msg);
-				//recarregar pagina
-				location.reload();
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//recarrega a página
+						location.reload();
+					}
+				});	
 			},
 			error: function(msg) {
-				alert(msg);
+				$.alert(msg.responseText);
 			},
 		});		
 	});
@@ -91,24 +98,56 @@ $(function() {
 	$('.excluir').click(function(evento) {
 		evento.preventDefault();
 
-		if(confirm("Tem certeza que deseja excluir o lançamento?")) {
-			var dados = recuperCampos();
-			$.ajax({
-				type: 'POST',
-				url: 'delete/',
-				data: dados,
-				success: function(msg) {
-					//mensagem de confirmação
-					alert(msg);
-					//recarregar pagina
-					location.reload();
-				},
-				error: function(msg) {
-					//mensagem de retorno em caso de erro
-					alert(msg)
-				},
-			});
-		}
+		var dados = recuperCampos();
+		$.ajax({
+    		type: 'POST',
+			url: 'verificar/',
+			data: {
+				'id': dados.id,
+				'csrfmiddlewaretoken': csrftokenPOST,
+			},
+			success: function(id_pagamento) {
+				$.confirm({
+				    title: 'Excluir pagamento!',
+				    content: 'Tem certeza que deseja excluir o pagamento?',
+				    draggable: true,
+				    theme: 'material',
+				    buttons: {
+				        Sim: function () {
+				        	$.ajax({
+				        		type: 'POST',
+								url: 'delete/',
+								data: {
+									'id': id_pagamento,
+									'csrfmiddlewaretoken': csrftokenPOST,
+								},
+								success: function(msg) {
+									//mensagem de confirmação
+									$.alert({
+										title: false,
+										content: msg,
+										theme: 'material',
+										onClose: function() {
+											//recarrega a página
+											location.reload();
+										}
+									});					
+								},
+								error: function(msg) {
+									//mensagem de retorno em caso de erro
+									$.alert(msg.responseText);
+								},
+				        	})
+				        },
+				        Não: function() {},
+				    }
+				});
+			},
+			error: function(msg) {
+				//mensagem de retorno em caso de erro
+				$.alert(msg.responseText)
+			},
+    	})
 	});
 
 	function recuperCampos() {
@@ -166,6 +205,47 @@ $(function() {
 		campos.append($("<input type='text'>").addClass("form-control").prop('disabled', true).prop('id', 'val_pagam').val(valor));
 	});
 
+	$('.cancelPay').on('click', function() {
+		var id_pagamento = $(this).attr('data-cp');
+		cancelado = false;
+
+		$.confirm({
+		    title: 'Cancelar pagamento!',
+		    content: 'Tem certeza que deseja cancelar o pagamento?',
+		    draggable: true,
+		    theme: 'material',
+		    buttons: {
+		        Sim: function () {
+		        	$.ajax({
+		        		type: 'POST',
+						url: '/contas_a_pagar/cancelar/',
+						data: {
+							'id': id_pagamento,
+							'csrfmiddlewaretoken': csrftokenPOST,
+						},
+						success: function(msg) {
+							//mensagem de confirmação
+							$.alert({
+								title: false,
+								content: msg + ' O lançamento gerado pelo pagamento foi excluído.',
+    							onClose: function() {
+    								//recarrega a página
+    								location.reload();
+    							}
+							});						
+						},
+						error: function(msg) {
+							//mensagem de retorno em caso de erro
+							$.alert(msg.responseText)
+						},
+		        	})
+		        },
+		        Não: function() {},
+		    }
+		});		
+	});
+
+
 	$('.conta_select').on('change', function() {
 		var tipo = $(this).attr('data-tipo');
 		if(tipo === 'caixa') {
@@ -208,19 +288,6 @@ $(function() {
 		}
 
 		var id = $(this).attr('data-cp');
-		// var data = $('#data_pagam').val();
-		// var categoria = $('#cat_pagam').val();
-		// var descricao = $('#desc_pagam').val();
-		// var valor = $('#val_pagam').val();
-
-		// dados = {
-		// 	'banco': banco,
-		// 	'data': data,
-		// 	'categoria': categoria,
-		// 	'descricao': descricao,
-		// 	'valor': valor,
-		// 	'csrfmiddlewaretoken': csrftokenPOST
-		// }
 		
 		$.ajax({
 			type: 'POST',

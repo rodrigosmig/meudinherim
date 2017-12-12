@@ -34,8 +34,6 @@
         <!-- Temas -->
         <link href="{% static 'css/themes/all-themes.css' %}" rel="stylesheet" />
 
-        <!-- Chamadas JS -->
-
         <!-- Jquery Core Js -->
         <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
 
@@ -85,7 +83,10 @@
         {% block staticContasPagar %}{% endblock %}
         {% block staticMetas %}{% endblock %}
 
-        <!-- Chamadas JS -->
+
+        <!-- Chamadas JS Alertas -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
 
         <!-- Datapicker-->
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">

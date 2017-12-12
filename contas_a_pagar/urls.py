@@ -8,4 +8,6 @@ urlpatterns = [
     url(r'^delete/', views.delContasPagar, name='delete'),
     url(r'^banco/', views.banco, name='banco'),
     url(r'^pagar/', views.pagamento, name='pagar'),
+    url(r'^cancelar/', views.cancelaPagamento, name='cancelar'),
+    url(r'^verificar/', views.verificarPagamento, name='verificar'),
 ]

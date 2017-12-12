@@ -16,13 +16,13 @@ import json
 def contasAPagar(request):
 	if(request.method == 'POST'):
 		form = ContasAPagarForm(request.POST)
-		print(form)
+
 		if(form.is_valid()):
 			contaPagar = form.save(commit = False)
 			contaPagar.user = request.user
 			contaPagar.paga = False
 			contaPagar.save()
-			return HttpResponseRedirect('/contas_a_pagar/')
+			return HttpResponse('Conta a pagar adicionada com sucesso')
 
 	template = 'contas_a_pagar/contas_a_pagar.html'
 
@@ -94,13 +94,9 @@ def editContasPagar(request):
 		id_user = request.user.id
 		#id do lancamento clicado
 		idConta = request.POST.get('id')
-		print(idConta)
+
 		#busca o lancamento a ser alterado
 		conta = ContasAPagar.objects.get(pk = idConta)
-
-		print(conta)
-		
-		print(request.POST)
 		
 		#atribui o lancamento ao form	
 		form = ContasAPagarForm(request.POST, instance = conta)
@@ -196,7 +192,7 @@ def banco(request):
 
 	return HttpResponseServerError("Banco não encontrado")
 
-
+@login_required
 def pagamento(request):
 	if(request.method == 'POST'):
 		#id do usuario
@@ -221,7 +217,9 @@ def pagamento(request):
 
 		#verifica se o pagamento é no caixa ou no banco
 		if(tipoPagamento == ""):
-			
+			#para pagamento feito no caixa
+			conta.tipo_conta = "c"
+
 			#cadastra o lancamento do caixa de acordo com os dados da conta
 			caixa = LancamentosCaixa()
 
@@ -239,6 +237,8 @@ def pagamento(request):
 			saldoCaixa.save()
 	
 		else:
+			#para pagamento feito no banco
+			conta.tipo_conta = "b"
 
 			agencias = ContaBanco.objects.filter(user_id = id_user)
 
@@ -264,3 +264,46 @@ def pagamento(request):
 		conta.save()
 		
 		return HttpResponse("Pagamento efetuado com sucesso")
+
+@login_required
+def cancelaPagamento(request):
+	if(request.method == 'POST'):
+		user = request.user
+		idPagamento = request.POST.get('id')
+
+		conta = ContasAPagar.objects.get(pk = idPagamento)
+
+		if(conta.user == user):
+			if(conta.tipo_conta == "c"):
+				#busca o lançamento gerado pelo pagamento
+				lancamentoCaixa = LancamentosCaixa.objects.get(conta_a_pagar = conta)
+				#deleta o lançamento gerado pelo pagamento
+				lancamentoCaixa.delete()
+				#muda o status do pagamento
+				conta.paga = False
+				#deixa em branco o tipo da conta de pagamento
+				conta.tipo_conta = None
+
+				#busca o saldo do caixa do usuario logado e faz o ajuste
+				saldoCaixa = SaldoCaixa.objects.get(user = user)
+				saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
+				saldoCaixa.saldoAtual += conta.valor
+				saldoCaixa.save()
+
+				conta.save()
+
+			return HttpResponse('Pagamento cancelado com sucesso.')
+
+	return HttpResponseServerError("Pagamento não encontrado. Tente novamente.")
+
+@login_required
+def verificarPagamento(request):
+	if(request.method == 'POST'):
+		idPagamento = request.POST.get('id')
+		conta = ContasAPagar.objects.get(pk = idPagamento)
+		if(conta.paga):
+			return HttpResponseServerError('Conta está paga. Cancele o pagamento antes de excluir.')
+		else:
+			return HttpResponse(idPagamento)
+	else:
+		HttpResponseServerError("Conta inexistente")

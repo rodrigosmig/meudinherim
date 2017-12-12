@@ -8,6 +8,7 @@ class ContasAPagar(models.Model):
 	descricao = models.CharField(max_length = 32)
 	valor = models.DecimalField(max_digits = 6, decimal_places = 2)
 	paga = models.BooleanField(blank = True)
+	tipo_conta = models.CharField(max_length = 1, blank = True, null = True)
 	user = models.ForeignKey(User, on_delete = models.CASCADE)
 
 

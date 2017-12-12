@@ -35,7 +35,7 @@ class LancamentosBanco(models.Model):
 	descricao = models.CharField(max_length = 32)
 	valor = models.DecimalField(max_digits = 6, decimal_places = 2)
 	user = models.ForeignKey(User, on_delete = models.CASCADE)
-	conta_a_pagar = models.ForeignKey(ContasAPagar, on_delete = models.CASCADE, blank = True)
+	conta_a_pagar = models.ForeignKey(ContasAPagar, on_delete = models.CASCADE, blank = True, null = True)
 
 	def __str__(self):
 
