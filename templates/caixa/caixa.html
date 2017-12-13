@@ -43,7 +43,7 @@
 
                     <ul class="header-dropdown">                  
                         {% if saldoCaixa < 0  %}
-                            <h2 class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</h2>
+                            <h2 class="saldoCaixa" style="color: red"> Saldo: -{{ saldoCaixa }}</h2>
                         {% else %}
                             <h2 class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</h2>
                         {% endif %}
@@ -141,7 +141,7 @@
                                         <td style="color: blue">{{ l.valor }}</td>
       
                                     {% else %}
-                                        <td style="color: red">{{ l.valor }}</td>
+                                        <td style="color: red">-{{ l.valor }}</td>
                                         
                                     {% endif %}
                                     <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>

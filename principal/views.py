@@ -87,7 +87,7 @@ def home(request):
 	#carrega os lançamentos do banco do usuário
 	lancamentosBanco = LancamentosBanco.objects.filter(user = user)
 	#carrega as contas a pagar do usuário
-	contasAPagar = ContasAPagar.objects.filter(user = user)
+	contasAPagar = ContasAPagar.objects.filter(user = user).filter(paga = False)
 
 	#separa os dados do caixa que serão utilizados no calendario em um tupla
 	for lancamento in lancamentosCaixa:
