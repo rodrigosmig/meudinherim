@@ -66,6 +66,48 @@ $(function() {
 		});
 	});
 
+	$('.adicionar').click(function(evento) {
+		evento.preventDefault();
+		
+		var data = $('#datepickerCP').val();
+		var categoria = $('#id_categoria').val();
+		var descricao = $('#id_descricao').val();
+		var valor = $('#id_valor').val();
+
+		$.ajax({
+			type: 'POST',
+			url: '/contas_a_pagar/',
+			data: {
+				'data': data,
+				'categoria': categoria,
+				'descricao': descricao,
+				'valor': valor,
+				'csrfmiddlewaretoken': csrftokenPOST,
+			},
+			success: function(msg) {
+				$('#contas_a_pagar').modal('hide');
+				//mensagem de confirmação
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//recarrega a página
+						location.reload();
+					}
+				});	
+				$('#datepickerCP').val("");
+				$('#id_categoria').val("");
+				$('#id_descricao').val("");
+				$('#id_valor').val("");
+
+			},
+			error: function(msg) {
+				$.alert(msg.responseText);
+			},
+		});		
+	});
+
 	$('.salvar').click(function(evento) {
 		evento.preventDefault();
 		
@@ -122,6 +164,7 @@ $(function() {
 									'csrfmiddlewaretoken': csrftokenPOST,
 								},
 								success: function(msg) {
+									$('#editContasPagar').modal('hide');
 									//mensagem de confirmação
 									$.alert({
 										title: false,
@@ -227,6 +270,7 @@ $(function() {
 							//mensagem de confirmação
 							$.alert({
 								title: false,
+								theme: 'material',
 								content: msg + ' O lançamento gerado pelo pagamento foi excluído.',
     							onClose: function() {
     								//recarrega a página
@@ -298,10 +342,17 @@ $(function() {
 				'csrfmiddlewaretoken': csrftokenPOST
 			},
 			success: function(msg) {
+				$('#pagamentoConta').modal('hide');
 				//mensagem de confirmação
-				alert(msg);
-				//recarregar pagina
-				location.reload();
+				$.alert({
+					title: false,
+					theme: 'material',
+					content: msg,
+					onClose: function() {
+						//recarrega a página
+						location.reload();
+					}
+				});	
 			},
 			error: function(msg) {
 				alert(msg);

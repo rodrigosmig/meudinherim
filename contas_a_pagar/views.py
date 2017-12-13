@@ -38,33 +38,33 @@ def contasAPagar(request):
 	        )
 		)
 
-	formCaixa = LancamentosForm()
-	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
-	        )
-		)
+	# formCaixa = LancamentosForm()
+	# #seleciona apenas as categorias do usuario logado
+	# formCaixa.fields['categoria'] = forms.ModelChoiceField(
+	# 		queryset = Categoria.objects.filter(user_id = request.user.id),
+	# 		empty_label = 'Nenhum',
+	#         widget = forms.Select(
+	#             attrs = {'class': 'form-control'}
+	#         )
+	# 	)
 	
-	formBanco = LancamentosBancoForm()
-	#Seleciona apenas o banco do usuario para o formulario
-	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user_id = request.user.id),
-		empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control'}
-        )
-	)
-	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
-	        )
-		)
+	# formBanco = LancamentosBancoForm()
+	# #Seleciona apenas o banco do usuario para o formulario
+	# formBanco.fields['banco'] = forms.ModelChoiceField(
+	# 	queryset = ContaBanco.objects.filter(user_id = request.user.id),
+	# 	empty_label = 'Nenhum',
+ #        widget = forms.Select(
+ #            attrs = {'class': 'form-control'}
+ #        )
+	# )
+	# #seleciona apenas as categorias do usuario logado
+	# formBanco.fields['categoria'] = forms.ModelChoiceField(
+	# 		queryset = Categoria.objects.filter(user_id = request.user.id),
+	# 		empty_label = 'Nenhum',
+	#         widget = forms.Select(
+	#             attrs = {'class': 'form-control', 'id': 'categoria_banco'}
+	#         )
+	# 	)
 
 
 
@@ -79,8 +79,8 @@ def contasAPagar(request):
 	context['saldoBanco'] = saldoB.saldoAtual
 
 	#para adicionar lancamento
-	context['formLancCaixa'] = formCaixa
-	context['formLancBanco'] = formBanco
+	# context['formLancCaixa'] = formCaixa
+	# context['formLancBanco'] = formBanco
 
 	userProfile = UsuarioProfile.objects.get(user = request.user)
 	context['profile'] = userProfile
