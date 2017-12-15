@@ -38,7 +38,7 @@
                 <div class="header">
                    
                     {% if saldoBanco < 0  %}
-                        <h1 class ="saldoBanco" style="color: red"> Saldo: -{{ saldoBanco }}</h1>
+                        <h1 class ="saldoBanco" style="color: red"> Saldo: {{ saldoBanco }}</h1>
                     {% else %}
                          <h1 class="saldoBanco" style="color: blue"> Saldo: {{ saldoBanco }}</h1>
                     {% endif %}
