@@ -16,6 +16,7 @@ $(function() {
 	    }
 	    return cookieValue;
 	}
+
 	$('.openEdit').on('click', function() {
 		//atribui o id do lancamento a variavel
 		var id = $(this).attr('data-lanc');
@@ -62,70 +63,102 @@ $(function() {
 			},
 		});
 
-		$('.salvar').click(function(evento) {
-			evento.preventDefault();
-			
-			var dados = recuperCampos();
+	});
 
-			$.ajax({
-				type: 'POST',
-				url: '/banco/edit/',
-				data: dados,
-				success: function(msg) {
-					//mensagem de confirmação
-					alert(msg);
-					//recarregar pagina
-					location.reload();
-				},
-				error: function(msg) {
-					alert(msg);
-				},
-			});
+	$('.salvar').click(function(evento) {
+		evento.preventDefault();
+		
+		var dados = recuperCampos();
+
+		$.ajax({
+			type: 'POST',
+			url: '/banco/edit/',
+			data: dados,
+			success: function(msg) {
+				//mensagem de confirmação
+				alert(msg);
+				//recarregar pagina
+				location.reload();
+			},
+			error: function(msg) {
+				alert(msg);
+			},
 		});
+	});
 
-		$('.excluir').click(function(evento) {
-			evento.preventDefault();
-
-			if(confirm("Tem certeza que deseja excluir o lançamento?")) {
-				var dados = recuperCampos();
-				$.ajax({
-					type: 'POST',
-					url: 'delete/',
-					data: dados,
-					success: function(msg) {
-						//mensagem de confirmação
-						alert(msg);
-						//recarregar pagina
-						location.reload();
-					},
-					error: function(msg) {
-						//mensagem de retorno em caso de erro
-						alert(msg)
-					},
+	$('.excluir').click(function(evento) {
+		evento.preventDefault();
+		var dados = recuperCampos();
+		//verificar se o lançamento foi gerado pelo contas a pagar
+		$.ajax({
+			type: 'POST',
+			url: 'verificar/',
+			data: {
+				'id': dados.id,
+				'csrfmiddlewaretoken': csrftokenPOST,
+			},
+			success: function(id_lancamento) {
+				$.confirm({
+					title: 'Excluir lançamento!',
+				    content: 'Tem certeza que deseja excluir o lançamento?',
+				    draggable: true,
+				    theme: 'material',
+				    buttons: {
+				    	Sim: function() {
+				    		$.ajax({
+								type: 'POST',
+								url: 'delete/',
+								data: dados,
+								success: function(msg) {
+									//mensagem de confirmação
+									$.alert({
+										title: false,
+										content: msg,
+										theme: 'material',
+										onClose: function() {
+											//recarrega a página
+											location.reload();
+										}
+									});	
+								},
+								error: function(msg) {
+									//mensagem de retorno em caso de erro
+									$.alert(msg.responseText);
+								},
+							});
+				    	},
+				    	Não: function() {},
+				    }
 				});
-			}
+			},
+			error: function(msg) {
+				//mensagem de retorno em caso de erro
+				$.alert(msg.responseText);
+			},
 		});
+		
+	});
 
-		function recuperCampos() {
-			var id = $('#datepickerB').attr('data-lanc');
-			var banco = $('#id_banco').val();
-			var data = $('#datepickerB').val();
-			var tipo = $('#id_tipo').val();
-			var categoria = $('#categoria_banco').val();
-			var descricao = $('#desc_Banco').val();
-			var valor = $('#valor_banco').val();
+	function recuperCampos() {
+		var id = $('#datepickerB').attr('data-lanc');
+		var banco = $('#id_banco').val();
+		var data = $('#datepickerB').val();
+		var tipo = $('#id_tipo').val();
+		var categoria = $('#categoria_banco').val();
+		var descricao = $('#desc_Banco').val();
+		var valor = $('#valor_banco').val();
 
-			dados = {
-				'id': id,
-				'banco': banco,
-				'data': data,
-				'tipo': tipo,
-				'categoria': categoria,
-				'descricao': descricao,
-				'valor': valor,
-				'csrfmiddlewaretoken': csrftokenPOST
-			}
-			return dados;
+		dados = {
+			'id': id,
+			'banco': banco,
+			'data': data,
+			'tipo': tipo,
+			'categoria': categoria,
+			'descricao': descricao,
+			'valor': valor,
+			'csrfmiddlewaretoken': csrftokenPOST
 		}
-	})
-}) 
+		return dados;
+	}
+
+});

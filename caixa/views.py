@@ -358,4 +358,14 @@ def delLancamento(request):
 
 	return HttpResponse("Lançamento não encontrado.")
 
-	
+@login_required
+def verificarContasAPagar(request):
+	if(request.method == 'POST'):
+		idLancamentoCaixa = request.POST.get('id')
+		lancamento = LancamentosCaixa.objects.get(pk = idLancamentoCaixa)
+		if(lancamento.conta_a_pagar != None):
+			return HttpResponseServerError('Lançamento realizado pelo contas a pagar. Para excluir este lançamento, cancele seu pagamento em Contas a Pagar.')
+		else:
+			return HttpResponse(idLancamentoCaixa)
+	else:
+		HttpResponseServerError("Conta inexistente")

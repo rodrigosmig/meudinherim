@@ -155,7 +155,7 @@ $(function() {
 				    draggable: true,
 				    theme: 'material',
 				    buttons: {
-				        Sim: function () {
+				        Sim: function() {
 				        	$.ajax({
 				        		type: 'POST',
 								url: 'delete/',

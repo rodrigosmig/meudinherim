@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^add/', views.addLancamento, name='add'),
    	url(r'^editag/', views.editAgencia, name='editag'),
    	url(r'^delag/', views.delAgencia, name='delag'),
+   	url(r'^verificar/', views.verificarContasAPagar, name='verificar'),
 ]

@@ -38,36 +38,6 @@ def contasAPagar(request):
 	        )
 		)
 
-	# formCaixa = LancamentosForm()
-	# #seleciona apenas as categorias do usuario logado
-	# formCaixa.fields['categoria'] = forms.ModelChoiceField(
-	# 		queryset = Categoria.objects.filter(user_id = request.user.id),
-	# 		empty_label = 'Nenhum',
-	#         widget = forms.Select(
-	#             attrs = {'class': 'form-control'}
-	#         )
-	# 	)
-	
-	# formBanco = LancamentosBancoForm()
-	# #Seleciona apenas o banco do usuario para o formulario
-	# formBanco.fields['banco'] = forms.ModelChoiceField(
-	# 	queryset = ContaBanco.objects.filter(user_id = request.user.id),
-	# 	empty_label = 'Nenhum',
- #        widget = forms.Select(
- #            attrs = {'class': 'form-control'}
- #        )
-	# )
-	# #seleciona apenas as categorias do usuario logado
-	# formBanco.fields['categoria'] = forms.ModelChoiceField(
-	# 		queryset = Categoria.objects.filter(user_id = request.user.id),
-	# 		empty_label = 'Nenhum',
-	#         widget = forms.Select(
-	#             attrs = {'class': 'form-control', 'id': 'categoria_banco'}
-	#         )
-	# 	)
-
-
-
 	context = {'contPagar': contas, 'contPagarForm': form}
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
@@ -289,10 +259,27 @@ def cancelaPagamento(request):
 				saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
 				saldoCaixa.saldoAtual += conta.valor
 				saldoCaixa.save()
+				conta.save()
+			
+			else:
+				#busca o lançamento gerado pelo pagamento
+				lancamentoBanco = LancamentosBanco.objects.get(conta_a_pagar = conta)
+				#deleta o lançamento gerado pelo pagamento
+				lancamentoBanco.delete()
+				#muda o status do pagamento
+				conta.paga = False
+				#deixa em branco o tipo da conta de pagamento
+				conta.tipo_conta = None
 
+				#busca o saldo do caixa do usuario logado e faz o ajuste
+				saldoBanco = SaldoBanco.objects.get(user = user)
+				saldoBanco.saldoAnterior = saldoBanco.saldoAtual
+				saldoBanco.saldoAtual += conta.valor
+				saldoBanco.save()
 				conta.save()
 
 			return HttpResponse('Pagamento cancelado com sucesso.')
+
 
 	return HttpResponseServerError("Pagamento não encontrado. Tente novamente.")
 
