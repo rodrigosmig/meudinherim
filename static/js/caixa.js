@@ -24,7 +24,10 @@ $(function() {
 		$.ajax({
 			type: 'GET',
 			url: '/caixa/edit/',
-			data: {'id': id, 'csrfmiddlewaretoken': csrftokenGET},
+			data: {
+				'id': id, 
+				'csrfmiddlewaretoken': csrftokenGET
+			},
 			success: function(lancamento) {
 				//insere o form vindo do django na div editLanc
 				$('#editLanc').html(lancamento);
@@ -88,25 +91,54 @@ $(function() {
 
 	$('.excluir').click(function(evento) {
 		evento.preventDefault();
-
-		if(confirm("Tem certeza que deseja excluir o lançamento?")) {
-			var dados = recuperCampos();
-			$.ajax({
-				type: 'POST',
-				url: 'delete/',
-				data: dados,
-				success: function(msg) {
-					//mensagem de confirmação
-					alert(msg);
-					//recarregar pagina
-					location.reload();
-				},
-				error: function(msg) {
-					//mensagem de retorno em caso de erro
-					alert(msg)
-				},
-			});
-		}
+		var dados = recuperCampos();
+		//verificar se o lançamento foi gerado pelo contas a pagar
+		$.ajax({
+			type: 'POST',
+			url: 'verificar/',
+			data: {
+				'id': dados.id,
+				'csrfmiddlewaretoken': csrftokenPOST,
+			},
+			success: function(id_lancamento) {
+				$.confirm({
+					title: 'Excluir lançamento!',
+				    content: 'Tem certeza que deseja excluir o lançamento?',
+				    draggable: true,
+				    theme: 'material',
+				    buttons: {
+				    	Sim: function() {
+				    		$.ajax({
+								type: 'POST',
+								url: 'delete/',
+								data: dados,
+								success: function(msg) {
+									//mensagem de confirmação
+									$.alert({
+										title: false,
+										content: msg,
+										theme: 'material',
+										onClose: function() {
+											//recarrega a página
+											location.reload();
+										}
+									});	
+								},
+								error: function(msg) {
+									//mensagem de retorno em caso de erro
+									$.alert(msg.responseText);
+								},
+							});
+				    	},
+				    	Não: function() {},
+				    }
+				});
+			},
+			error: function(msg) {
+				//mensagem de retorno em caso de erro
+				$.alert(msg.responseText);
+			},
+		});		
 	});
 
 	function recuperCampos() {
@@ -157,7 +189,10 @@ $(function() {
 		$.ajax({
 			type: 'POST',
 			url: '/caixa/',
-			data: {'mes': mes, 'csrfmiddlewaretoken': csrftokenPOST},
+			data: {
+				'mes': mes, 
+				'csrfmiddlewaretoken': csrftokenPOST
+			},
 			datatype: 'json',
 			success: function(lancamentos) {
 				var table = $('#dataCaixaChange').DataTable();

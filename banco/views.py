@@ -194,7 +194,7 @@ def delLancamento(request):
 		lancamento = LancamentosBanco.objects.get(pk = idLancamento)
 
 		if(request.user.id == lancamento.user_id):
-			lancamento.delete()
+			# lancamento.delete()
 
 
 			saldoBanco = SaldoBanco.objects.get(user=request.user)
@@ -208,7 +208,8 @@ def delLancamento(request):
 					saldo -= l.valor
 
 			saldoBanco.saldoAtual = saldo 
-			saldoBanco.save()
+			# saldoBanco.save()
+			print("ok")
 
 			return HttpResponse("Lançamento excluído com sucesso")
 		else:
@@ -230,7 +231,6 @@ def editAgencia(request):
 
 		form = ContaBancoForm(request.POST,instance = agencia)
 
-		print (idAgencia+" dentro do post")
 		if (form.is_valid()):
 			form.save()
 
@@ -242,8 +242,6 @@ def editAgencia(request):
 
 	# id da agencia clicada
 	idAgencia = request.GET.get('idAgencia')
-
-	print (idAgencia+" depois do post")
 
 	agencia = ContaBanco.objects.get(pk = idAgencia)
 	
@@ -308,3 +306,16 @@ def delAgencia(request):
 		else:
 			return HttpResponseServerError("não econtrado")
 	return HttpResponseServerError("não econtrado")
+
+@login_required
+def verificarContasAPagar(request):
+	if(request.method == 'POST'):
+		idLancamentoBanco = request.POST.get('id')
+		lancamento = LancamentosBanco.objects.get(pk = idLancamentoBanco)
+		print(lancamento.conta_a_pagar)
+		if(lancamento.conta_a_pagar != None):
+			return HttpResponseServerError('Lançamento realizado pelo contas a pagar. Para excluir este lançamento, cancele seu pagamento em Contas a Pagar.')
+		else:
+			return HttpResponse(idLancamentoBanco)
+	else:
+		HttpResponseServerError("Conta inexistente")

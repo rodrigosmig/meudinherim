@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^delete-categoria/', views.delCategoria, name='delete-categoria'),
     url(r'^delete/', views.delLancamento, name='delete'),
     url(r'^add/', views.addLancamento, name='add'),
+    url(r'^verificar/', views.verificarContasAPagar, name='verificar'),
 ]

@@ -36,14 +36,17 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
-                   
-                    {% if saldoBanco < 0  %}
-                        <h1 class ="saldoBanco" style="color: red"> Saldo: {{ saldoBanco }}</h1>
-                    {% else %}
-                         <h1 class="saldoBanco" style="color: blue"> Saldo: {{ saldoBanco }}</h1>
-                    {% endif %}
+                    
+                    <ul class="header-dropdown">
+                        {% if saldoBanco < 0  %}
+                            <h2 class ="saldoBanco" style="color: red"> Saldo: {{ saldoBanco }}</h2>
+                        {% else %}
+                             <h2 class="saldoBanco" style="color: blue"> Saldo: {{ saldoBanco }}</h2>
+                        {% endif %}
+                    </ul>                    
 
                 </div>
+                
                 <div class="body">
                     <div class="table-responsive">
                         <table id="dataBanco" class="table table-bordered table-striped table-hover dataTable js-basic-example">
