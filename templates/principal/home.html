@@ -3,10 +3,6 @@
 
 {% block activeHome %}<li class="active">{% endblock %}
 
-{% block staticHome %}
-<script src="{% static 'js/home.js' %}"></script>
-{% endblock %}
-
 {% block scriptHome %}
 <link rel='stylesheet' href="{% static 'css/fullcalendar.css' %}" />
 <script src="{% static 'js/moment.min.js' %}"></script>
@@ -50,7 +46,7 @@ $(document).ready(function() {
         <h4>{{ m.titulo }}</h4>
         <div class="progress">
             <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: {{ m.progresso | cut:',' }}%">
-                    {{ m.progresso }}
+                    {{ m.progresso }}%
             </div>
         </div>
         {% empty %}
