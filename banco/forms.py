@@ -82,4 +82,4 @@ class LancamentosBancoForm(ModelForm):
 
 	class Meta:
 		model = LancamentosBanco
-		fields = ['banco', 'data', 'tipo', 'categoria', 'descricao', 'valor']
+		fields = ['data', 'banco', 'tipo', 'categoria', 'descricao', 'valor']

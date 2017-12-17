@@ -31,21 +31,21 @@ $(function() {
 
 				//Atribui o id do lancamento a uma tag e remove a div vinda do Django
 				var id_lancamento = $('#id_lancamento').html();
-				$('#datepickerB').attr('data-lanc', id_lancamento);
+				$('#datepicker-alter_banco').attr('data-lanc', id_lancamento);
 				$('#id_lancamento').remove();
 
-				var data = $("#datepickerB").val();
+				var data = $("#datepicker-alter_banco").val();
 				dia = data.substring(8);
 				mes = data.substring(5, 7);
 				ano = data.substring(0, 4)
 				newData = dia + "/" + mes + "/" + ano
 				//alterar a data para o formato brasileiro o lancamento carregado
-				$("#datepickerB").val(newData);
+				$("#datepicker-alter_banco").val(newData);
 
 				//diminui o tamanho do input
 				$('#id_banco').css('width', '150');
 
-				$("#datepickerB").datepicker({
+				$("#datepicker-alter_banco").datepicker({
                     dateFormat: 'dd/mm/yy',
                     dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
                     dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
@@ -81,7 +81,8 @@ $(function() {
 				location.reload();
 			},
 			error: function(msg) {
-				alert(msg);
+				alert(msg.responseText);
+				console.log(msg.responseText)
 			},
 		});
 	});
@@ -140,13 +141,13 @@ $(function() {
 	});
 
 	function recuperCampos() {
-		var id = $('#datepickerB').attr('data-lanc');
-		var banco = $('#id_banco').val();
-		var data = $('#datepickerB').val();
-		var tipo = $('#id_tipo').val();
-		var categoria = $('#categoria_banco').val();
-		var descricao = $('#desc_Banco').val();
-		var valor = $('#valor_banco').val();
+		var id = $('#datepicker-alter_banco').attr('data-lanc');
+		var banco = $('#id_banco-alter_banco').val();
+		var data = $('#datepicker-alter_banco').val();
+		var tipo = $('#id_tipo-alter_banco').val();
+		var categoria = $('#id_categoria-alter_banco').val();
+		var descricao = $('#id_descricao-alter_banco').val();
+		var valor = $('#id_valor-alter_banco').val();
 
 		dados = {
 			'id': id,

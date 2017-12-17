@@ -165,7 +165,7 @@ def editLancamento(request):
 		lancamento = LancamentosBanco.objects.get(pk = idLancamento)
 		#atribui o lancamento ao form	
 		form = LancamentosBancoForm(request.POST, instance = lancamento)
-
+		print(form)
 		if(form.is_valid()):
 			form.save()
 
@@ -188,15 +188,15 @@ def editLancamento(request):
 
 	#id do lancamento clicado
 	idLancamento = request.GET.get('id')
-	lancamento = LancamentosBanco.objects.get(pk = idLancamento)
-	
+	lancamento = LancamentosBanco.objects.get(pk = idLancamento)	
 	form = LancamentosBancoForm(instance = lancamento)
+
 	#seleciona apenas os banco do usuario logado
 	form.fields['banco'] = forms.ModelChoiceField(
 			queryset = ContaBanco.objects.filter(user_id = request.user.id),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
+	            attrs = {'class': 'form-control', 'id': 'id_banco-alter_banco'}
 	        )
 		)
 	#seleciona apenas as categorias do usuario logado
@@ -204,9 +204,39 @@ def editLancamento(request):
 			queryset = Categoria.objects.filter(user_id = request.user.id),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
+	            attrs = {'class': 'form-control', 'id': 'id_categoria-alter_banco'}
 	        )
 		)
+	form.fields['data'] = forms.DateField(
+		label = 'Data',
+		required = True,
+		widget = forms.TextInput(
+			attrs = {'class': 'form-control', 'id': 'datepicker-alter_banco'}
+		)
+    )
+	form.fields['tipo'] = forms.ChoiceField(
+		widget = forms.Select(
+            attrs = {'class': 'form-control', 'id': 'id_tipo-alter_banco'}
+        ),
+        choices = LancamentosBanco.TIPOS
+    )
+	form.fields['valor'] = forms.DecimalField(
+		label = 'Valor',
+        min_value = 0.01,
+        max_value = 9999.99,
+        required = True,
+        widget = forms.NumberInput(
+            attrs = {'class': 'form-control', 'id': 'id_valor-alter_banco'}
+        )
+    )
+	form.fields['descricao'] = forms.CharField(
+		label = 'Descrição',
+		max_length = 32,
+		required = True,
+		widget = forms.TextInput(
+		attrs = {'class': 'form-control', 'id': 'id_descricao-alter_banco'}
+        )
+    )
 
 	#retorna o id do lancamento junto com o formulario
 	divId = "<div id='id_lancamento'>" + idLancamento + "</div>"
@@ -228,7 +258,7 @@ def delLancamento(request):
 		lancamento = LancamentosBanco.objects.get(pk = idLancamento)
 
 		if(request.user.id == lancamento.user_id):
-			# lancamento.delete()
+			lancamento.delete()
 
 
 			saldoBanco = SaldoBanco.objects.get(user=request.user)
@@ -242,7 +272,7 @@ def delLancamento(request):
 					saldo -= l.valor
 
 			saldoBanco.saldoAtual = saldo 
-			# saldoBanco.save()
+			saldoBanco.save()
 			print("ok")
 
 			return HttpResponse("Lançamento excluído com sucesso")

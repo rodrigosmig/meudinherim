@@ -153,7 +153,6 @@ def editCategoria(request):
 
 	if(request.method == 'POST'):
 		idCategoria = request.POST.get('id')
-		print(idCategoria)
 		categoria = Categoria.objects.get(pk = idCategoria)
 		form = CategoriaForm(request.POST, instance = categoria)
 

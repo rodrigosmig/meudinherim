@@ -57,8 +57,7 @@
                                     <th>Banco</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th>
-                                    <th>Crédito</th>
-                                    <th>Débito</th>
+                                    <th>Valor</th>
                                     <th>Editar</th>
                                 </tr>
                             </thead>
@@ -68,8 +67,7 @@
                                     <th>Banco</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th>
-                                    <th>Crédito</th>
-                                    <th>Débito</th>
+                                    <th>Valor</th>
                                     <th>Editar</th>
                                 </tr>
                             </tfoot>
@@ -83,15 +81,12 @@
                                     <td>{{ l.categoria }}</td>
                                     
                                     {% if l.tipo == '1' %}
-                                        <td>{{ l.valor }}</td>
-                                        <td></td>
+                                        <td style="color: blue">{{ l.valor }}</td>
                                         <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
                                     
                                     {% else %}
-                                        <td></td>
-                                    
-                                    <td>{{ l.valor }}</td>
-                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                        <td style="color: red">-{{ l.valor }}</td>                                    
+                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
                                     {% endif %}
                                 </tr>
                             {% endfor %}
