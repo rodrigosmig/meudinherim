@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from banco.models import ContaBanco, LancamentosBanco, SaldoBanco
@@ -109,7 +108,7 @@ def editMeta(request):
 
 			return HttpResponse('Meta alterada com sucesso')
 		else:
-			return HttpResponseBadRequest('Dados inválidos. Tente novamente')
+			return HttpResponseServerError('Dados inválidos. Tente novamente')
 
 	idMeta = request.GET.get('id')
 
@@ -176,7 +175,7 @@ def delMeta(request):
 
 			return HttpResponse("Meta excluída com sucesso")
 		else:
-			return HttpResponse("Meta não encontrada.")
+			return HttpResponseServerError("Meta não encontrada.")
 		
 
-	return HttpResponse("Meta não encontrada.")
+	return HttpResponseServerError("Meta não encontrada.")

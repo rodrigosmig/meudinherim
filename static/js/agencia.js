@@ -58,12 +58,20 @@ $(function() {
 				url: '/banco/editag/',
 				data: campos,
 				success: function(msg) {
-
-					alert(msg);
-					location.reload();
+					//mensagem de confirmação
+					$.alert({
+						title: false,
+						content: msg,
+						theme: 'material',
+						onClose: function() {
+							//recarrega a página
+							location.reload();
+						}
+					});
 				},
 				error: function(msg) {
-					alert(msg);
+					//mensagem de retorno em caso de erro
+					$.alert(msg.responseText);
 				},
 			});	
 	});
@@ -71,25 +79,40 @@ $(function() {
 
 	$('.excluirAg').click(function(evento) {
 		evento.preventDefault();
+		var campos = recuperaCampos();
 
-		if(confirm("Tem certeza que deseja excluir o lançamento?")) {
-			var campos = recuperaCampos();
-			$.ajax({
-				type: 'POST',
-				url: '/banco/delag/',
-				data: campos,
-				success: function(msg) {
-					//mensagem de confirmação
-					alert(msg);
-					//recarregar pagina
-					location.reload();
-				},
-				error: function(msg) {
-					//mensagem de retorno em caso de erro
-					alert(msg)
-				},
-			});
-		}
+		$.confirm({
+		    title: 'Excluir agência!',
+		    content: 'Tem certeza que deseja excluir a agência?',
+		    draggable: true,
+		    theme: 'material',
+		    buttons: {
+		        Sim: function() {
+		        	$.ajax({
+		        		type: 'POST',
+						url: '/banco/delag/',
+						data: campos,
+						success: function(msg) {
+							//mensagem de confirmação
+							$.alert({
+								title: false,
+								content: msg,
+								theme: 'material',
+								onClose: function() {
+									//recarrega a página
+									location.reload();
+								}
+							});					
+						},
+						error: function(msg) {
+							//mensagem de retorno em caso de erro
+							$.alert(msg.responseText);
+						},
+		        	})
+		        },
+		        Não: function() {},
+		    }
+		});
 	});
 
 

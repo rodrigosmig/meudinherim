@@ -76,13 +76,18 @@ $(function() {
 			data: dados,
 			success: function(msg) {
 				//mensagem de confirmação
-				alert(msg);
-				//recarregar pagina
-				location.reload();
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//recarrega a página
+						location.reload();
+					}
+				});
 			},
 			error: function(msg) {
-				alert(msg.responseText);
-				console.log(msg.responseText)
+				$.alert(msg.responseText);
 			},
 		});
 	});

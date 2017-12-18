@@ -94,12 +94,18 @@ $(function() {
 			data: dados,
 			success: function(msg) {
 				//mensagem de confirmação
-				alert(msg);
-				//recarregar pagina
-				location.reload();
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//recarrega a página
+						location.reload();
+					}
+				});
 			},
 			error: function(msg) {
-				alert('Dados inválidos. Tente novamente');
+				$.alert(msg.responseText);
 			},
 		});		
 	});
@@ -124,25 +130,39 @@ $(function() {
 
 	$('.excluir').click(function(evento) {
 		evento.preventDefault();
+		var dados = recuperCampos();
 
-		if(confirm("Tem certeza que deseja excluir a meta?")) {
-			var dados = recuperCampos();
-			$.ajax({
-				type: 'POST',
-				url: '/metas/delete/',
-				data: dados,
-				success: function(msg) {
-					//mensagem de confirmação
-					alert(msg);
-					//recarregar pagina
-					location.reload();
-				},
-				error: function(msg) {
-					//mensagem de retorno em caso de erro
-					alert("Meta não encontrada.")
-				},
-			});
-		}
+		$.confirm({
+		    title: 'Excluir meta!',
+		    content: 'Tem certeza que deseja excluir a meta?',
+		    draggable: true,
+		    theme: 'material',
+		    buttons: {
+		        Sim: function() {
+		        	$.ajax({
+		        		type: 'POST',
+						url: '/metas/delete/',
+						data: dados,
+						success: function(msg) {
+							//mensagem de confirmação
+							$.alert({
+								title: false,
+								content: msg,
+								theme: 'material',
+								onClose: function() {
+									//recarrega a página
+									location.reload();
+								}
+							});					
+						},
+						error: function(msg) {
+							//mensagem de retorno em caso de erro
+							$.alert(msg.responseText);
+						},
+		        	})
+		        },
+		        Não: function() {},
+		    }
+		});
 	});
-
 });

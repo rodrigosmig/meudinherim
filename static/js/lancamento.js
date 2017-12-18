@@ -36,14 +36,22 @@ $(function() {
 			data: dados,
 			success: function(msg) {
 				//mensagem de confirmação
-				alert(msg);
-				//limpar campos
-				$(".modal-body input").val("");
-				//recarregar pagina
-				location.reload();
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//limpar campos
+						$(".modal-body input").val("");
+						$("select[name=categoria]").val('')
+						
+						//recarrega a página
+						location.reload();
+					}
+				});
 			},
 			error: function(msg) {
-				alert(msg);
+				$.alert(msg.responseText);
 			},
 		});
 	});
@@ -71,15 +79,23 @@ $(function() {
 			url: '/banco/add/',
 			data: dados,
 			success: function(msg) {
-				//mensagem de confirmação
-				alert(msg);
-				//limpar campos
-				$(".modal-body input").val("");
-				//recarregar pagina
-				location.reload();
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//limpar campos
+						$(".modal-body input").val("");
+						$("select[name=categoria]").val('')
+						$("select[name=banco]").val('')
+
+						//recarrega a página
+						location.reload();
+					}
+				});
 			},
 			error: function(msg) {
-				alert(msg);
+				$.alert(msg.responseText);
 			},
 		});
 	});

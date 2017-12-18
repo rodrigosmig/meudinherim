@@ -75,7 +75,7 @@
                             <tbody>
                             {% for l in lancBanco %}
                                 <tr>
-                                    <td>{{ l.data }}</td>
+                                    <td>{{ l.data | date:"d/m/Y" }}</td>
                                     <td>{{ l.banco }}</td>
                                     <td>{{ l.descricao }}</td>
                                     <td>{{ l.categoria }}</td>

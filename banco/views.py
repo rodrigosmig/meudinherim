@@ -275,7 +275,7 @@ def delLancamento(request):
 			saldoBanco.save()
 			print("ok")
 
-			return HttpResponse("Lançamento excluído com sucesso")
+			return HttpResponse("Lançamento excluído com sucesso.")
 		else:
 			return HttpResponseServerError("Lançamento não encontrado.")
 		
@@ -298,7 +298,7 @@ def editAgencia(request):
 		if (form.is_valid()):
 			form.save()
 
-			return HttpResponse("Agência alterada com sucesso")
+			return HttpResponse("Agência alterada com sucesso.")
 
 		else:
 
@@ -366,10 +366,10 @@ def delAgencia(request):
 
 		if(id_usuario == agencia.user.id):
 			agencia.delete()
-			return HttpResponse("Agência excluída")
+			return HttpResponse("Agência excluída com sucesso.")
 		else:
-			return HttpResponseServerError("não econtrado")
-	return HttpResponseServerError("não econtrado")
+			return HttpResponseServerError("Agência não econtrada")
+	return HttpResponseServerError("Agência não econtrada")
 
 @login_required
 def verificarContasAPagar(request):
