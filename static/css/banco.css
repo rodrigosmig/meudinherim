@@ -9,3 +9,7 @@ div .body{
 #datepicker-alter_banco {
 	width: 150px;
 }
+
+#dataBanco a {
+	text-decoration: none;
+}

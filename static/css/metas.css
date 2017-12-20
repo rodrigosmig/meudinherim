@@ -1,0 +1,13 @@
+.addMeta a {
+	text-decoration: none;
+	color: blue;
+	font-size: 40px;
+}
+
+.addMeta a:hover {
+	color: #4169E1;
+}
+
+#mydata a {
+	text-decoration: none;
+}

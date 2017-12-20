@@ -15,3 +15,7 @@
 #datepickerCP {
 	width: 150px;
 }
+
+.addCP a:hover {
+	color: #4169E1;
+}

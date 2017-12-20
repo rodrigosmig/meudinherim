@@ -6,6 +6,7 @@
 {% load staticfiles %}
 
 {% block staticCategoria %}
+<link href="{% static 'css/categoria.css' %}" rel="stylesheet">
 
 <!-- JQuery DataTable Css -->
 <link href="{% static 'plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
@@ -27,7 +28,7 @@
 
     <div class="container-fluid">
         <div class="block-header">
-            <h1>Cadastrar</h1>
+            <h1>Categorias</h1>
         </div>
     </div>
     
@@ -35,12 +36,9 @@
         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="card">
                 <div class="header">
-                    <h2>Categoria de Entrada</h2>
-                    <ul class="header-dropdown">
-                        <a class="nav-link testeadd" data-toggle="modal" href="#mCategoria" role="tab" title="Adicionar categoria">
-                            <i class="material-icons testeadd">add</i>
-                        </a>
-                    </ul>
+                    <i class="material-icons addCat">
+                        <a class="nav-link" data-toggle="modal" href="#mCategoria" role="tab" title="Adicionar categoria de entrada">add</a>
+                    </i>
                 </div>
                 <div class="body">
                     <div class="table-responsive">
@@ -75,12 +73,10 @@
                 <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
             <div class="card">
                 <div class="header">
-                    <h2>Categoria de Saída</h2>
-                    <ul class="header-dropdown">
-                        <a class="nav-link testeadd" data-toggle="modal" href="#mCategoria" role="tab" title="Adicionar categoria">
-                            <i class="material-icons testeadd">add</i>
-                        </a>
-                    </ul>
+                    <i class="material-icons addCat">
+                        <a class="nav-link" data-toggle="modal" href="#mCategoria" role="tab" title="Adicionar categoria de saída">add</a>
+                    </i>
+
                 </div>
                 <div class="body">
                     <div class="table-responsive">

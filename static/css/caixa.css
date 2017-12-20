@@ -1,11 +1,11 @@
-/*.saldoCaixa {
-	float: right;
-}
-
-div.body {
-	clear: right;
-}*/
-
 #datepicker-alter_caixa {
 	width: 150px;
+}
+
+#dataCaixaChange a {
+	text-decoration: none;
+}
+
+#mydata a {
+	text-decoration: none;
 }

@@ -19,7 +19,9 @@
 
 <!-- Custom Js -->
 <script src="{% static 'js/jquery-datatable.js' %}"></script>
+<link href="{% static 'css/agencia.css' %}" rel="stylesheet">
 <script src="{% static 'js/agencia.js' %}"></script>
+
 
 {% endblock %}
 
@@ -29,20 +31,19 @@
     
     <div class="container-fluid">
         <div class="block-header">
-            <h1>Cadastrar</h1>
+            <h1>Agência Bancária</h1>
         </div>
     </div>
     
     <div class="row clearfix">
         <div class="card">
-            <div class="header">
-                <h2>Agência Bancária</h2>
-                <ul class="header-dropdown">
-                    <a class="nav-link testeadd" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar agencia">
-                        <i class="material-icons">add</i>
-                    </a>
-	  	          </ul>
+
+            <div class="header">                    
+                    <i class="material-icons addAgencia">
+                        <a class="nav-link" data-toggle="modal" href="" role="tab" title="Adicionar Meta" data-target="#mAgencia">add</a>
+                    </i>
             </div>
+
             <div class="body">
                 <div class="table-responsive">
                     <table id="dataAgencia"class="table table-bordered table-striped table-hover dataTable js-basic-example">

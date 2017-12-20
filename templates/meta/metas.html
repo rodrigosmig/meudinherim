@@ -6,6 +6,7 @@
 {% load staticfiles %}
 
 {% block staticMetas %}
+<link href="{% static 'css/metas.css' %}" rel="stylesheet">
 <script src="{% static 'js/metas.js' %}"></script>
 
 <script type="text/javascript">
@@ -46,27 +47,23 @@ $( function() {
     
     <div class="container-fluid">     
         <div class="block-header">
-            <h1>Cadastrar</h1>
+            <h1>Metas</h1>
         </div>
     </div>
     
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
-                 <div class="header">
-                <h2>Metas</h2>
 
-                <ul class="header-dropdown">
-                    
-                    <a class="nav-link testeadd" data-toggle="modal" href="" role="tab" title="Adicionar Meta" data-target="#adicionaMeta">
-                        <i class="material-icons testeadd">note_add</i>
-                    </a>
-
-                </ul>
+                <div class="header">                    
+                    <i class="material-icons addMeta">
+                        <a class="nav-link" data-toggle="modal" href="" role="tab" title="Adicionar Meta" data-target="#adicionaMeta">add</a>
+                    </i>
+                </div>
                 
                 <div class="body">
                     <div class="table-responsive">
-                        <table id="mydata"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                        <table id="mydata" class="table table-bordered table-striped table-hover dataTable js-basic-example">
                     
                             <thead>
                                 <tr>
@@ -93,49 +90,48 @@ $( function() {
                             </tfoot>
 
                             <tbody>
-                            {% for m in formMetas %}
-                                <tr>
+                                {% for m in formMetas %}
+                                    <tr>
 
-                                    <td>
-                                      {{ m.dataInicio }}
-                                    </td>
-                                    
-                                    <td>
-                                      {{ m.titulo }}                                      
-                                    <td>
-
-                                    <div class="row clearfix">
-                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                        <div class="progress">
-                                         <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: {{ m.progresso | cut:',' }}%">
-                                        {{ m.progresso }}%
-                                         </div>
-                                        </div>
-                                       </div>
-                                    </div>  
-
-                                    </td>
+                                        <td>
+                                          {{ m.dataInicio }}
+                                        </td>
                                         
-                                    <td>
-                                   {{ m.dataFim }}
-                                    </td>
-                                     
-                                     <td>
-                                        R$ {{ m.valor}}
+                                        <td>
+                                          {{ m.titulo }}                                      
+                                        <td>
 
-                                     </td>
+                                        <div class="row clearfix">
+                                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                            <div class="progress">
+                                             <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: {{ m.progresso | cut:',' }}%">
+                                            {{ m.progresso }}%
+                                             </div>
+                                            </div>
+                                           </div>
+                                        </div>  
 
-                                    <td>
-                                   
-                                    <i class="material-icons"><a  data-toggle="modal" data-target="#editMeta" href="" 
+                                        </td>
+                                            
+                                        <td>
+                                       {{ m.dataFim }}
+                                        </td>
+                                         
+                                         <td>
+                                            R$ {{ m.valor}}
 
-                                    ><span class="openEdit" data-meta="{{ m.id }}">edit</span></a></i>
+                                         </td>
 
-                                    </td>   
-                                </tr>
+                                        <td>
+                                       
+                                        <i class="material-icons"><a  data-toggle="modal" data-target="#editMeta" href="" 
+
+                                        ><span class="openEdit" data-meta="{{ m.id }}">edit</span></a></i>
+
+                                        </td>   
+                                    </tr>
                                 {% endfor %}
 
-                           
                             </tbody>
                             
                         </table>
