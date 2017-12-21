@@ -154,7 +154,7 @@ $( function() {
                 </div>
             </div>
             <!-- Campos -->
-            <form method="POST">    
+            <form id="form_cadastro_meta" method="POST">    
                 <div class="modal-body">                          
                   {% csrf_token %}
             
@@ -167,7 +167,7 @@ $( function() {
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button  class="btn btn-primary">Salvar</button>
+                    <button  type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
         </div>
@@ -185,18 +185,18 @@ $( function() {
                     <h4 id="LabelMeta">Editar | <small>Meta</small></h4>
                 </div>
                 <!-- Campos -->
-                <form>
-                {% csrf_token %}    
+                <form id="form_edit_cadastro" method="POST">
+                    {% csrf_token %}    
                     <div id="editMetaForm" class="modal-body">        
                         <!-- Django form será inserido aqui via Jquery -->
                     </div>
-                </form>     
-                <!-- Salvar/Cancelar -->
-                <div class="modal-footer">
-                    <button class="btn btn-success waves-effect salvar" >Salvar</button>
-                    <button class="btn btn-danger excluir">Excluir</button>
-                    <button type="button" class="btn btn-primaryid" data-dismiss="modal">Cancelar</button>
-                </div>
+                    <!-- Salvar/Cancelar -->
+                    <div class="modal-footer">
+                        <button class="btn btn-success waves-effect salvar" >Salvar</button>
+                        <button class="btn btn-danger excluir">Excluir</button>
+                        <button type="button" class="btn btn-primaryid" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

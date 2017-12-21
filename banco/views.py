@@ -13,11 +13,15 @@ def cadastroBanco(request):
 
 	if (request.method == 'POST'):
 		form = ContaBancoForm(request.POST)
+		print(form.is_valid)
 		if (form.is_valid):
 			bancos = form.save(commit = False)
 			bancos.user = request.user 
 			bancos.save()
-			return HttpResponseRedirect('/banco/agencia')
+			print("teste")
+			return HttpResponse('Agência cadastrada com sucesso.')
+		else:
+			return HttpResponseServerError('Formulário inválido.')
 
 	id_user = request.user.id
 

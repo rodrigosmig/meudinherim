@@ -65,7 +65,7 @@ $(function() {
 
 	});
 
-	$('.salvar').click(function(evento) {
+	$('#form_lancamento_banco').on('submit', function(evento) {
 		evento.preventDefault();
 		
 		var dados = recuperCampos();

@@ -16,7 +16,9 @@ $(function() {
 	    return cookieValue;
 	}
 
-	$('.salvarCaixa').on('click', function(event) {
+	$('#form_add_lancamento_caixa').on('submit', function(evento) {
+		evento.preventDefault();
+
 		var data = $('#datepickerC').val();
 		var categoria = $('#id_categoria').val();
 		var descricao = $('#id_descricao').val();
@@ -56,7 +58,9 @@ $(function() {
 		});
 	});
 
-	$('.salvarBanco').on('click', function(event) {
+	$('#form_add_lancamento_banco').on('submit', function(evento) {
+		evento.preventDefault();
+
 		var banco = $('#id_banco').val();
 		var data = $('#datepickerB').val();
 		var tipo = $('#id_tipo').val();

@@ -321,24 +321,27 @@
                 <div class="modal-content">
                     <!-- Título -->
                     <div class="modal-header">
-                        <h3 class="modal-title" id="LabelBanco">Cadastrar Lançamentos</h3>
+                        <div class="header">
+                            <h4 >Adicionar | <small>Lançamento</small></h4>
+                        </div>
                     </div>
                     <!-- Campos -->
-                    <form>    
-                        <div class="modal-body">
+                    <div class="modal-body">
 
-                            <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" data-toggle="tab" href="#caixa" role="tab">Caixa</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#banco" role="tab">Banco</a>
-                                </li>
-                            </ul>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#caixa" role="tab">Caixa</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#banco" role="tab">Banco</a>
+                            </li>
+                        </ul>
 
-                            <div class="tab-content">
-                                <!-- Tab pane Caixa -->
-                                <div class="tab-pane" id="caixa" role="tabpanel">
+                        <div class="tab-content">
+                            <!-- Tab pane Caixa -->
+                            <div class="tab-pane" id="caixa" role="tabpanel">
+                                <form id="form_add_lancamento_caixa" method="POST">
+                                    {% csrf_token %}
                                     {% for campo in formLancCaixa %}
                                         {% if campo.label != "User" %}
                                         {{ campo.label_tag }}
@@ -348,15 +351,16 @@
                                     <!-- Salvar/Cancelar -->
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                        <button class="btn btn-primary salvarCaixa">Salvar</button>
+                                        <button type="submit" class="btn btn-primary salvarCaixa">Salvar</button>
                                     </div>
-                                </div>
-                                <!-- Tab pane Caixa -->
+                                </form>
+                            </div>
+                            <!-- Tab pane Caixa -->
 
-                                <!-- Tab pane Banco -->
-                                <div class="tab-pane" id="banco" role="tabpanel">
+                            <!-- Tab pane Banco -->
+                            <div class="tab-pane" id="banco" role="tabpanel">
+                                <form id="form_add_lancamento_banco" method="POST">
                                     {% csrf_token %}
-
                                     {% for campo in formLancBanco %}
                                         {% if campo.label != "User" %}
                                         {{ campo.label_tag }}
@@ -366,15 +370,14 @@
                                     <!-- Salvar/Cancelar -->
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                        <button class="btn btn-primary salvarBanco">Salvar</button>
+                                        <button type="submit" class="btn btn-primary">Salvar</button>
                                     </div>
-                                </div>
-                                <!-- Tab pane Banco -->
-                            </div>                               
-                      
-                        </div>
-                        
-                    </form>
+                                </form>
+                            </div>
+                            <!-- Tab pane Banco -->
+                        </div>                               
+                  
+                    </div>
                 </div>
             </div>
         </div>    

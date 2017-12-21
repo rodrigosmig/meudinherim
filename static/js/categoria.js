@@ -43,7 +43,42 @@ $(function() {
 		});
 	});
 
-	$('.salvar').click(function(evento) {
+	$('#form_cadastro_categoria').on('submit', function(evento) {
+		evento.preventDefault();
+
+		var tipo = $('#id_tipo_categoria').val();
+		var desc = $('#id_descricao_categoria').val();
+
+		$.ajax({
+			type: 'POST',
+			url: '/caixa/categoria/',
+			data: {
+				'tipo': tipo,
+				'descricao': desc,
+				'csrfmiddlewaretoken': csrftokenPOST,
+			},
+			success: function(msg) {
+				//mensagem de confirmação
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//limpar campos
+						$(".modal-body input").val("");
+						//recarrega a página
+						location.reload();
+					}
+				});
+			},
+			error: function(msg) {
+				//mensagem de retorno em caso de erro
+				$.alert(msg.responseText);
+			},
+		});	
+	});
+
+	$('#form_edit_categoria').on('submit', function(evento) {
 		evento.preventDefault();
 		var id = $('#id_descricao-alter_categoria').attr('data-cat');
 		var tipo = $('#id_tipo-alter_categoria').val();

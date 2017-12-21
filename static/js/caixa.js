@@ -66,7 +66,7 @@ $(function() {
 		});
 	});
 
-	$('.salvar').click(function(evento) {
+	$('#form_lancamento_caixa').on('submit', function(evento) {
 		
 		evento.preventDefault();
 		

@@ -59,8 +59,7 @@ $(function() {
 				$('#editContasPagar').modal('show');
 			},
 			error: function(erro) {
-				console.log(erro.responseText);
-				alert("Lançamento não encontrado. Tente novamente.");
+				$.alert("Lançamento não encontrado. Tente novamente.");
 			},
 
 		});

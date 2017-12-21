@@ -110,7 +110,7 @@
                 </div>
             </div>
             <!-- Campos -->
-            <form method="POST">    
+            <form id="form_cadastro_agencia" method="POST">    
                 <div class="modal-body">                          
                         {% csrf_token %}
 
@@ -122,7 +122,7 @@
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button  class="btn btn-primary">Salvar</button>
+                    <button  type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
         </div>
@@ -141,21 +141,20 @@
               
             </div>
             <!-- Campos -->
-            <form id="form_agencia" method="POST">    
+            <form id="form_edit_agencia" method="POST">    
                                  
                 {% csrf_token %}
                  <div id="editAgencia" class="modal-body">        
                 <!-- Django form será inserido aqui via Jquery -->
                  </div>
-            </form>                    
                
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">
-                    <button class="btn btn-success waves-effect salvarAg">Salvar</button>
+                    <button type="submit" class="btn btn-success waves-effect">Salvar</button>
                     <button class="btn btn-danger excluirAg">Excluir</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
                 </div>
-            
+            </form>
         </div>
     </div>
 </div>

@@ -81,12 +81,50 @@ $(function() {
 		});
 	});
 
-	$('.salvar').click(function(evento) {
+	$('#form_cadastro_meta').on('submit', function(evento) {
+		
+		evento.preventDefault();
+		
+		var inicio = $('#datepickerMI').val();
+		var fim = $('#datepickerMF').val();
+		var titulo = $('#id_titulo').val();
+		var valor = $('#id_valor_meta').val();
+
+		$.ajax({
+			type: 'POST',
+			url: '/metas/',
+			data: {
+				'dataInicio': inicio,
+				'dataFim': fim,
+				'titulo': titulo,
+				'valor': valor,
+				'csrfmiddlewaretoken': csrftokenPOST,	
+			},
+			success: function(msg) {
+				//mensagem de confirmação
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//limpar campos
+						$(".modal-body input").val("");
+						//recarrega a página
+						location.reload();
+					}
+				});
+			},
+			error: function(msg) {
+				$.alert(msg.responseText);
+			},
+		});		
+	});
+
+	$('#form_edit_cadastro').on('submit', function(evento) {
 		
 		evento.preventDefault();
 		
 		var dados = recuperCampos();
-		console.log(dados);
 
 		$.ajax({
 			type: 'POST',

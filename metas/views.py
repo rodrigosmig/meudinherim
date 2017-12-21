@@ -18,13 +18,16 @@ import json
 def metas(request):
 	if(request.method == 'POST'):
 		form = MetasForm(request.POST)
+		print(form)
 
 		if(form.is_valid()):
 			cadastroMeta=form.save(commit = False)
 			cadastroMeta.user=request.user
 			cadastroMeta.progresso = 0
 			cadastroMeta.save()
-			return HttpResponseRedirect('/metas/')	
+			return HttpResponse('Meta cadastrada com sucesso.')
+		else:
+			return HttpResponseServerError('Formulário inválido. Tente novamente.')
 
 	user = request.user
 	template='meta/metas.html'

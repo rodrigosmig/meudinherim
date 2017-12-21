@@ -36,7 +36,6 @@ $(function() {
 				$('#id_banco-alter_banco').attr('data-ag', id_agencia);
 				$('#temp').remove();
 
-				console.log('id_agencia')
 			},
 			error: function(erro) {
 				console.log(erro.responseText);
@@ -46,34 +45,70 @@ $(function() {
 		});
 	});
 
+	$('#form_cadastro_agencia').on('submit', function(evento) {
+		evento.preventDefault();
 
-	$('.salvarAg').click(function(evento) {
+		var banco = $('#id_banco_agencia').val();
+		var agencia = $('#id_agencia').val();
+		var conta = $('#id_conta').val();
+		var tipo = $('#id_tipo_agencia').val()
 
+		$.ajax({
+			type: 'POST',
+			url: '/banco/agencia/',
+			data: {
+				'banco': banco,
+				'agencia': agencia,
+				'conta': conta,
+				'tipo': tipo,
+				'csrfmiddlewaretoken': csrftokenPOST
+			},
+			success: function(msg) {
+				//mensagem de confirmação
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//recarrega a página
+						location.reload();
+					}
+				});
+			},
+			error: function(msg) {
+				//mensagem de retorno em caso de erro
+				$.alert(msg.responseText);
+			},
+		});	
+	});
+
+
+	$('#form_edit_agencia').on('submit', function(evento) {
 		evento.preventDefault();
 
 		var campos = recuperaCampos();
 
-			$.ajax({
-				type: 'POST',
-				url: '/banco/editag/',
-				data: campos,
-				success: function(msg) {
-					//mensagem de confirmação
-					$.alert({
-						title: false,
-						content: msg,
-						theme: 'material',
-						onClose: function() {
-							//recarrega a página
-							location.reload();
-						}
-					});
-				},
-				error: function(msg) {
-					//mensagem de retorno em caso de erro
-					$.alert(msg.responseText);
-				},
-			});	
+		$.ajax({
+			type: 'POST',
+			url: '/banco/editag/',
+			data: campos,
+			success: function(msg) {
+				//mensagem de confirmação
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//recarrega a página
+						location.reload();
+					}
+				});
+			},
+			error: function(msg) {
+				//mensagem de retorno em caso de erro
+				$.alert(msg.responseText);
+			},
+		});	
 	});
 
 
