@@ -1,0 +1,13 @@
+.addAgencia a {
+	text-decoration: none;
+	color: blue;
+	font-size: 40px;
+}
+
+.addAgencia a:hover {
+	color: #4169E1;
+}
+
+#dataAgencia a {
+	text-decoration: none;
+}

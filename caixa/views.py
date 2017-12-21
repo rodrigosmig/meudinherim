@@ -90,8 +90,9 @@ def categoria(request):
 			categoria = form.save(commit = False)
 			categoria.user = request.user
 			categoria.save()
-			return HttpResponseRedirect('/caixa/categoria')
-
+			return HttpResponse('Categoria cadastrada com sucesso.')
+		else:
+			return HttpResponseServerError("Formulário inválido.")
 
 	user = request.user
 	template = 'caixa/categoria.html'
@@ -153,7 +154,6 @@ def editCategoria(request):
 
 	if(request.method == 'POST'):
 		idCategoria = request.POST.get('id')
-		print(idCategoria)
 		categoria = Categoria.objects.get(pk = idCategoria)
 		form = CategoriaForm(request.POST, instance = categoria)
 
@@ -273,7 +273,7 @@ def editLancamento(request):
 			saldoCaixa.saldoAtual = saldo
 			saldoCaixa.save()
 
-			return HttpResponse("Formulário alterado com sucesso")
+			return HttpResponse("Lançamento alterado com sucesso")
 		else:
 			return HttpResponseServerError("Formulário inválido")
 

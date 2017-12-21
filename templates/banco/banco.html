@@ -57,8 +57,7 @@
                                     <th>Banco</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th>
-                                    <th>Crédito</th>
-                                    <th>Débito</th>
+                                    <th>Valor</th>
                                     <th>Editar</th>
                                 </tr>
                             </thead>
@@ -68,8 +67,7 @@
                                     <th>Banco</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th>
-                                    <th>Crédito</th>
-                                    <th>Débito</th>
+                                    <th>Valor</th>
                                     <th>Editar</th>
                                 </tr>
                             </tfoot>
@@ -77,21 +75,18 @@
                             <tbody>
                             {% for l in lancBanco %}
                                 <tr>
-                                    <td>{{ l.data }}</td>
+                                    <td>{{ l.data | date:"d/m/Y" }}</td>
                                     <td>{{ l.banco }}</td>
                                     <td>{{ l.descricao }}</td>
                                     <td>{{ l.categoria }}</td>
                                     
                                     {% if l.tipo == '1' %}
-                                        <td>{{ l.valor }}</td>
-                                        <td></td>
+                                        <td style="color: blue">{{ l.valor }}</td>
                                         <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
                                     
                                     {% else %}
-                                        <td></td>
-                                    
-                                    <td>{{ l.valor }}</td>
-                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                        <td style="color: red">-{{ l.valor }}</td>                                    
+                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
                                     {% endif %}
                                 </tr>
                             {% endfor %}
@@ -115,18 +110,18 @@
                     <h4 id="LabelLancamento">Editar | <small>Lançamento bancário</small></h4>
                 </div>
                 <!-- Campos -->
-                <form id="form_lancamento">
+                <form id="form_lancamento_banco">
                 {% csrf_token %}    
                     <div id="editLanc" class="modal-body">        
                         <!-- Django form será inserido aqui via Jquery -->
                     </div>
-                </form>     
-                <!-- Salvar/Cancelar -->
-                <div class="modal-footer">
-                    <button class="btn btn-success waves-effect salvar" >Salvar</button>
-                    <button class="btn btn-danger excluir">Excluir</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                </div>
+                    <!-- Salvar/Cancelar -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success waves-effect" >Salvar</button>
+                        <button class="btn btn-danger excluir">Excluir</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </form> 
             </div>
         </div>
     </div>

@@ -1,11 +1,15 @@
 .saldoBanco{
-
 	float:right;
-
 }
 
-
 div .body{
-
 	clear: right;
+}
+
+#datepicker-alter_banco {
+	width: 150px;
+}
+
+#dataBanco a {
+	text-decoration: none;
 }

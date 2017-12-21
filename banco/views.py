@@ -13,11 +13,15 @@ def cadastroBanco(request):
 
 	if (request.method == 'POST'):
 		form = ContaBancoForm(request.POST)
+		print(form.is_valid)
 		if (form.is_valid):
 			bancos = form.save(commit = False)
 			bancos.user = request.user 
 			bancos.save()
-			return HttpResponseRedirect('/banco/agencia')
+			print("teste")
+			return HttpResponse('Agência cadastrada com sucesso.')
+		else:
+			return HttpResponseServerError('Formulário inválido.')
 
 	id_user = request.user.id
 
@@ -37,6 +41,40 @@ def cadastroBanco(request):
 
 	userProfile = UsuarioProfile.objects.get(user = request.user)
 	contexto['profile'] = userProfile
+
+
+	#para adicionar lancamento
+	formCaixa = LancamentosForm()
+	#seleciona apenas as categorias do usuario logado
+	formCaixa.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control'}
+	        )
+		)
+	#para adicionar lancamento
+	formBanco = LancamentosBancoForm()
+	#Seleciona apenas o banco do usuario para o formulario
+	formBanco.fields['banco'] = forms.ModelChoiceField(
+		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		empty_label = 'Nenhum',
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        )
+	)
+	#seleciona apenas as categorias do usuario logado
+	formBanco.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
+	        )
+		)
+	#para adicionar lancamento
+	contexto['formLancCaixa'] = formCaixa
+	contexto['formLancBanco'] = formBanco
+	
 
 	return render(request, template, contexto)
 
@@ -131,7 +169,7 @@ def editLancamento(request):
 		lancamento = LancamentosBanco.objects.get(pk = idLancamento)
 		#atribui o lancamento ao form	
 		form = LancamentosBancoForm(request.POST, instance = lancamento)
-
+		print(form)
 		if(form.is_valid()):
 			form.save()
 
@@ -154,15 +192,15 @@ def editLancamento(request):
 
 	#id do lancamento clicado
 	idLancamento = request.GET.get('id')
-	lancamento = LancamentosBanco.objects.get(pk = idLancamento)
-	
+	lancamento = LancamentosBanco.objects.get(pk = idLancamento)	
 	form = LancamentosBancoForm(instance = lancamento)
+
 	#seleciona apenas os banco do usuario logado
 	form.fields['banco'] = forms.ModelChoiceField(
 			queryset = ContaBanco.objects.filter(user_id = request.user.id),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
+	            attrs = {'class': 'form-control', 'id': 'id_banco-alter_banco'}
 	        )
 		)
 	#seleciona apenas as categorias do usuario logado
@@ -170,9 +208,39 @@ def editLancamento(request):
 			queryset = Categoria.objects.filter(user_id = request.user.id),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
+	            attrs = {'class': 'form-control', 'id': 'id_categoria-alter_banco'}
 	        )
 		)
+	form.fields['data'] = forms.DateField(
+		label = 'Data',
+		required = True,
+		widget = forms.TextInput(
+			attrs = {'class': 'form-control', 'id': 'datepicker-alter_banco'}
+		)
+    )
+	form.fields['tipo'] = forms.ChoiceField(
+		widget = forms.Select(
+            attrs = {'class': 'form-control', 'id': 'id_tipo-alter_banco'}
+        ),
+        choices = LancamentosBanco.TIPOS
+    )
+	form.fields['valor'] = forms.DecimalField(
+		label = 'Valor',
+        min_value = 0.01,
+        max_value = 9999.99,
+        required = True,
+        widget = forms.NumberInput(
+            attrs = {'class': 'form-control', 'id': 'id_valor-alter_banco'}
+        )
+    )
+	form.fields['descricao'] = forms.CharField(
+		label = 'Descrição',
+		max_length = 32,
+		required = True,
+		widget = forms.TextInput(
+		attrs = {'class': 'form-control', 'id': 'id_descricao-alter_banco'}
+        )
+    )
 
 	#retorna o id do lancamento junto com o formulario
 	divId = "<div id='id_lancamento'>" + idLancamento + "</div>"
@@ -194,7 +262,7 @@ def delLancamento(request):
 		lancamento = LancamentosBanco.objects.get(pk = idLancamento)
 
 		if(request.user.id == lancamento.user_id):
-			# lancamento.delete()
+			lancamento.delete()
 
 
 			saldoBanco = SaldoBanco.objects.get(user=request.user)
@@ -208,10 +276,10 @@ def delLancamento(request):
 					saldo -= l.valor
 
 			saldoBanco.saldoAtual = saldo 
-			# saldoBanco.save()
+			saldoBanco.save()
 			print("ok")
 
-			return HttpResponse("Lançamento excluído com sucesso")
+			return HttpResponse("Lançamento excluído com sucesso.")
 		else:
 			return HttpResponseServerError("Lançamento não encontrado.")
 		
@@ -234,7 +302,7 @@ def editAgencia(request):
 		if (form.is_valid()):
 			form.save()
 
-			return HttpResponse("Agência alterada com sucesso")
+			return HttpResponse("Agência alterada com sucesso.")
 
 		else:
 
@@ -302,10 +370,10 @@ def delAgencia(request):
 
 		if(id_usuario == agencia.user.id):
 			agencia.delete()
-			return HttpResponse("Agência excluída")
+			return HttpResponse("Agência excluída com sucesso.")
 		else:
-			return HttpResponseServerError("não econtrado")
-	return HttpResponseServerError("não econtrado")
+			return HttpResponseServerError("Agência não econtrada")
+	return HttpResponseServerError("Agência não econtrada")
 
 @login_required
 def verificarContasAPagar(request):

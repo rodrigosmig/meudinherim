@@ -101,7 +101,7 @@
                 </div>
                 <div class="body">
                     <div class="table-responsive">
-                        <table id="mydata"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                        <table id="mydata" class="table table-bordered table-striped table-hover dataTable js-basic-example">
                     
                             <thead>
                                 <tr>
@@ -168,18 +168,18 @@
                     <h4 id="LabelLancamento">Editar | <small>Lançamento do Caixa</small></h4>
                 </div>
                 <!-- Campos -->
-                <form id="form_lancamento">
-                {% csrf_token %}    
+                <form id="form_lancamento_caixa">
+                    {% csrf_token %}    
                     <div id="editLanc" class="modal-body">        
                         <!-- Django form será inserido aqui via Jquery -->
                     </div>
-                </form>     
-                <!-- Salvar/Cancelar -->
-                <div class="modal-footer">
-                    <button class="btn btn-success waves-effect salvar" >Salvar</button>
-                    <button class="btn btn-danger excluir">Excluir</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                </div>
+                    <!-- Salvar/Cancelar -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success waves-effect salvar" >Salvar</button>
+                        <button class="btn btn-danger excluir">Excluir</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </form> 
             </div>
         </div>
     </div>

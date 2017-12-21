@@ -9,7 +9,7 @@ class ContaBancoForm(ModelForm):
 		max_length = 32,
 		required = True,
 		widget = forms.TextInput(
-			attrs = {'class': 'form-control', 'placeholder': 'Nome do Banco'}
+			attrs = {'class': 'form-control', 'id': 'id_banco_agencia', 'placeholder': 'Nome do Banco'}
 		)
     )
 	agencia = forms.CharField(
@@ -30,7 +30,7 @@ class ContaBancoForm(ModelForm):
     )
 	tipo = forms.ChoiceField(
 		widget = forms.Select(
-			attrs = {'class': 'form-control'}
+			attrs = {'class': 'form-control', 'id': 'id_tipo_agencia'}
 		),
 		choices = ContaBanco.TIPOS
 	)
@@ -82,4 +82,4 @@ class LancamentosBancoForm(ModelForm):
 
 	class Meta:
 		model = LancamentosBanco
-		fields = ['banco', 'data', 'tipo', 'categoria', 'descricao', 'valor']
+		fields = ['data', 'banco', 'tipo', 'categoria', 'descricao', 'valor']

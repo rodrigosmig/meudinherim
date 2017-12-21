@@ -1,29 +1,17 @@
-.tabCategoria {
-    border-collapse: collapse;
-    width: 95%;
-    margin: auto;
+.addCat a {
+    text-decoration: none;
+    color: blue;
+    font-size: 40px;
 }
 
-.tabCategoria th, .tabCategoria td {
-    text-align: center;
-    padding: 8px;
+.addCat a:hover {
+	color: #4169E1;
 }
 
-.tabCategoria tr:nth-child(even){background-color: #f2f2f2}
-
-.tabCategoria th {
-    background-color: #4CAF50;
-    color: white;
+#dataCategoria a {
+	text-decoration: none;
 }
 
-.card .nav-item {
-	padding-left: 2px;
-}
-
-.nav-item .testeadd {
-	margin-top: -6px;
-}
-
-#id_tipo-alter_categoria {
-	width: 150px;
+#dataCategoria2 a {
+	text-decoration: none;
 }

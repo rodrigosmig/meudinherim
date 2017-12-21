@@ -81,12 +81,50 @@ $(function() {
 		});
 	});
 
-	$('.salvar').click(function(evento) {
+	$('#form_cadastro_meta').on('submit', function(evento) {
+		
+		evento.preventDefault();
+		
+		var inicio = $('#datepickerMI').val();
+		var fim = $('#datepickerMF').val();
+		var titulo = $('#id_titulo').val();
+		var valor = $('#id_valor_meta').val();
+
+		$.ajax({
+			type: 'POST',
+			url: '/metas/',
+			data: {
+				'dataInicio': inicio,
+				'dataFim': fim,
+				'titulo': titulo,
+				'valor': valor,
+				'csrfmiddlewaretoken': csrftokenPOST,	
+			},
+			success: function(msg) {
+				//mensagem de confirmação
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//limpar campos
+						$(".modal-body input").val("");
+						//recarrega a página
+						location.reload();
+					}
+				});
+			},
+			error: function(msg) {
+				$.alert(msg.responseText);
+			},
+		});		
+	});
+
+	$('#form_edit_cadastro').on('submit', function(evento) {
 		
 		evento.preventDefault();
 		
 		var dados = recuperCampos();
-		console.log(dados);
 
 		$.ajax({
 			type: 'POST',
@@ -94,12 +132,18 @@ $(function() {
 			data: dados,
 			success: function(msg) {
 				//mensagem de confirmação
-				alert(msg);
-				//recarregar pagina
-				location.reload();
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//recarrega a página
+						location.reload();
+					}
+				});
 			},
 			error: function(msg) {
-				alert('Dados inválidos. Tente novamente');
+				$.alert(msg.responseText);
 			},
 		});		
 	});
@@ -124,25 +168,39 @@ $(function() {
 
 	$('.excluir').click(function(evento) {
 		evento.preventDefault();
+		var dados = recuperCampos();
 
-		if(confirm("Tem certeza que deseja excluir a meta?")) {
-			var dados = recuperCampos();
-			$.ajax({
-				type: 'POST',
-				url: '/metas/delete/',
-				data: dados,
-				success: function(msg) {
-					//mensagem de confirmação
-					alert(msg);
-					//recarregar pagina
-					location.reload();
-				},
-				error: function(msg) {
-					//mensagem de retorno em caso de erro
-					alert("Meta não encontrada.")
-				},
-			});
-		}
+		$.confirm({
+		    title: 'Excluir meta!',
+		    content: 'Tem certeza que deseja excluir a meta?',
+		    draggable: true,
+		    theme: 'material',
+		    buttons: {
+		        Sim: function() {
+		        	$.ajax({
+		        		type: 'POST',
+						url: '/metas/delete/',
+						data: dados,
+						success: function(msg) {
+							//mensagem de confirmação
+							$.alert({
+								title: false,
+								content: msg,
+								theme: 'material',
+								onClose: function() {
+									//recarrega a página
+									location.reload();
+								}
+							});					
+						},
+						error: function(msg) {
+							//mensagem de retorno em caso de erro
+							$.alert(msg.responseText);
+						},
+		        	})
+		        },
+		        Não: function() {},
+		    }
+		});
 	});
-
 });

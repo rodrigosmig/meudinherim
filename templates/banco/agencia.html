@@ -19,7 +19,9 @@
 
 <!-- Custom Js -->
 <script src="{% static 'js/jquery-datatable.js' %}"></script>
+<link href="{% static 'css/agencia.css' %}" rel="stylesheet">
 <script src="{% static 'js/agencia.js' %}"></script>
+
 
 {% endblock %}
 
@@ -29,20 +31,19 @@
     
     <div class="container-fluid">
         <div class="block-header">
-            <h1>Cadastrar</h1>
+            <h1>Agência Bancária</h1>
         </div>
     </div>
     
     <div class="row clearfix">
         <div class="card">
-            <div class="header">
-                <h2>Agência Bancária</h2>
-                <ul class="header-dropdown">
-                    <a class="nav-link testeadd" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar agencia">
-                        <i class="material-icons">add</i>
-                    </a>
-	  	          </ul>
+
+            <div class="header">                    
+                    <i class="material-icons addAgencia">
+                        <a class="nav-link" data-toggle="modal" href="" role="tab" title="Adicionar Meta" data-target="#mAgencia">add</a>
+                    </i>
             </div>
+
             <div class="body">
                 <div class="table-responsive">
                     <table id="dataAgencia"class="table table-bordered table-striped table-hover dataTable js-basic-example">
@@ -109,7 +110,7 @@
                 </div>
             </div>
             <!-- Campos -->
-            <form method="POST">    
+            <form id="form_cadastro_agencia" method="POST">    
                 <div class="modal-body">                          
                         {% csrf_token %}
 
@@ -121,7 +122,7 @@
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button  class="btn btn-primary">Salvar</button>
+                    <button  type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
         </div>
@@ -140,21 +141,20 @@
               
             </div>
             <!-- Campos -->
-            <form id="form_agencia" method="POST">    
+            <form id="form_edit_agencia" method="POST">    
                                  
                 {% csrf_token %}
                  <div id="editAgencia" class="modal-body">        
                 <!-- Django form será inserido aqui via Jquery -->
                  </div>
-            </form>                    
                
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">
-                    <button class="btn btn-success waves-effect salvarAg">Salvar</button>
+                    <button type="submit" class="btn btn-success waves-effect">Salvar</button>
                     <button class="btn btn-danger excluirAg">Excluir</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
                 </div>
-            
+            </form>
         </div>
     </div>
 </div>

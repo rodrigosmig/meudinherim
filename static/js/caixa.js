@@ -66,7 +66,7 @@ $(function() {
 		});
 	});
 
-	$('.salvar').click(function(evento) {
+	$('#form_lancamento_caixa').on('submit', function(evento) {
 		
 		evento.preventDefault();
 		
@@ -78,13 +78,19 @@ $(function() {
 			data: dados,
 			success: function(msg) {
 				//mensagem de confirmação
-				alert(msg);
-				console.log(msg.responseText);
-				//recarregar pagina
-				location.reload();
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//recarrega a página
+						location.reload();
+					}
+				});
 			},
 			error: function(msg) {
-				alert(msg);
+				//mensagem de retorno em caso de erro
+				$.alert(msg.responseText);
 			},
 		});		
 	});

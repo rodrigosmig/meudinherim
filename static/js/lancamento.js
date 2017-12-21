@@ -16,7 +16,9 @@ $(function() {
 	    return cookieValue;
 	}
 
-	$('.salvarCaixa').on('click', function(event) {
+	$('#form_add_lancamento_caixa').on('submit', function(evento) {
+		evento.preventDefault();
+
 		var data = $('#datepickerC').val();
 		var categoria = $('#id_categoria').val();
 		var descricao = $('#id_descricao').val();
@@ -36,19 +38,29 @@ $(function() {
 			data: dados,
 			success: function(msg) {
 				//mensagem de confirmação
-				alert(msg);
-				//limpar campos
-				$(".modal-body input").val("");
-				//recarregar pagina
-				location.reload();
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//limpar campos
+						$(".modal-body input").val("");
+						$("select[name=categoria]").val('')
+						
+						//recarrega a página
+						location.reload();
+					}
+				});
 			},
 			error: function(msg) {
-				alert(msg);
+				$.alert(msg.responseText);
 			},
 		});
 	});
 
-	$('.salvarBanco').on('click', function(event) {
+	$('#form_add_lancamento_banco').on('submit', function(evento) {
+		evento.preventDefault();
+
 		var banco = $('#id_banco').val();
 		var data = $('#datepickerB').val();
 		var tipo = $('#id_tipo').val();
@@ -71,15 +83,23 @@ $(function() {
 			url: '/banco/add/',
 			data: dados,
 			success: function(msg) {
-				//mensagem de confirmação
-				alert(msg);
-				//limpar campos
-				$(".modal-body input").val("");
-				//recarregar pagina
-				location.reload();
+				$.alert({
+					title: false,
+					content: msg,
+					theme: 'material',
+					onClose: function() {
+						//limpar campos
+						$(".modal-body input").val("");
+						$("select[name=categoria]").val('')
+						$("select[name=banco]").val('')
+
+						//recarrega a página
+						location.reload();
+					}
+				});
 			},
 			error: function(msg) {
-				alert(msg);
+				$.alert(msg.responseText);
 			},
 		});
 	});

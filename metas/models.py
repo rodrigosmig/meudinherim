@@ -7,7 +7,7 @@ class Metas(models.Model):
 	dataFim= models.DateField()
 	titulo= models.CharField(max_length = 40)
 	progresso= models.DecimalField(max_digits = 5, decimal_places = 2)
-	valor = models.DecimalField(max_digits = 6, decimal_places = 2)
+	valor = models.DecimalField(max_digits = 7, decimal_places = 2)
 	finalizado= models.BooleanField(blank = True, default= False)
 	user = models.ForeignKey(User, on_delete = models.CASCADE, default=1)
 

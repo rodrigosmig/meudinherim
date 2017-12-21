@@ -35,7 +35,7 @@ class MetasForm(ModelForm):
         max_value = 999999.99,
         required = True,
         widget = forms.NumberInput(
-        attrs = {'class': 'form-control', 'placeholder': 'Insira o valor da meta'}
+        attrs = {'class': 'form-control', 'id': 'id_valor_meta', 'placeholder': 'Insira o valor da meta'}
         )
     )
 

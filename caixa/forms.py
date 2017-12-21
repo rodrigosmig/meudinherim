@@ -43,7 +43,7 @@ class LancamentosForm(ModelForm):
 class CategoriaForm(ModelForm):
     tipo = forms.ChoiceField(
         widget = forms.Select(
-            attrs = {'class': 'form-control'}
+            attrs = {'class': 'form-control', 'id': 'id_tipo_categoria'}
         ),
         choices = Categoria.TIPOS
     )
@@ -52,7 +52,7 @@ class CategoriaForm(ModelForm):
         max_length = 32,
         required = True,
         widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'placeholder': 'Descreva a categoria'}
+            attrs = {'class': 'form-control', 'id': 'id_descricao_categoria', 'placeholder': 'Descreva a categoria'}
         )
     )
     class Meta:
