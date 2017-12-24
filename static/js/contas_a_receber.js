@@ -1,5 +1,4 @@
 $(function() {
-	
 	var csrftokenGET = getCookie('csrftoken');
 	var csrftokenPOST = getCookie('csrftoken');
 	//funcao criada para gerar o csrftoken no envio da requisicao POST para o Django
@@ -18,35 +17,34 @@ $(function() {
 	    return cookieValue;
 	}
 
-
 	$('.openEdit').on('click', function() {
 		//atribui o id do lancamento a variavel
-		var id = $(this).attr('data-cp');
+		var id = $(this).attr('data-cr');
 		//envia a solicitacao do formulario com o id da conta via ajax
 		$.ajax({
 			type: 'GET',
-			url: '/contas_a_pagar/edit/',
+			url: '/contas_a_receber/edit/',
 			data: {'id': id, 'csrfmiddlewaretoken': csrftokenGET},
-			success: function(contaAPagar) {
+			success: function(contaAReceber) {
 
 				//insere o form vindo do django na div editContPag
-				$('#editContPag').html(contaAPagar);
+				$('#editContRec').html(contaAReceber);
 
 				//Atribui o id do lancamento a uma tag e remove a div vinda do Django
-				var id_contaAPagar = $('#id_contaAPagar').html();
-				$('#datepickerCP_edit').attr('data-cp', id_contaAPagar);
-				$('#id_contaAPagar').remove();
+				var id_contaAPagar = $('#id_contaAReceber').html();
+				$('#datepickerCR_edit').attr('data-cr', id_contaAPagar);
+				$('#id_contaAReceber').remove();
 
-				var data = $("#datepickerCP_edit").val();
+				var data = $("#datepickerCR_edit").val();
 				dia = data.substring(8);
 				mes = data.substring(5, 7);
 				ano = data.substring(0, 4)
 				newData = dia + "/" + mes + "/" + ano
 				//alterar a data para o formato brasileiro o lancamento carregado
-				$("#datepickerCP_edit").val(newData);
+				$("#datepickerCR_edit").val(newData);
 
 				//alterar para o formato brasileiro
-				$("#datepickerCP_edit").datepicker({
+				$("#datepickerCR_edit").datepicker({
                     dateFormat: 'dd/mm/yy',
                     dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
                     dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
@@ -65,17 +63,18 @@ $(function() {
 		});
 	});
 
-	$('.adicionar').click(function(evento) {
+
+	$('#form_cadastro_receber').on('submit', function(evento) {
 		evento.preventDefault();
 		
-		var data = $('#datepickerCP').val();
+		var data = $('#datepickerCR').val();
 		var categoria = $('#id_categoria').val();
 		var descricao = $('#id_descricao').val();
 		var valor = $('#id_valor').val();
 
 		$.ajax({
 			type: 'POST',
-			url: '/contas_a_pagar/',
+			url: '/contas_a_receber/',
 			data: {
 				'data': data,
 				'categoria': categoria,
@@ -95,7 +94,7 @@ $(function() {
 						location.reload();
 					}
 				});	
-				$('#datepickerCP').val("");
+				$('#datepickerCR').val("");
 				$('#id_categoria').val("");
 				$('#id_descricao').val("");
 				$('#id_valor').val("");
@@ -107,7 +106,7 @@ $(function() {
 		});		
 	});
 
-	$('.salvar').click(function(evento) {
+	$('#form_edit_receber').on('submit', function(evento) {
 		evento.preventDefault();
 		
 		//recupera os valores dos campos e converte para o formato Json
@@ -115,10 +114,10 @@ $(function() {
 
 		$.ajax({
 			type: 'POST',
-			url: '/contas_a_pagar/edit/',
+			url: '/contas_a_receber/edit/',
 			data: dados,
 			success: function(msg) {
-				$('#editContasPagar').modal('hide');
+				$('#editContasReceber').modal('hide');
 				//mensagem de confirmação
 				$.alert({
 					title: false,
@@ -140,6 +139,7 @@ $(function() {
 		evento.preventDefault();
 
 		var dados = recuperCampos();
+
 		$.ajax({
     		type: 'POST',
 			url: 'verificar/',
@@ -147,10 +147,10 @@ $(function() {
 				'id': dados.id,
 				'csrfmiddlewaretoken': csrftokenPOST,
 			},
-			success: function(id_pagamento) {
+			success: function(id_recebimento) {
 				$.confirm({
-				    title: 'Excluir pagamento!',
-				    content: 'Tem certeza que deseja excluir o pagamento?',
+				    title: 'Excluir recebimento!',
+				    content: 'Tem certeza que deseja excluir o recebimento?',
 				    draggable: true,
 				    theme: 'material',
 				    buttons: {
@@ -159,11 +159,11 @@ $(function() {
 				        		type: 'POST',
 								url: 'delete/',
 								data: {
-									'id': id_pagamento,
+									'id': id_recebimento,
 									'csrfmiddlewaretoken': csrftokenPOST,
 								},
 								success: function(msg) {
-									$('#editContasPagar').modal('hide');
+									$('#editContasReceber').modal('hide');
 									//mensagem de confirmação
 									$.alert({
 										title: false,
@@ -192,38 +192,21 @@ $(function() {
     	})
 	});
 
-	function recuperCampos() {
-		var id = $('#datepickerCP_edit').attr('data-cp');
-		var data = $('#datepickerCP_edit').val();
-		var categoria = $('#id_categoria_edit').val();
-		var descricao = $('#id_descricao_edit').val();
-		var valor = $('#id_valor_edit').val();
-
-		dados = {
-			'id': id,
-			'data': data,
-			'categoria': categoria,
-			'descricao': descricao,
-			'valor': valor,
-			'csrfmiddlewaretoken': csrftokenPOST
-		}
-		return dados;
-	}
-
-	$('#pagamentoConta').on('hidden.bs.modal', function () {
+	$('#recebimentoConta').on('hidden.bs.modal', function () {
     	$('#campos_conta').empty();
     	$('#carteira').prop("checked", true);
     	$('#campos_conta .label_conta').remove();
 	})
 
-	$('.openPay').on('click', function() {
+	$('.openReceive').on('click', function() {
+		$('#carteira').prop("checked", true);
 		//armazena o id da conta para pegar os valores cadastrados
-		var id = $(this).attr('data-cp');
-		$('.pagar').attr('data-cp', id);
+		var id = $(this).attr('data-cr');
+		$('.receber').attr('data-cr', id);
 
-		id = '#' + id
+		id = '#' + id;
 
-		//esconde o select-box
+		//esconde o select-box do banco
 		$('#select_bancos').hide();
 
 		var data = $(id).children('.conta_data').html();
@@ -247,47 +230,8 @@ $(function() {
 		campos.append($("<input type='text'>").addClass("form-control").prop('disabled', true).prop('id', 'val_pagam').val(valor));
 	});
 
-	$('.cancelPay').on('click', function() {
-		var id_pagamento = $(this).attr('data-cp');
 
-		$.confirm({
-		    title: 'Cancelar pagamento!',
-		    content: 'Tem certeza que deseja cancelar o pagamento?',
-		    draggable: true,
-		    theme: 'material',
-		    buttons: {
-		        Sim: function () {
-		        	$.ajax({
-		        		type: 'POST',
-						url: '/contas_a_pagar/cancelar/',
-						data: {
-							'id': id_pagamento,
-							'csrfmiddlewaretoken': csrftokenPOST,
-						},
-						success: function(msg) {
-							//mensagem de confirmação
-							$.alert({
-								title: false,
-								theme: 'material',
-								content: msg + ' O lançamento gerado pelo pagamento foi excluído.',
-    							onClose: function() {
-    								//recarrega a página
-    								location.reload();
-    							}
-							});						
-						},
-						error: function(msg) {
-							//mensagem de retorno em caso de erro
-							$.alert(msg.responseText)
-						},
-		        	})
-		        },
-		        Não: function() {},
-		    }
-		});		
-	});
-
-
+	//retorna json com os agencias bancarias do usuário
 	$('.conta_select').on('change', function() {
 		var tipo = $(this).attr('data-tipo');
 		if(tipo === 'caixa') {
@@ -303,10 +247,9 @@ $(function() {
 				data: {'csrfmiddlewaretoken': csrftokenPOST},
 				datatype: 'json',
 				success: function(bancos) {
-
+					//cria o select box com as agencias
 					$.each(bancos, function (i, banco) {
 					    $('#select_bancos').append($('<option>', { 
-					        value: banco.fields.banco,
 					        text : banco.fields.banco
 					    }).attr('value', banco.fields.banco));
 					});
@@ -321,7 +264,7 @@ $(function() {
 		}
 	});
 
-	$('.pagar').click(function(evento) {
+	$('.receber').on('click', function(evento) {
 		evento.preventDefault();
 
 		var banco = $('#select_bancos').val();
@@ -329,11 +272,11 @@ $(function() {
 			banco = "";
 		}
 
-		var id = $(this).attr('data-cp');
-		
+		var id = $(this).attr('data-cr');
+
 		$.ajax({
 			type: 'POST',
-			url: '/contas_a_pagar/pagar/',
+			url: '/contas_a_receber/receber/',
 			data: {
 				'id': id, 
 				'banco': banco,
@@ -357,5 +300,63 @@ $(function() {
 			},
 		});		
 	});
+
+	$('.cancelReceive').on('click', function() {
+		var id_pagamento = $(this).attr('data-cr');
+
+		$.confirm({
+		    title: 'Cancelar recebimento!',
+		    content: 'Tem certeza que deseja cancelar o recebimento?',
+		    draggable: true,
+		    theme: 'material',
+		    buttons: {
+		        Sim: function () {
+		        	$.ajax({
+		        		type: 'POST',
+						url: '/contas_a_receber/cancelar/',
+						data: {
+							'id': id_pagamento,
+							'csrfmiddlewaretoken': csrftokenPOST,
+						},
+						success: function(msg) {
+							//mensagem de confirmação
+							$.alert({
+								title: false,
+								theme: 'material',
+								content: msg + ' O lançamento gerado pelo recebimento foi excluído.',
+    							onClose: function() {
+    								//recarrega a página
+    								location.reload();
+    							}
+							});						
+						},
+						error: function(msg) {
+							//mensagem de retorno em caso de erro
+							$.alert(msg.responseText)
+						},
+		        	})
+		        },
+		        Não: function() {},
+		    }
+		});		
+	});
+
+	function recuperCampos() {
+		var id = $('#datepickerCR_edit').attr('data-cr');
+		var data = $('#datepickerCR_edit').val();
+		var categoria = $('#id_categoria_edit').val();
+		var descricao = $('#id_descricao_edit').val();
+		var valor = $('#id_valor_edit').val();
+
+		dados = {
+			'id': id,
+			'data': data,
+			'categoria': categoria,
+			'descricao': descricao,
+			'valor': valor,
+			'csrfmiddlewaretoken': csrftokenPOST
+		}
+		return dados;
+	}
 
 });

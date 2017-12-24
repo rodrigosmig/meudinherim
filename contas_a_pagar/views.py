@@ -105,7 +105,7 @@ def editContasPagar(request):
 
 			return HttpResponse("Conta alterada com sucesso")
 		else:
-			return HttpResponseServerError("Formulário inválido")
+			return HttpResponseServerError("Formulário inválido.")
 
 	#id do lancamento clicado
 	idConta = request.GET.get('id')
@@ -148,7 +148,7 @@ def editContasPagar(request):
         )
     )
 
-	#retorna o id do lancamento junto com o formulario
+	#retorna o id da conta junto com o formulario
 	divId = "<div id='id_contaAPagar'>" + idConta + "</div>"
 
 	form_html = {form.as_p(), divId}

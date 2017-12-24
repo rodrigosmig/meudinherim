@@ -376,14 +376,17 @@ def delAgencia(request):
 	return HttpResponseServerError("Agência não econtrada")
 
 @login_required
-def verificarContasAPagar(request):
+def verificarContas(request):
 	if(request.method == 'POST'):
 		idLancamentoBanco = request.POST.get('id')
 		lancamento = LancamentosBanco.objects.get(pk = idLancamentoBanco)
 		print(lancamento.conta_a_pagar)
 		if(lancamento.conta_a_pagar != None):
 			return HttpResponseServerError('Lançamento realizado pelo contas a pagar. Para excluir este lançamento, cancele seu pagamento em Contas a Pagar.')
+		elif(lancamento.conta_a_receber != None):
+			return HttpResponseServerError('Lançamento realizado pelo contas a receber. Para excluir este lançamento, cancele seu recebimento em Contas a Receber.')
 		else:
 			return HttpResponse(idLancamentoBanco)
+
 	else:
 		HttpResponseServerError("Conta inexistente")
