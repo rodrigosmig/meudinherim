@@ -242,10 +242,17 @@ def editLancamento(request):
         )
     )
 
+	if(lancamento.conta_a_pagar != None):
+		contaID = "<div id='status_conta'>Pago</div>"
+	elif(lancamento.conta_a_receber != None):
+		contaID = "<div id='status_conta'>Recebido</div>"
+	else:
+		contaID = "<div id='status_conta'>Nenhum</div>"
+
 	#retorna o id do lancamento junto com o formulario
 	divId = "<div id='id_lancamento'>" + idLancamento + "</div>"
 
-	form_html = {form.as_p(), divId}
+	form_html = {form.as_p(), divId, contaID}
 	return HttpResponse(form_html)
 
 @login_required

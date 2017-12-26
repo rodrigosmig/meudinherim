@@ -61,7 +61,6 @@ def editContasReceber(request):
 
 		#id da conta clicado
 		idConta = request.POST.get('id')
-		print(idConta, 'teste')
 		#busca o lancamento a ser alterado
 		conta = ContasAReceber.objects.get(pk = idConta)
 		
@@ -77,7 +76,6 @@ def editContasReceber(request):
 
 	#id do lancamento clicado
 	idConta = request.GET.get('id')
-	print(id)
 	conta = ContasAReceber.objects.get(pk = idConta)
 	form = ContasAReceberForm(instance = conta)
 

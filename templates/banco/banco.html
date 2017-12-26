@@ -20,7 +20,7 @@
 <!-- Custom Js -->
 <script src="{% static 'js/jquery-datatable.js' %}"></script>
 <script src="{% static 'js/banco.js' %}"></script>
-<script>$('dataBanco').dataTable();</script>
+
 {% endblock %}
 
 {% block content %}
@@ -107,7 +107,7 @@
             <div class="card"
                 <!-- Título -->
                 <div class="header">
-                    <h4 id="LabelLancamento">Editar | <small>Lançamento bancário</small></h4>
+                    <h4 id="LabelLancamento">Editar | <small>Lançamento bancário<span id="status"></span></small></h4>
                 </div>
                 <!-- Campos -->
                 <form id="form_lancamento_banco">
@@ -117,7 +117,7 @@
                     </div>
                     <!-- Salvar/Cancelar -->
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success waves-effect" >Salvar</button>
+                        <button id="btn_salvar" type="submit" class="btn btn-success waves-effect" >Salvar</button>
                         <button class="btn btn-danger excluir">Excluir</button>
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
                     </div>
