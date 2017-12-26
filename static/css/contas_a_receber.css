@@ -1,0 +1,21 @@
+#dataCR a {
+	text-decoration: none;
+}
+
+#dataCR .recebido a {
+	color: green;
+}
+
+.addCR a {
+	text-decoration: none;
+	color: blue;
+	font-size: 40px;
+}
+
+#datepickerCR_edit, #data_pagam {
+	width: 150px;
+}
+
+.addCR a:hover {
+	color: #4169E1;
+}

@@ -1,14 +1,10 @@
 {% extends "base.html" %}
 
-{% block activecontasPagar %}<li class="active">{% endblock %}
-
 {% load staticfiles %}
 
-{% block staticContasPagar %}
+{% block staticContasReceber %} 
 <!-- JQuery DataTable Css -->
 <link href="{% static 'plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
-
-<link href="{% static 'css/contas_a_pagar.css' %}" rel="stylesheet">
 
 <!-- Jquery DataTable Plugin Js -->
 <script src="{% static 'plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
@@ -18,15 +14,18 @@
 
 <!-- Custom Js -->
 <script src="{% static 'js/jquery-datatable.js' %}"></script>
-<script src="{% static 'js/contas_a_pagar.js' %}"></script>
+<script src="{% static 'js/contas_a_receber.js' %}"></script>
 
-<link rel="stylesheet" type="text/css" href="{% static 'css/contas_a_pagar.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/contas_a_receber.css' %}">
+
 {% endblock %}
 
-{% block datepickerCP %}
+{% block activecontasReceber %}<li class="active">{% endblock %}
+
+{% block datepickerCR %}
 <script type="text/javascript">
 $( function() {
-    $("#datepickerCP").datepicker({
+    $("#datepickerCR").datepicker({
         dateFormat: 'dd/mm/yy',
         dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
         dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
@@ -42,12 +41,11 @@ $( function() {
 
 {% block content %}
 
-
 <section class="content2">
     
     <div class="container-fluid">     
         <div class="block-header">
-            <h1>Contas a Pagar</h1>
+            <h1>Contas a Receber</h1>
         </div>
     </div>
     
@@ -56,21 +54,21 @@ $( function() {
             <div class="card">
                 
                 <div class="header">
-                	<i class="material-icons addCP"><a data-toggle="modal" href="#contas_a_pagar" title="Adicionar">add</a></i>
+                	<i class="material-icons addCR"><a data-toggle="modal" href="#contas_a_receber" title="Adicionar">add</a></i>
                 </div>
                 
-                <div class="body">
-                    <div class="table-responsive">
-                        <table id="dataBanco" class="table table-bordered table-striped table-hover dataTable js-basic-example">
-                    
-                            <thead>
+                <div class="body">                    
+                    <div class="table-responsive">                        
+                        <table id="dataCR" class="table table-bordered table-striped table-hover dataTable js-basic-example">
+
+                        	<thead>
                                 <tr>
                                     <th>Data</th>
                                     <th>Categoria</th>
-                                    <th>Descrição</th> 
+                                    <th>Descrição</th>                                    
                                     <th>Valor</th>
                                     <th>Editar</th>
-                                    <th>Pago</th>
+                                    <th>Recebido</th>
                                 </tr>
                             </thead>
                             <tfoot>
@@ -80,57 +78,59 @@ $( function() {
                                     <th>Descrição</th> 
                                     <th>Valor</th>
                                     <th>Editar</th>
-                                    <th>Pago</th>
+                                    <th>Recebido</th>
                                 </tr>
                             </tfoot>
-                            
-                            <tbody>
-                            {% for cp in contPagar %}
-                                <tr id="{{ cp.id }}">
-                                    <td class="conta_data">{{ cp.data | date:"d/m/Y" }}</td>
-                                    <td class="conta_cat" data-id_cat="{{ cp.categoria.id }}">{{ cp.categoria }}</td>
-                                    <td class="conta_desc">{{ cp.descricao }}</td>
-                                    <td class="conta_val">{{ cp.valor }}</td>
+
+                        	<tbody>
+                            {% for cr in contReceber %}
+                                <tr id="{{ cr.id }}">
+                                    <td class="conta_data">{{ cr.data | date:"d/m/Y"}}</td>
+                                    <td class="conta_cat" data-id_cat="{{ cr.categoria.id }}">{{ cr.categoria }}</td>
+                                    <td class="conta_desc">{{ cr.descricao }}</td>
+                                    <td class="conta_val">{{ cr.valor }}</td>
                                     <td>
-                                    	<i class="material-icons"><a data-toggle="modal" href="#editContasPagar" title="Clique para editar"><span class="openEdit" data-cp="{{ cp.id }}">edit</span></a></i>
+                                    	<i class="material-icons"><a data-toggle="modal" href="#editContasReceber" title="Clique para editar"><span class="openEdit" data-cr="{{ cr.id }}">edit</span></a></i>
                                     </td>
-                                    {% if cp.paga == False %}
+                                    {% if cr.recebido == False %}
                                         <td>
-                                            <i class="material-icons"><a data-toggle="modal" href="#pagamentoConta" style="color: red" title="Clique para pagar"><span class="openPay" data-cp="{{ cp.id }}">close</span></a></i>
+                                            <i class="material-icons"><a data-toggle="modal" href="#recebimentoConta" style="color: red" title="Clique para receber"><span class="openReceive" data-cr="{{ cr.id }}">close</span></a></i>
                                         </td>
                                     {% else %}
                                         <td>
-                                            <i class="material-icons pago"><span class="cancelPay" data-cp="{{ cp.id }}"><a data-toggle="modal" href="" title="Clique para cancelar o pagamento">done</span></i>
+                                            <i class="material-icons recebido"><span class="cancelReceive" data-cr="{{ cr.id }}"><a data-toggle="modal" href="" title="Clique para cancelar o recebimento">done</span></i>
                                         </td>
                                     {% endif %}
                                 </tr>
                             {% endfor %}
                             </tbody>
-                            
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+						</table>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
 </section>
 
-<!-- Modal Cadastro Contas a Pagar -->
-<div class="modal fade" id="contas_a_pagar">
+<!-- Modal Cadastro Contas a Receber -->
+<div class="modal fade" id="contas_a_receber">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <!-- Título -->
             <div class="modal-header">
                 <div class="header">
-                    <h4 >Adicionar | <small>Conta a Pagar</small></h4>
+                    <h4 >Adicionar | <small>Conta a Receber</small></h4>
                 </div>
             </div>
             <!-- Campos -->
-            <form id="form_cadastro_pagar" method="POST">    
+            <form id="form_cadastro_receber" method="POST">    
                 <div class="modal-body">                          
                         {% csrf_token %}
 
-                            {% for campo in contPagarForm %}
+                            {% for campo in contReceberForm %}
                                 {{ campo.label_tag }}
                                 {{ campo }}                                    
                             {% endfor %}              
@@ -145,57 +145,55 @@ $( function() {
     </div>
 </div>
 
-<!-- Modal Edição de Contas a Pagar -->
-<div class="modal fade" id="editContasPagar" tabindex="-1" role="dialog" aria-labelledby="LabelContasPagar" aria-hidden="true">
+<!-- Modal Edição de Contas a Receber -->
+<div class="modal fade" id="editContasReceber" tabindex="-1" role="dialog" aria-labelledby="LabelContasReceber" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="card"
                 <!-- Título -->
                 <div class="header">
-                    <h4 id="LabelContasPagar">Editar | <small>Conta a Pagar</small></h4>
+                    <h4 id="LabelContasReceber">Editar | <small>Conta a Receber</small></h4>
                 </div>
                 <!-- Campos -->
-                <form id="form_lancamento">
+                <form id="form_edit_receber">
                 {% csrf_token %}    
-                    <div id="editContPag" class="modal-body">        
+                    <div id="editContRec" class="modal-body">        
                         <!-- Django form será inserido aqui via Jquery -->
                     </div>
-                </form>     
-                <!-- Salvar/Cancelar -->
-                <div class="modal-footer">
-                    <button class="btn btn-success waves-effect salvar" >Salvar</button>
-                    <button class="btn btn-danger excluir">Excluir</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                </div>
+                     
+	                <!-- Salvar/Cancelar -->
+	                <div class="modal-footer">
+	                    <button type="submit" class="btn btn-success waves-effect">Salvar</button>
+	                    <button class="btn btn-danger excluir">Excluir</button>
+	                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+	                </div>
+	        	</form>
             </div>
         </div>
     </div>
 </div>    
-<!-- Modal Edição de Contas a Pagar -->
+<!-- Modal Edição de Contas a Receber -->
 
-
-<!-- Modal Pagamento de conta -->
-<div class="modal fade" id="pagamentoConta">
+<!-- Modal Recebimento de conta -->
+<div class="modal fade" id="recebimentoConta">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <!-- Título -->
             <div class="modal-header">
-                <h2 class="modal-title">Pagamento de Conta</h2>
+                <h2 class="modal-title">Recebimento de Conta</h2>
             </div>
             <!-- Campos -->
-            <form method="POST">    
+            <form id="form_recebimento_conta" method="POST">    
                 <div class="modal-body">                   
                     <fieldset>
-                        <legend>Conta para Pagamento:</legend>
+                        <legend>Conta para Recebimento:</legend>
 
                         <div>
                             <input name="conta" type="radio" id="carteira" data-tipo="caixa" class="form-control conta_select" checked />
                             <label for="carteira">Caixa</label>
                             <input name="conta" type="radio" id="bancos" data-tipo="banco" class="form-control conta_select" />
                             <label for="bancos">Banco</label>
-                        </div>
-
-                        
+                        </div>                        
 
                         <div id="campos_conta">
                             <!-- Inserir campos via Jquery -->     
@@ -205,13 +203,11 @@ $( function() {
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary pagar">Pagar</button>
+                    <button class="btn btn-primary receber">Receber</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-
 
 {% endblock %}

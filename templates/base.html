@@ -80,6 +80,7 @@
         {% block staticCategoria %}{% endblock %}
         {% block staticAgencia %}{% endblock %}
         {% block staticContasPagar %}{% endblock %}
+        {% block staticContasReceber %}{% endblock %}
         {% block staticMetas %}{% endblock %}
 
 
@@ -129,6 +130,7 @@
 </script>
         {% block scriptHome %}{% endblock %}
         {% block datepickerCP %}{% endblock %}
+        {% block datepickerCR %}{% endblock %}
        
     </head>
 
@@ -279,6 +281,13 @@
                             <a href="{% url 'caixa:index' %}">
                                 <i class="material-icons">work</i>
                                 <span>Caixa</span>
+                            </a>
+                        </li>
+                        <!-- Contas a Receber -->
+                        {% block activecontasReceber %}<li>{% endblock %}
+                            <a href="{% url 'contas_a_receber:index' %}">
+                                <i class="material-icons">monetization_on</i>
+                                <span>Contas a Receber</span>
                             </a>
                         </li>
                         <!-- Contas a Pagar -->

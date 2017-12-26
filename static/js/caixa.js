@@ -32,6 +32,22 @@ $(function() {
 				//insere o form vindo do django na div editLanc
 				$('#editLanc').html(lancamento);
 
+				//informa se o lançamento foi realizado pelo contas a pagar ou contas a receber
+				var statusConta = $('#status_conta').html();
+				var status = $('#status').html()
+
+				//desabilita os campos quando o lançamento for feito pelo contas a pagar/receber
+				if(statusConta === 'Pago' || statusConta === 'Recebido') {
+					$('#status').html(status + " (" + statusConta + ")").css('color', 'red');
+					$('#datepicker-alter_caixa').prop('disabled', true);
+					$('#id_categoria-alter_caixa').prop('disabled', true);
+					$('#id_descricao-alter_caixa').prop('disabled', true);
+					$('#id_valor-alter_caixa').prop('disabled', true);
+					$('#btn_salvar').prop('disabled', true);
+				}
+				$('#status_conta').remove();
+				var status = $('#status').html();
+
 				//Atribui o id do lancamento a uma tag e remove a div vinda do Django
 				var id_lancamento = $('#id_lancamento').html();
 				$('#datepicker-alter_caixa').attr('data-lanc', id_lancamento);
@@ -164,6 +180,12 @@ $(function() {
 		}
 		return dados;
 	}
+
+	//remove o texto inserido quando for contas a pagar/receber e habilita o botão salvar
+	$('#editLancamento').on('hidden.bs.modal', function () {
+    	$('#status').html("");
+    	$('#btn_salvar').prop('disabled', false);
+	});
 
 	$('#card_change').hide();
 

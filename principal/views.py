@@ -6,6 +6,7 @@ from caixa.models import LancamentosCaixa, Categoria, SaldoCaixa
 from banco.forms import LancamentosBancoForm
 from banco.models import LancamentosBanco, ContaBanco, SaldoBanco
 from contas_a_pagar.models import ContasAPagar
+from contas_a_receber.models import ContasAReceber
 from django.contrib.auth.forms import UserCreationForm
 from usuario.forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login
@@ -81,6 +82,7 @@ def home(request):
 	eventosCaixa = []
 	eventosBanco = []
 	eventosCPagar = []
+	eventosCReceber = []
 
 	#carrega os lançamentos do caixa do usuário
 	lancamentosCaixa = LancamentosCaixa.objects.filter(user = user)
@@ -88,6 +90,8 @@ def home(request):
 	lancamentosBanco = LancamentosBanco.objects.filter(user = user)
 	#carrega as contas a pagar do usuário
 	contasAPagar = ContasAPagar.objects.filter(user = user).filter(paga = False)
+	#carrega as contas a receber do usuário
+	contasAReceber = ContasAReceber.objects.filter(user = user).filter(recebido = False)
 
 	#separa os dados do caixa que serão utilizados no calendario em um tupla
 	for lancamento in lancamentosCaixa:
@@ -124,25 +128,42 @@ def home(request):
 	eventosBanco = [{'title': title, 'start': start, 'color': 'yellow', 'textColor': 'black'} for title, start in eventosBanco]
 
 	#separa os dados do contas a pagar que serão utilizados no calendario em um tupla
-	for lancamento in contasAPagar:
-		dia = str(lancamento.data.day)
+	for conta in contasAPagar:
+		dia = str(conta.data.day)
 		if(len(dia) == 1):
 			dia = "0" + dia
-		mes = str(lancamento.data.month)
+		mes = str(conta.data.month)
 		if(len(mes) == 1):
 			mes = "0" + mes
-		ano = str(lancamento.data.year)
+		ano = str(conta.data.year)
 		#concatena a data para o formato do fullcalendar
 		data = ano + "-" + mes + "-" + dia
-		titulo = lancamento.descricao + " : " + " R$" + str(lancamento.valor) 
+		titulo = conta.descricao + " : " + " R$" + str(conta.valor) 
 		eventosCPagar.append((titulo, data))
 
 	#converte a tupla para para dicionario
 	eventosCPagar = [{'title': title, 'start': start, 'color': 'red'} for title, start in eventosCPagar]
 
+	#separa os dados do contas a receber que serão utilizados no calendario em um tupla
+	for conta in contasAReceber:
+		dia = str(conta.data.day)
+		if(len(dia) == 1):
+			dia = "0" + dia
+		mes = str(conta.data.month)
+		if(len(mes) == 1):
+			mes = "0" + mes
+		ano = str(conta.data.year)
+		#concatena a data para o formato do fullcalendar
+		data = ano + "-" + mes + "-" + dia
+		titulo = conta.descricao + " : " + " R$" + str(conta.valor) 
+		eventosCReceber.append((titulo, data))
+
+	#converte a tupla para para dicionario
+	eventosCReceber = [{'title': title, 'start': start, 'color': 'green'} for title, start in eventosCReceber]
+
 	
 	#junta os lancamento de caixa, banco e contas a pagar
-	todosEventos = eventosBanco + eventosCaixa + eventosCPagar
+	todosEventos = eventosBanco + eventosCaixa + eventosCPagar + eventosCReceber
 	#converte para o formato Json
 	todosEventos = json.dumps(todosEventos, ensure_ascii=False)
 

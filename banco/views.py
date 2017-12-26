@@ -242,10 +242,17 @@ def editLancamento(request):
         )
     )
 
+	if(lancamento.conta_a_pagar != None):
+		contaID = "<div id='status_conta'>Pago</div>"
+	elif(lancamento.conta_a_receber != None):
+		contaID = "<div id='status_conta'>Recebido</div>"
+	else:
+		contaID = "<div id='status_conta'>Nenhum</div>"
+
 	#retorna o id do lancamento junto com o formulario
 	divId = "<div id='id_lancamento'>" + idLancamento + "</div>"
 
-	form_html = {form.as_p(), divId}
+	form_html = {form.as_p(), divId, contaID}
 	return HttpResponse(form_html)
 
 @login_required
@@ -376,14 +383,17 @@ def delAgencia(request):
 	return HttpResponseServerError("Agência não econtrada")
 
 @login_required
-def verificarContasAPagar(request):
+def verificarContas(request):
 	if(request.method == 'POST'):
 		idLancamentoBanco = request.POST.get('id')
 		lancamento = LancamentosBanco.objects.get(pk = idLancamentoBanco)
 		print(lancamento.conta_a_pagar)
 		if(lancamento.conta_a_pagar != None):
 			return HttpResponseServerError('Lançamento realizado pelo contas a pagar. Para excluir este lançamento, cancele seu pagamento em Contas a Pagar.')
+		elif(lancamento.conta_a_receber != None):
+			return HttpResponseServerError('Lançamento realizado pelo contas a receber. Para excluir este lançamento, cancele seu recebimento em Contas a Receber.')
 		else:
 			return HttpResponse(idLancamentoBanco)
+
 	else:
 		HttpResponseServerError("Conta inexistente")

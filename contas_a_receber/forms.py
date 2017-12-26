@@ -1,14 +1,14 @@
 from django.forms import ModelForm
 from django import forms
-from contas_a_pagar.models import ContasAPagar
+from contas_a_receber.models import ContasAReceber
 from caixa.models import Categoria
 
-class ContasAPagarForm(ModelForm):
+class ContasAReceberForm(ModelForm):
 	data = forms.DateField(
         label = 'Data',
         required = True,
         widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'id': 'datepickerCP', 'placeholder': 'Vencimento'}
+            attrs = {'class': 'form-control', 'id': 'datepickerCR', 'placeholder': 'Vencimento'}
         )
     )
 	descricao = forms.CharField(
@@ -16,7 +16,7 @@ class ContasAPagarForm(ModelForm):
         max_length = 64,
         required = True,
         widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'id': 'id_descricaoCP', 'placeholder': 'Descreva a transação'}
+            attrs = {'class': 'form-control', 'id': 'id_descricaoCR', 'placeholder': 'Descreva a transação'}
         )
     )
 	valor = forms.DecimalField(
@@ -25,17 +25,10 @@ class ContasAPagarForm(ModelForm):
         max_value = 999999.99,
         required = True,
         widget = forms.NumberInput(
-            attrs = {'class': 'form-control', 'id': 'id_valorCP', 'placeholder': 'Insira o valor'}
-        )
-    )
-	categoria = forms.ModelChoiceField(
-        queryset = Categoria.objects.all(),
-        empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control'}
+            attrs = {'class': 'form-control', 'id': 'id_valorCR', 'placeholder': 'Insira o valor'}
         )
     )
 
 	class Meta:
-		model = ContasAPagar
+		model = ContasAReceber
 		fields = ['data', 'categoria', 'descricao', 'valor']

@@ -1,57 +1,56 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
-from contas_a_pagar.forms import ContasAPagarForm
-from contas_a_pagar.models import ContasAPagar
 from caixa.models import Categoria, SaldoCaixa, LancamentosCaixa
 from banco.models import SaldoBanco, ContaBanco, LancamentosBanco
 from banco.forms import LancamentosBancoForm
 from caixa.forms import LancamentosForm
+from contas_a_receber.models import ContasAReceber
+from contas_a_receber.forms import ContasAReceberForm
 from django import forms
-from usuario.models import UsuarioProfile
-from django.core import serializers
-import json
 
 @login_required
-def contasAPagar(request):
+def contasAReceber(request):
+	user = request.user
+
 	if(request.method == 'POST'):
-		form = ContasAPagarForm(request.POST)
+		form = ContasAReceberForm(request.POST)
 
 		if(form.is_valid()):
-			contaPagar = form.save(commit = False)
-			contaPagar.user = request.user
-			contaPagar.paga = False
-			contaPagar.save()
-			return HttpResponse('Conta a pagar adicionada com sucesso')
+			contReceber = form.save(commit = False)
+			contReceber.user = user
+			contReceber.recebido = False
+			contReceber.save()
+
+			return HttpResponse("Conta a receber adicionada com sucesso.")
 		else:
 			return HttpResponseServerError("Formulário inválido.")
 
 
-	template = 'contas_a_pagar/contas_a_pagar.html'
+	template = 'contas_a_receber/contas_a_receber.html'
 
-	contas = ContasAPagar.objects.filter(user = request.user)
+	contas = ContasAReceber.objects.filter(user = user)
 
-	form = ContasAPagarForm()
-	#seleciona apenas as categorias do usuario logado e do tipo saida
+	form = ContasAReceberForm()
+
 	form.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id).filter(tipo = 2),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'id_categoriaCP'}
-	        )
-		)
+        queryset = Categoria.objects.filter(user = user).filter(tipo = 1),
+        empty_label = 'Nenhum',
+        widget = forms.Select(
+            attrs = {'class': 'form-control', 'id': 'id_categoriaCR'}
+        )
+    )
 
-	context = {'contPagar': contas, 'contPagarForm': form}
+	contexto = {'contReceber': contas, 'contReceberForm': form}
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
 	saldoC = SaldoCaixa.objects.get(user = request.user)
-	context['saldoCaixa'] = saldoC.saldoAtual
+	contexto['saldoCaixa'] = saldoC.saldoAtual
 
 	#busca o saldo de Banco do usuario e atribui ao contexto
 	saldoB = SaldoBanco.objects.get(user = request.user)
-	context['saldoBanco'] = saldoB.saldoAtual
+	contexto['saldoBanco'] = saldoB.saldoAtual
 
-	
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
@@ -80,28 +79,24 @@ def contasAPagar(request):
 	        )
 		)
 	#para adicionar lancamento
-	context['formLancCaixa'] = formCaixa
-	context['formLancBanco'] = formBanco
+	contexto['formLancCaixa'] = formCaixa
+	contexto['formLancBanco'] = formBanco
 
-	userProfile = UsuarioProfile.objects.get(user = request.user)
-	context['profile'] = userProfile
-
-	return render(request, template, context)
+	return render(request, template, contexto)
 
 @login_required
-def editContasPagar(request):
-	if(request.method == 'POST'):
-		#id do usuario
-		id_user = request.user.id
-		#id do lancamento clicado
-		idConta = request.POST.get('id')
+def editContasReceber(request):
+	user = request.user
 
+	if(request.method == 'POST'):
+
+		#id da conta clicado
+		idConta = request.POST.get('id')
 		#busca o lancamento a ser alterado
-		conta = ContasAPagar.objects.get(pk = idConta)
+		conta = ContasAReceber.objects.get(pk = idConta)
 		
 		#atribui o lancamento ao form	
-		form = ContasAPagarForm(request.POST, instance = conta)
-
+		form = ContasAReceberForm(request.POST, instance = conta)
 		
 		if(form.is_valid()):
 			form.save()
@@ -112,12 +107,12 @@ def editContasPagar(request):
 
 	#id do lancamento clicado
 	idConta = request.GET.get('id')
-	conta = ContasAPagar.objects.get(pk = idConta)
-	form = ContasAPagarForm(instance = conta)
+	conta = ContasAReceber.objects.get(pk = idConta)
+	form = ContasAReceberForm(instance = conta)
 
-	#seleciona apenas as categorias do usuario logado e do tipo saida
+	#seleciona apenas as categorias do usuario logado e do tipo entrada
 	form.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id).filter(tipo = 2),
+			queryset = Categoria.objects.filter(user = user).filter(tipo = 1),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control', 'id': 'id_categoria_edit'}
@@ -129,7 +124,7 @@ def editContasPagar(request):
 		label = 'Data',
 		required = True,
 		widget = forms.TextInput(
-			attrs = {'class': 'form-control', 'id': 'datepickerCP_edit'}
+			attrs = {'class': 'form-control', 'id': 'datepickerCR_edit'}
 
         )
 	)
@@ -152,54 +147,41 @@ def editContasPagar(request):
     )
 
 	#retorna o id da conta junto com o formulario
-	divId = "<div id='id_contaAPagar'>" + idConta + "</div>"
+	divId = "<div id='id_contaAReceber'>" + idConta + "</div>"
 
 	form_html = {form.as_p(), divId}
+
 	return HttpResponse(form_html)
 
-
 @login_required
-def delContasPagar(request):
+def delContasReceber(request):
 	if(request.method == 'POST'):
-		#id do usuario
-		id_user = request.user.id
-		#id do lancamento a ser deletado
+		#usuario
+		user = request.user
+
+		#id da conta a ser deletada
 		idConta = request.POST.get('id')
 
-		#busca o lançamento
-		conta = ContasAPagar.objects.get(pk = idConta)		
+		#busca a conta
+		conta = ContasAReceber.objects.get(pk = idConta)		
 		
-		if(request.user.id == conta.user_id):
+		if(user == conta.user):
 			conta.delete()
 			
-			return HttpResponse("Conta a pagar excluída com sucesso")
+			return HttpResponse("Conta a receber excluída com sucesso")
 		else:
 			return HttpResponseServerError("Conta não encontrado.")
 		
 
 	return HttpResponseServerError("Conta não encontrado.")
 
-#funcao que retorna as agencias do usuario solicitado no pagamento de contas
 @login_required
-def banco(request):
+def recebimento(request):
 	if(request.method == 'POST'):
-		#id do usuario
-		id_user = request.user.id
-		bancos = ContaBanco.objects.filter(user_id = id_user)
-		
-		bancosJson = serializers.serialize('json', bancos, use_natural_foreign_keys=False, use_natural_primary_keys=False)
+		#usuario
+		user = request.user
 
-		return HttpResponse(bancosJson, content_type="application/json")
-
-	return HttpResponseServerError("Banco não encontrado")
-
-@login_required
-def pagamento(request):
-	if(request.method == 'POST'):
-		#id do usuario
-		id_user = request.user.id
-
-		tipoPagamento = request.POST.get('banco')
+		tipoRecebimento = request.POST.get('banco')
 
 		#busca o saldo do caixa do usuario logado
 		saldoCaixa = SaldoCaixa.objects.get(user = request.user)
@@ -214,13 +196,14 @@ def pagamento(request):
 		idConta = request.POST.get('id')
 
 		#busca a conta a pagar
-		conta = ContasAPagar.objects.get(pk = idConta)
+		conta = ContasAReceber.objects.get(pk = idConta)
 
+		print(tipoRecebimento)
 		#verifica se o pagamento é no caixa ou no banco
-		if(tipoPagamento == ""):
+		if(tipoRecebimento == ""):
 			#para pagamento feito no caixa
 			conta.tipo_conta = "c"
-
+			print('caixa')
 			#cadastra o lancamento do caixa de acordo com os dados da conta
 			caixa = LancamentosCaixa()
 
@@ -229,10 +212,10 @@ def pagamento(request):
 			caixa.descricao = conta.descricao
 			caixa. valor = conta.valor
 			caixa.user = request.user
-			caixa.conta_a_pagar = conta
+			caixa.conta_a_receber = conta
 
 			#diminui o saldo do usuário
-			saldoCaixa.saldoAtual -= caixa.valor
+			saldoCaixa.saldoAtual += caixa.valor
 			
 			caixa.save()
 			saldoCaixa.save()
@@ -240,88 +223,89 @@ def pagamento(request):
 		else:
 			#para pagamento feito no banco
 			conta.tipo_conta = "b"
-
-			agencias = ContaBanco.objects.filter(user_id = id_user)
+			print('banco')
+			agencias = ContaBanco.objects.filter(user = user)
 
 			for agencia in agencias:
-				if(agencia.banco == tipoPagamento):
+				if(agencia.banco == tipoRecebimento):
 					banco = LancamentosBanco()
 
 					banco.banco = agencia
 					banco.data = conta.data
-					banco.tipo = '2'
+					banco.tipo = '1'
 					banco.categoria = conta.categoria
 					banco.descricao = conta.descricao
 					banco. valor = conta.valor
 					banco.user = request.user
-					banco.conta_a_pagar = conta
+					banco.conta_a_receber = conta
 					
-					saldoBanco.saldoAtual -= banco.valor
+					saldoBanco.saldoAtual += banco.valor
 
 					banco.save()
 					saldoBanco.save()
 
-		conta.paga = True
+		conta.recebido = True
 		conta.save()
 		
-		return HttpResponse("Pagamento efetuado com sucesso")
+		return HttpResponse("Recebimento efetuado com sucesso.")
 
 @login_required
-def cancelaPagamento(request):
+def cancelaRecebimento(request):
 	if(request.method == 'POST'):
 		user = request.user
-		idPagamento = request.POST.get('id')
+		idRecebimento = request.POST.get('id')
 
-		conta = ContasAPagar.objects.get(pk = idPagamento)
+		conta = ContasAReceber.objects.get(pk = idRecebimento)
 
 		if(conta.user == user):
 			if(conta.tipo_conta == "c"):
-				#busca o lançamento gerado pelo pagamento
-				lancamentoCaixa = LancamentosCaixa.objects.get(conta_a_pagar = conta)
-				#deleta o lançamento gerado pelo pagamento
+				#busca o lançamento gerado pelo recebimento
+				lancamentoCaixa = LancamentosCaixa.objects.get(conta_a_receber = conta)
+				#deleta o lançamento gerado pelo recebimento
 				lancamentoCaixa.delete()
-				#muda o status do pagamento
-				conta.paga = False
-				#deixa em branco o tipo da conta de pagamento
+				#muda o status do recebimento
+				conta.recebido = False
+				#deixa em branco o tipo da conta de recebimento
 				conta.tipo_conta = None
 
 				#busca o saldo do caixa do usuario logado e faz o ajuste
 				saldoCaixa = SaldoCaixa.objects.get(user = user)
 				saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
-				saldoCaixa.saldoAtual += conta.valor
+				saldoCaixa.saldoAtual -= conta.valor
 				saldoCaixa.save()
 				conta.save()
 			
 			else:
-				#busca o lançamento gerado pelo pagamento
-				lancamentoBanco = LancamentosBanco.objects.get(conta_a_pagar = conta)
-				#deleta o lançamento gerado pelo pagamento
+				#busca o lançamento gerado pelo recebimento
+				lancamentoBanco = LancamentosBanco.objects.get(conta_a_receber = conta)
+				#deleta o lançamento gerado pelo recebimento
 				lancamentoBanco.delete()
-				#muda o status do pagamento
-				conta.paga = False
-				#deixa em branco o tipo da conta de pagamento
+				#muda o status do recebimento
+				conta.recebido = False
+				#deixa em branco o tipo da conta de recebimento
 				conta.tipo_conta = None
 
 				#busca o saldo do caixa do usuario logado e faz o ajuste
 				saldoBanco = SaldoBanco.objects.get(user = user)
 				saldoBanco.saldoAnterior = saldoBanco.saldoAtual
-				saldoBanco.saldoAtual += conta.valor
+				saldoBanco.saldoAtual -= conta.valor
 				saldoBanco.save()
 				conta.save()
 
-			return HttpResponse('Pagamento cancelado com sucesso.')
+			return HttpResponse('Recebimento cancelado com sucesso.')
 
 
 	return HttpResponseServerError("Pagamento não encontrado. Tente novamente.")
 
+
 @login_required
-def verificarPagamento(request):
+def verificarRecebimento(request):
 	if(request.method == 'POST'):
-		idPagamento = request.POST.get('id')
-		conta = ContasAPagar.objects.get(pk = idPagamento)
-		if(conta.paga):
-			return HttpResponseServerError('Conta está paga. Cancele o pagamento antes de excluir.')
+		idRecebimento = request.POST.get('id')
+		conta = ContasAReceber.objects.get(pk = idRecebimento)
+		if(conta.recebido):
+			return HttpResponseServerError('Conta foi recebida. Cancele o recebimento antes de excluir.')
 		else:
-			return HttpResponse(idPagamento)
+			return HttpResponse(idRecebimento)
 	else:
 		HttpResponseServerError("Conta inexistente")
