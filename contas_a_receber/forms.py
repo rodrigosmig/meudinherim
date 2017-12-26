@@ -16,7 +16,7 @@ class ContasAReceberForm(ModelForm):
         max_length = 64,
         required = True,
         widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'placeholder': 'Descreva a transação'}
+            attrs = {'class': 'form-control', 'id': 'id_descricaoCR', 'placeholder': 'Descreva a transação'}
         )
     )
 	valor = forms.DecimalField(
@@ -25,7 +25,7 @@ class ContasAReceberForm(ModelForm):
         max_value = 999999.99,
         required = True,
         widget = forms.NumberInput(
-            attrs = {'class': 'form-control', 'placeholder': 'Insira o valor'}
+            attrs = {'class': 'form-control', 'id': 'id_valorCR', 'placeholder': 'Insira o valor'}
         )
     )
 

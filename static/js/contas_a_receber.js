@@ -68,9 +68,9 @@ $(function() {
 		evento.preventDefault();
 		
 		var data = $('#datepickerCR').val();
-		var categoria = $('#id_categoria').val();
-		var descricao = $('#id_descricao').val();
-		var valor = $('#id_valor').val();
+		var categoria = $('#id_categoriaCR').val();
+		var descricao = $('#id_descricaoCR').val();
+		var valor = $('#id_valorCR').val();
 
 		$.ajax({
 			type: 'POST',
@@ -95,9 +95,9 @@ $(function() {
 					}
 				});	
 				$('#datepickerCR').val("");
-				$('#id_categoria').val("");
-				$('#id_descricao').val("");
-				$('#id_valor').val("");
+				$('#id_categoriaCR').val("");
+				$('#id_descricaoCR').val("");
+				$('#id_valorCR').val("");
 
 			},
 			error: function(msg) {

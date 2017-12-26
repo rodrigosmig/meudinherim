@@ -37,7 +37,7 @@ def contasAReceber(request):
         queryset = Categoria.objects.filter(user = user).filter(tipo = 1),
         empty_label = 'Nenhum',
         widget = forms.Select(
-            attrs = {'class': 'form-control'}
+            attrs = {'class': 'form-control', 'id': 'id_categoriaCR'}
         )
     )
 
@@ -50,6 +50,37 @@ def contasAReceber(request):
 	#busca o saldo de Banco do usuario e atribui ao contexto
 	saldoB = SaldoBanco.objects.get(user = request.user)
 	contexto['saldoBanco'] = saldoB.saldoAtual
+
+	#para adicionar lancamento
+	formCaixa = LancamentosForm()
+	#seleciona apenas as categorias do usuario logado
+	formCaixa.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control'}
+	        )
+		)
+	formBanco = LancamentosBancoForm()
+	#Seleciona apenas o banco do usuario para o formulario
+	formBanco.fields['banco'] = forms.ModelChoiceField(
+		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		empty_label = 'Nenhum',
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        )
+	)
+	#seleciona apenas as categorias do usuario logado
+	formBanco.fields['categoria'] = forms.ModelChoiceField(
+			queryset = Categoria.objects.filter(user_id = request.user.id),
+			empty_label = 'Nenhum',
+	        widget = forms.Select(
+	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
+	        )
+		)
+	#para adicionar lancamento
+	contexto['formLancCaixa'] = formCaixa
+	contexto['formLancBanco'] = formBanco
 
 	return render(request, template, contexto)
 
