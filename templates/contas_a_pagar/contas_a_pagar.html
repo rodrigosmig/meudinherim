@@ -126,7 +126,7 @@ $( function() {
                 </div>
             </div>
             <!-- Campos -->
-            <form method="POST">    
+            <form id="form_cadastro_pagar" method="POST">    
                 <div class="modal-body">                          
                         {% csrf_token %}
 
@@ -138,7 +138,7 @@ $( function() {
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary adicionar">Salvar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
         </div>

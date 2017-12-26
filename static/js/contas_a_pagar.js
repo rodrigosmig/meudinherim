@@ -65,13 +65,13 @@ $(function() {
 		});
 	});
 
-	$('.adicionar').click(function(evento) {
+	$('#form_cadastro_pagar').on('submit', function(evento) {
 		evento.preventDefault();
 		
 		var data = $('#datepickerCP').val();
-		var categoria = $('#id_categoria').val();
-		var descricao = $('#id_descricao').val();
-		var valor = $('#id_valor').val();
+		var categoria = $('#id_categoriaCP').val();
+		var descricao = $('#id_descricaoCP').val();
+		var valor = $('#id_valorCP').val();
 
 		$.ajax({
 			type: 'POST',

@@ -23,6 +23,9 @@ def contasAPagar(request):
 			contaPagar.paga = False
 			contaPagar.save()
 			return HttpResponse('Conta a pagar adicionada com sucesso')
+		else:
+			return HttpResponseServerError("Formulário inválido.")
+
 
 	template = 'contas_a_pagar/contas_a_pagar.html'
 
@@ -34,7 +37,7 @@ def contasAPagar(request):
 			queryset = Categoria.objects.filter(user_id = request.user.id).filter(tipo = 2),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
+	            attrs = {'class': 'form-control', 'id': 'id_categoriaCP'}
 	        )
 		)
 
