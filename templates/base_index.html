@@ -35,6 +35,57 @@
     
         <!-- Temas -->
         <link href="{% static 'css/themes/all-themes.css' %}" rel="stylesheet" />
+
+        <!-- Jquery Core Js -->
+        <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+
+        <!-- Bootstrap Core Js -->
+        <script src="{% static 'plugins/bootstrap/js/bootstrap.js' %}"></script>
+
+        <!-- Select Plugin Js -->
+        <script src="{% static 'plugins/bootstrap-select/js/bootstrap-select.js' %}"></script>
+
+        <!-- Slimscroll Plugin Js -->
+        <script src="{% static 'plugins/jquery-slimscroll/jquery.slimscroll.js' %}"></script>
+
+        <!-- Waves Effect Plugin Js -->
+        <script src="{% static 'plugins/node-waves/waves.js' %}"></script>
+
+        <!-- Jquery CountTo Plugin Js -->
+        <script src="{% static 'plugins/jquery-countto/jquery.countTo.js' %}"></script>
+
+        <!-- Morris Plugin Js -->
+        <script src="{% static 'plugins/raphael/raphael.min.js' %}"></script>
+        <script src="{% static 'plugins/morrisjs/morris.js' %}"></script>
+
+        <!-- ChartJs -->
+        <script src="{% static 'plugins/chartjs/Chart.bundle.js' %}"></script>
+
+        <!-- Flot Charts Plugin Js -->
+        <script src="{% static 'plugins/flot-charts/jquery.flot.js' %}"></script>
+        <script src="{% static 'plugins/flot-charts/jquery.flot.resize.js' %}"></script>
+        <script src="{% static 'plugins/flot-charts/jquery.flot.pie.js' %}"></script>
+        <script src="{% static 'plugins/flot-charts/jquery.flot.categories.js' %}"></script>
+        <script src="{% static 'plugins/flot-charts/jquery.flot.time.js' %}"></script>
+
+        <!-- Sparkline Chart Plugin Js -->
+        <script src="{% static 'plugins/jquery-sparkline/jquery.sparkline.js' %}"></script>
+
+        <!-- Chamadas JS Alertas -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+
+        <!-- Custom Js -->
+        <!--   <script src="{% static 'js/admin.js' %}"></script>
+        <script src="{% static 'js/index.js' %}"></script> -->
+
+        <!-- Demo Js -->
+        <!-- <script src="{% static 'js/demo.js' %}"></script> -->
+
+        <!-- Validação dos formulários -->
+        <script src="{% static 'js/validacao.js' %}"></script>
+
+        {% block staticIndex %}{% endblock %}
     </head>
 
     <!-- Cor da Barra Superior -->
@@ -47,7 +98,7 @@
                 <div class="navbar-header">
                     <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
                     <a href="javascript:void(0);" class="bars"></a>
-                    <a class="navbar-brand" href="index.html">MEU <b>DINHERIM</b></a>
+                    <a class="navbar-brand" href="{% url 'principal:index' %}">MEU <b>DINHERIM</b></a>
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-collapse">
                     <br>
@@ -85,50 +136,5 @@
             </div>
         </section>
     </body>
-    
-    <!-- Jquery Core Js -->
-    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
-
-    <!-- Bootstrap Core Js -->
-    <script src="{% static 'plugins/bootstrap/js/bootstrap.js' %}"></script>
-
-    <!-- Select Plugin Js -->
-    <script src="{% static 'plugins/bootstrap-select/js/bootstrap-select.js' %}"></script>
-
-    <!-- Slimscroll Plugin Js -->
-    <script src="{% static 'plugins/jquery-slimscroll/jquery.slimscroll.js' %}"></script>
-
-    <!-- Waves Effect Plugin Js -->
-    <script src="{% static 'plugins/node-waves/waves.js' %}"></script>
-
-    <!-- Jquery CountTo Plugin Js -->
-    <script src="{% static 'plugins/jquery-countto/jquery.countTo.js' %}"></script>
-
-    <!-- Morris Plugin Js -->
-    <script src="{% static 'plugins/raphael/raphael.min.js' %}"></script>
-    <script src="{% static 'plugins/morrisjs/morris.js' %}"></script>
-
-    <!-- ChartJs -->
-    <script src="{% static 'plugins/chartjs/Chart.bundle.js' %}"></script>
-
-    <!-- Flot Charts Plugin Js -->
-    <script src="{% static 'plugins/flot-charts/jquery.flot.js' %}"></script>
-    <script src="{% static 'plugins/flot-charts/jquery.flot.resize.js' %}"></script>
-    <script src="{% static 'plugins/flot-charts/jquery.flot.pie.js' %}"></script>
-    <script src="{% static 'plugins/flot-charts/jquery.flot.categories.js' %}"></script>
-    <script src="{% static 'plugins/flot-charts/jquery.flot.time.js' %}"></script>
-
-    <!-- Sparkline Chart Plugin Js -->
-    <script src="{% static 'plugins/jquery-sparkline/jquery.sparkline.js' %}"></script>
-
-    <!-- Custom Js -->
-    <script src="{% static 'js/admin.js' %}"></script>
-    <script src="{% static 'js/index.js' %}"></script>
-
-    <!-- Demo Js -->
-    <script src="{% static 'js/demo.js' %}"></script>
-
-    <!-- Validação dos formulários -->
-    <script src="{% static 'js/validacao.js' %}"></script>
 
 </html>

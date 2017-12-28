@@ -7,7 +7,7 @@ from banco.forms import LancamentosBancoForm
 from banco.models import LancamentosBanco, ContaBanco, SaldoBanco
 from contas_a_pagar.models import ContasAPagar
 from contas_a_receber.models import ContasAReceber
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import  AuthenticationForm
 from usuario.forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -17,13 +17,17 @@ from caixa.models import SaldoCaixa
 from metas.models import Metas
 from usuario.models import UsuarioProfile
 import json
+from django.contrib import messages
 
 
 def index(request):
 	template = 'principal/index.html'
+	form = RegisterForm()
 
 	if request.method == 'POST':
+
 		form = RegisterForm(request.POST)
+
 		if form.is_valid():
 			print("Usuário")
 			user = form.save()
@@ -50,24 +54,44 @@ def index(request):
 			user = authenticate(username = user.username, password = form.cleaned_data['password1'])
 			login(request, user)
 			return redirect('principal:home')
-		else:
-			print("Login")
-			form = LoginForm(request.POST)
 
-			if form.is_valid():
+	#instancia o formulario de login com a classe para o bootstrap
+	formLogin = AuthenticationForm()
+	formLogin.fields['username'] = forms.CharField(
+ 		label = 'login', 
+ 		max_length=50,
+ 		required = True,
+ 		widget = forms.TextInput(
+            attrs = {'class': 'form-control', 'placeholder': 'Usuário'}
+        )
+ 	)
+	formLogin.fields['password'] = forms.CharField(
+ 		label = 'Senha', 
+ 		max_length=50, 
+ 		widget=forms.PasswordInput(
+ 			attrs = {'class': 'form-control', 'placeholder': 'Senha'}
+ 		))
+	
+	context = {'form': form, 'formLogin':formLogin}
 
-				form_login = form.cleaned_data['login']
-				form_senha = form.cleaned_data['senha']
-
-				usuario = authenticate(username=form_login,password=form_senha)
-
-				if usuario is not None:
-					login(request, usuario)
-					return redirect('principal:home')
-	form = RegisterForm()
-	form2 = LoginForm()
-	context = {'form': form, 'form2':form2}
 	return render(request, template, context)
+
+def entrar(request):
+	if(request.method == 'POST'):
+		user = authenticate(username = request.POST['username'], password = request.POST['password'])
+				
+		if user is not None:
+			login(request, user)
+			return redirect('principal:home')
+		else:
+			messages.error(request, 'Login ou senha inválidos. Tente novamente.')
+			#return redirect('principal:login')
+	
+	template = 'principal/login.html'
+	formLogin = AuthenticationForm()
+	contexto = {'form': formLogin}
+
+	return render(request, template, contexto)
 
 @login_required
 def home(request):

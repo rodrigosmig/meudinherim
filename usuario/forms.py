@@ -14,8 +14,20 @@ from usuario.models import UsuarioProfile
 
 class LoginForm(forms.Form):
 
- 	login = forms.CharField(label = 'login', max_length=50)
- 	senha = forms.CharField(label = 'Senha', max_length=50, widget=forms.PasswordInput())
+ 	login = forms.CharField(
+ 		label = 'login', 
+ 		max_length=50,
+ 		required = True,
+ 		widget = forms.TextInput(
+            attrs = {'class': 'form-control', 'id': 'id_username_login', 'placeholder': 'Usuário'}
+        )
+ 	)
+ 	senha = forms.CharField(
+ 		label = 'Senha', 
+ 		max_length=50, 
+ 		widget=forms.PasswordInput(
+ 			attrs = {'class': 'form-control', 'id': 'id_password_login', 'placeholder': 'Senha'}
+ 		))
 
 # adicionando o campo email no formulario do cadastro
 class RegisterForm(UserCreationForm):
