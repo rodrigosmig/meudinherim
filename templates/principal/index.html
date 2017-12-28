@@ -1,20 +1,27 @@
 ﻿{% extends "base_index.html" %}
+
+{% load staticfiles %}
+
+{% block staticIndex %}
+<link rel='stylesheet' href="{% static 'css/index.css' %}" />
+{% endblock %}
+
 {% block content2 %} 
-<form  action="{% url 'principal:index' %}" method="POST" name="formLogin">
+<form  action="{% url 'principal:entrar' %}" method="POST" name="formLogin">
     {% csrf_token %}
     <div class="table-responsive">
         <table id="IdTableLogin" role="presentation" cellspacing="0" >
             <tr>
                 <td><i class="material-icons">person</i></td>   
                 
-                <td><input type="text" class="form-control" id="{{ form2.login.id_for_label }}" name="{{ form2.login.html_name }}"placeholder="Usuário"  required autofocus></td>
-                
+               <!--  <td><input type="text" class="form-control" id="{{ formLogin.username.id_for_label }}" name="{{ formLogin.username.html_name }}"placeholder="Usuário"  required autofocus></td> -->
+               <td>{{ formLogin.username }}</td>
                 <td>  &nbsp; &nbsp; &nbsp; &nbsp;   </td> 
                 
-                <td> <i class="material-icons">lock</i></td>   
+                <td> <i class="material-icons">lock</i></td>
 
-                <td><input type="password" class="form-control" id="{{ form2.senha.id_for_label }}" name="{{ form2.senha.html_name }}" minlength="6" placeholder="Senha"  required> </td>
-                
+                <!-- <td><input type="password" class="form-control" id="{{ formLogin.password.id_for_label }}" name="{{ formLogin.password.html_name }}" minlength="6" placeholder="Senha"  required> </td> -->
+                <td><td>{{ formLogin.password }}</td></td>
                 <td>  &nbsp; &nbsp;  &nbsp; &nbsp;  </td>
                 
                 <td><button  id="IdBotao" class="btn btn-primary btn-lg bg-pink waves-effect" onclick="validarLogin()" type="submit" >ENTRAR</button></td>
@@ -80,6 +87,6 @@
         <input type="checkbox" name="terms" id="terms" class="filled-in chk-col-pink">
         <label for="terms">Eu li e concordei com o <a href="javascript:void(0);">termo de uso</a>.</label>
     </div> -->
-    <button class="btn btn-block btn-lg bg-pink waves-effect" onclick="validarCadastro()" type="submit">INSCREVA-SE</button>
+    <button class="btn btn-block btn-lg bg-pink waves-effect enviar">INSCREVA-SE</button>
 </form>
 {% endblock %}

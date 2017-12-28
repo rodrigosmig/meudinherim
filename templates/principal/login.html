@@ -6,23 +6,31 @@
 
 
 {% block content %}
-<form method="POST">
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert {{ message.tags }} alert-dismissable">    
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+
+<form method="POST" action="{% url 'principal:entrar' %}">
     {% csrf_token %}
 
     <div class="logo align-center">
         <h1><b>Login</b></h1>
         <br>
     </div>
-
+    <h5 class="form_erros"><strong>{{ form.non_field_errors }}<strong></h5>
     <div class="input-group">
         <span class="input-group-addon">
             <i class="material-icons">person</i>
         </span>
+         
         <div class="form-line">
              <input type="text" class="form-control" id="{{ form.username.id_for_label }}" name="{{ form.username.html_name }}" placeholder="Usuário" required autofocus> 
-            
-            <!--{{ form.username }}
-            {{ form.username.errors }}-->
+            {{ form.username.errors }}
         </div>
     </div>
 
@@ -34,11 +42,7 @@
         <div class="form-line">
        
              <input type="password" class="form-control" id="{{ form.password.id_for_label }}" name="{{ form.password.html_name }}" minlength="6" placeholder="Senha" required> 
-            
-            <!--{{ form.password }}
-
-            {{ form.password.errors }}-->
- 
+            {{ form.password.errors }} 
         </div>
         
     </div>
