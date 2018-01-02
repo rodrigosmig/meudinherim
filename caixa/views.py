@@ -19,7 +19,9 @@ def lancamentos(request):
 
 	if(request.method == 'POST'):
 		mes = request.POST.get('mes')
-		lancamentos = LancamentosCaixa.objects.filter(data__month = mes).filter(user_id = id_user)
+		ano = request.POST.get('ano')
+
+		lancamentos = LancamentosCaixa.objects.filter(data__month = mes).filter(data__year = ano).filter(user_id = id_user)
 
 		lancJson = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 
