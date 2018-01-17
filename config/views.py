@@ -75,9 +75,9 @@ def config(request):
     saldoC = SaldoCaixa.objects.get(user = request.user)
     contexto['saldoCaixa'] = saldoC.saldoAtual
 
-    #busca o saldo de Banco do usuario e atribui ao contexto
-    saldoB = SaldoBanco.objects.get(user = request.user)
-    contexto['saldoBanco'] = saldoB.saldoAtual
+    #para saldo de cada agencia
+    agencias = ContaBanco.objects.filter(user = user)
+    contexto['agencias'] = agencias
     
     return render(request, template, contexto)
 

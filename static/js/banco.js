@@ -17,7 +17,7 @@ $(function() {
 	    return cookieValue;
 	}
 
-	$('.openEdit').on('click', function() {
+	$(document).on('click', '.openEdit', function() {
 		//atribui o id do lancamento a variavel
 		var id = $(this).attr('data-lanc');
 
@@ -190,4 +190,142 @@ $(function() {
     	$('#btn_salvar').prop('disabled', false);
 	});
 
+	$('#select_agencia').on('change', function() {
+		
+		if($(this).val() !== 'nenhum') {
+			$('.saldoBanco').hide();
+			var agencia = $(this).val();
+
+			var data = new Date();
+			var mesAtual = data.getMonth();
+			var anoAtual = data.getFullYear();
+
+			$('#lanc_meses').val(mesAtual).prop('selected', true);
+			$('#lanc_anos').val(anoAtual).prop('selected', true);
+			
+			$.ajax({
+				type: 'POST',
+				url: '/banco/',
+				data: {
+					'agencia': agencia,
+					'mes': mesAtual + 1,
+					'ano': anoAtual,
+					'csrfmiddlewaretoken': csrftokenPOST,
+				},
+				success: function(lancamentos) {
+					console.log(lancamentos)
+
+					$('#select_data').show();
+
+					var table = $('#dataBanco').DataTable();
+
+					//limpa a tabela
+					var rows = table.clear().draw();
+					
+					if(lancamentos.length !== 0) {
+						for(var x = 0; x < lancamentos.length; x++) {
+
+							//mostrar o saldo da conta
+							$('.saldoBanco').each(function() {
+								if($(this).attr('data-saldo') === lancamentos[x].fields.banco[1]) {
+									$(this).show();	
+								}
+							})
+
+							data = lancamentos[x].fields.data;
+							dia = data.substring(8);
+							mes = data.substring(5, 7);
+							ano = data.substring(0, 4);
+							newData = dia + "/" + mes + "/" + ano;
+
+							if(lancamentos[x].fields.categoria[1] === "1") {
+								var valor = "<span style='color: blue' >" + lancamentos[x].fields.valor + "</span>";
+							}
+							else {
+								var valor = "<span style='color: red' >-" + lancamentos[x].fields.valor + "</span>";
+							}
+
+							table.row.add([newData,
+							lancamentos[x].fields.descricao,
+							lancamentos[x].fields.categoria[2],
+							valor,
+							"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
+							]).draw(false);
+						}
+					}
+				},
+				error: function(msg) {
+					$.alert(msg.responseText)
+				},
+			});
+		}
+		else {
+			$('#dataBanco').DataTable().clear().draw();
+			$('#select_data').hide();
+			$('.saldoBanco').hide();
+		}
+	});
+
+
+	$('.filtrar').on('click', function() {
+		
+		var agencia = $('#select_agencia').val();
+		var mes = parseInt($('#lanc_meses').val()) + 1;
+		var ano = $('#lanc_anos').val();
+
+		$.ajax({
+			type: 'POST',
+			url: '/banco/',
+			data: {
+				'agencia': agencia,
+				'mes': mes,
+				'ano': ano,
+				'csrfmiddlewaretoken': csrftokenPOST
+			},
+			datatype: 'json',
+			success: function(lancamentos) {
+				var table = $('#dataBanco').DataTable();
+
+				var rows = table.clear().draw();					
+
+				if(lancamentos.length !== 0) {
+
+					for(var x = 0; x < lancamentos.length; x++) {
+
+						data = lancamentos[x].fields.data;
+						dia = data.substring(8);
+						mes = data.substring(5, 7);
+						ano = data.substring(0, 4);
+						newData = dia + "/" + mes + "/" + ano;
+
+						if(lancamentos[x].fields.categoria[1] === "1") {
+							var categoria = "<span style='color: blue' >" + lancamentos[x].fields.valor + "</span>";
+						}else{
+							var categoria = "<span style='color: red' >-" + lancamentos[x].fields.valor + "</span>";
+						}
+
+						table.row.add([newData,
+						lancamentos[x].fields.descricao,
+						lancamentos[x].fields.categoria[2],
+						categoria,
+						"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
+						]).draw(false);
+					}
+				}					
+			},
+			error: function(msg) {
+				//mensagem de retorno em caso de erro
+				$.alert('erro')
+				console.log(msg.responseText);
+				
+			},
+		});
+	});
+
+	
+	//esconder saldo
+	$('.saldoBanco').hide();
+
+	//esconder combox da data
+	$('#select_data').hide();
 });

@@ -233,7 +233,7 @@ $(function() {
 						if(lancamentos[x].fields.categoria[1] === "1") {
 							var categoria = "<span style='color: blue' >" + lancamentos[x].fields.valor + "</span>";
 						}else{
-							var categoria = "<span style='color: red' >" + lancamentos[x].fields.valor + "</span>";
+							var categoria = "<span style='color: red' >-" + lancamentos[x].fields.valor + "</span>";
 						}
 
 						table.row.add([newData,

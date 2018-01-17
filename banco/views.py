@@ -7,47 +7,42 @@ from banco.forms import ContaBancoForm, LancamentosBancoForm
 from caixa.forms import LancamentosForm
 from django import forms
 from usuario.models import UsuarioProfile
+from django.core import serializers
+import json
 
 @login_required
 def cadastroBanco(request):
 
 	if (request.method == 'POST'):
 		form = ContaBancoForm(request.POST)
-		print(form.is_valid)
 		if (form.is_valid):
 			bancos = form.save(commit = False)
 			bancos.user = request.user 
 			bancos.save()
-			print("teste")
 			return HttpResponse('Agência cadastrada com sucesso.')
 		else:
 			return HttpResponseServerError('Formulário inválido.')
 
-	id_user = request.user.id
+	user = request.user
 
 	template = 'banco/agencia.html'
-	agencias = ContaBanco.objects.filter(user_id = id_user)
+	agencias = ContaBanco.objects.filter(user = user)
 	form_agencia = ContaBancoForm()
 
 	contexto = {'formAgencia': form_agencia, 'agencias': agencias}
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
-	saldoC = SaldoCaixa.objects.get(user = request.user)
+	saldoC = SaldoCaixa.objects.get(user = user)
 	contexto['saldoCaixa'] = saldoC.saldoAtual
 
-	#busca o saldo de Banco do usuario e atribui ao contexto
-	saldoB = SaldoBanco.objects.get(user = request.user)
-	contexto['saldoBanco'] = saldoB.saldoAtual
-
-	userProfile = UsuarioProfile.objects.get(user = request.user)
+	userProfile = UsuarioProfile.objects.get(user = user)
 	contexto['profile'] = userProfile
-
 
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
 	formCaixa.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
+			queryset = Categoria.objects.filter(user = user),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control'}
@@ -57,7 +52,7 @@ def cadastroBanco(request):
 	formBanco = LancamentosBancoForm()
 	#Seleciona apenas o banco do usuario para o formulario
 	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		queryset = ContaBanco.objects.filter(user = user),
 		empty_label = 'Nenhum',
         widget = forms.Select(
             attrs = {'class': 'form-control'}
@@ -65,7 +60,7 @@ def cadastroBanco(request):
 	)
 	#seleciona apenas as categorias do usuario logado
 	formBanco.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
+			queryset = Categoria.objects.filter(user = user),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
@@ -80,22 +75,49 @@ def cadastroBanco(request):
 
 @login_required
 def banco(request):
-	#id do usuario logado
-	id_user = request.user.id
+	#usuario logado
+	user = request.user
+
+	if(request.method == 'POST'):
+		print(request.POST)
+		agencia = request.POST.get('agencia')
+		mes = request.POST.get('mes')
+		ano = request.POST.get('ano')
+
+		print(mes)
+		print(ano)
+
+		listaAgencias = ContaBanco.objects.filter(user = user).filter(banco = agencia)
+
+		#lancamentos = LancamentosBanco.objects.filter(data__month = mes).filter(data__year = ano).filter(user = user)
+		lancamentos = LancamentosBanco.objects.filter(data__month = mes).filter(data__year = ano).filter(user = user).filter(banco__in = listaAgencias)
+		print(lancamentos)
+		lancJson = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+
+		return HttpResponse(lancJson, content_type="application/json")
+		
+
+
 	template = 'banco/banco.html'
-	lancamentos = LancamentosBanco.objects.filter(user_id = id_user)
+	contexto = {}
 
-	saldoB = SaldoBanco.objects.get(user = request.user)
-	saldoC = SaldoCaixa.objects.get(user = request.user)
+	listAgencias = []
+	todasAgencias = ContaBanco.objects.filter(user = user)
+
+	for a in todasAgencias:
+		nome = a.banco
+		saldo = str(a.saldo)
+		listAgencias.append((nome, saldo))
 
 
-	contexto = {'lancBanco': lancamentos,'saldoBanco' : saldoB.saldoAtual,
-	 'saldoCaixa': saldoC.saldoAtual}
+	listAgencias = [{'agencia': agencia, 'saldo': saldo} for agencia, saldo in listAgencias]
+	listAgencias = json.dumps(listAgencias, ensure_ascii=False)
+	contexto['selectAgencias'] = listAgencias
 
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
 	formCaixa.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
+			queryset = Categoria.objects.filter(user = user),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control'}
@@ -105,7 +127,7 @@ def banco(request):
 	formBanco = LancamentosBancoForm()
 	#Seleciona apenas o banco do usuario para o formulario
 	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		queryset = ContaBanco.objects.filter(user = user),
 		empty_label = 'Nenhum',
         widget = forms.Select(
             attrs = {'class': 'form-control'}
@@ -113,7 +135,7 @@ def banco(request):
 	)
 	#seleciona apenas as categorias do usuario logado
 	formBanco.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
+			queryset = Categoria.objects.filter(user = user),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
@@ -124,8 +146,16 @@ def banco(request):
 	contexto['formLancCaixa'] = formCaixa
 	contexto['formLancBanco'] = formBanco
 
-	userProfile = UsuarioProfile.objects.get(user = request.user)
-	contexto['profile'] = userProfile
+	userProfile = UsuarioProfile.objects.get(user = user)
+	contexto['profile'] = userProfile	
+
+	#para saldo da carteira
+	saldoC = SaldoCaixa.objects.get(user = user)
+	contexto['saldoCaixa'] = saldoC.saldoAtual
+
+	#para saldo de cada agencia
+	agencias = ContaBanco.objects.filter(user = user)
+	contexto['agencias'] = agencias	
 
 	return render(request, template, contexto)
 
@@ -169,7 +199,7 @@ def editLancamento(request):
 		lancamento = LancamentosBanco.objects.get(pk = idLancamento)
 		#atribui o lancamento ao form	
 		form = LancamentosBancoForm(request.POST, instance = lancamento)
-		print(form)
+
 		if(form.is_valid()):
 			form.save()
 
@@ -284,7 +314,6 @@ def delLancamento(request):
 
 			saldoBanco.saldoAtual = saldo 
 			saldoBanco.save()
-			print("ok")
 
 			return HttpResponse("Lançamento excluído com sucesso.")
 		else:
@@ -293,6 +322,7 @@ def delLancamento(request):
 
 	return HttpResponseServerError("Lançamento não encontrado.")
 
+@login_required
 def editAgencia(request):
 
 	if (request.method == 'POST'):
@@ -364,7 +394,7 @@ def editAgencia(request):
 	form_html = {form.as_p(), divId}
 	return HttpResponse(form_html)
 
-
+@login_required
 def delAgencia(request):
 
 	if (request.method == 'POST'):
@@ -387,7 +417,6 @@ def verificarContas(request):
 	if(request.method == 'POST'):
 		idLancamentoBanco = request.POST.get('id')
 		lancamento = LancamentosBanco.objects.get(pk = idLancamentoBanco)
-		print(lancamento.conta_a_pagar)
 		if(lancamento.conta_a_pagar != None):
 			return HttpResponseServerError('Lançamento realizado pelo contas a pagar. Para excluir este lançamento, cancele seu pagamento em Contas a Pagar.')
 		elif(lancamento.conta_a_receber != None):

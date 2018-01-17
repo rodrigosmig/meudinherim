@@ -41,9 +41,9 @@ def lancamentos(request):
 	saldoC = SaldoCaixa.objects.get(user = request.user)
 	contexto['saldoCaixa'] = saldoC.saldoAtual
 
-	#busca o saldo de Banco do usuario e atribui ao contexto
-	saldoB = SaldoBanco.objects.get(user = request.user)
-	contexto['saldoBanco'] = saldoB.saldoAtual
+	#para saldo de cada agencia
+	agencias = ContaBanco.objects.filter(user = request.user)
+	contexto['agencias'] = agencias
 
 
 	formCaixa = LancamentosForm()
@@ -109,9 +109,9 @@ def categoria(request):
 	saldoC = SaldoCaixa.objects.get(user = user)
 	contexto['saldoCaixa'] = saldoC.saldoAtual
 
-	#busca o saldo de Banco do usuario e atribui ao contexto
-	saldoB = SaldoBanco.objects.get(user = user)
-	contexto['saldoBanco'] = saldoB.saldoAtual
+	#para saldo de cada agencia
+	agencias = ContaBanco.objects.filter(user = user)
+	contexto['agencias'] = agencias
 
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
@@ -265,7 +265,6 @@ def editLancamento(request):
 			saldo = 0
 			
 			for l in lancamentos:
-				print(saldo)
 				if (l.categoria.tipo == '1'):
 					saldo += l.valor
 				else:

@@ -18,6 +18,7 @@ from metas.models import Metas
 from usuario.models import UsuarioProfile
 import json
 from django.contrib import messages
+from django.conf import settings
 
 
 def index(request):
@@ -76,13 +77,14 @@ def index(request):
 
 	return render(request, template, context)
 
+
 def entrar(request):
 	if(request.method == 'POST'):
 		user = authenticate(username = request.POST['username'], password = request.POST['password'])
 				
 		if user is not None:
 			login(request, user)
-			return redirect('principal:home')
+			return redirect(settings.LOGIN_REDIRECT_URL)
 		else:
 			messages.error(request, 'Login ou senha inválidos. Tente novamente.')
 			#return redirect('principal:login')
@@ -227,18 +229,23 @@ def home(request):
 	saldoC = SaldoCaixa.objects.get(user = user)
 	context['saldoCaixa'] = saldoC.saldoAtual
 
-	#busca o saldo de Banco do usuario e atribui ao contexto
-	saldoB = SaldoBanco.objects.get(user = user)
-	context['saldoBanco'] = saldoB.saldoAtual
+	#para saldo de cada agencia
+	agencias = ContaBanco.objects.filter(user = user)
+	context['agencias'] = agencias
 
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco
 
 	metas = Metas.objects.filter(user = user)
 
+	#soma o valor de saldo de todas as agencias
+	totalSaldoAgencias = 0
+	for a in agencias:
+		totalSaldoAgencias += a.saldo
+
 	for m in metas:
 		#calculo do progresso da meta
-		progresso = ((saldoB.saldoAtual + saldoC.saldoAtual) / m.valor) * 100
+		progresso = ((totalSaldoAgencias + saldoC.saldoAtual) / m.valor) * 100
 		m.progresso = round(progresso, 2)
 		m.save()
 

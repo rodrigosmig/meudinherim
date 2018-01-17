@@ -40,12 +40,17 @@ def metas(request):
 	saldoC = SaldoCaixa.objects.get(user = request.user)
 	contexto['saldoCaixa'] = saldoC.saldoAtual
 
-	#busca o saldo de Banco do usuario e atribui ao contexto
-	saldoB = SaldoBanco.objects.get(user = request.user)
-	contexto['saldoBanco'] = saldoB.saldoAtual
+	#para saldo de cada agencia
+	agencias = ContaBanco.objects.filter(user = user)
+	contexto['agencias'] = agencias
+
+	#soma o valor de saldo de todas as agencias
+	totalSaldoAgencias = 0
+	for a in agencias:
+		totalSaldoAgencias += a.saldo
 
 	for m in metas:
-		progresso = ((saldoB.saldoAtual + saldoC.saldoAtual) / m.valor) * 100
+		progresso = ((totalSaldoAgencias + saldoC.saldoAtual) / m.valor) * 100
 		m.progresso = round(progresso, 2)
 		m.save()
 
