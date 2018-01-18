@@ -79,19 +79,16 @@ def banco(request):
 	user = request.user
 
 	if(request.method == 'POST'):
-		print(request.POST)
+
 		agencia = request.POST.get('agencia')
 		mes = request.POST.get('mes')
 		ano = request.POST.get('ano')
-
-		print(mes)
-		print(ano)
 
 		listaAgencias = ContaBanco.objects.filter(user = user).filter(banco = agencia)
 
 		#lancamentos = LancamentosBanco.objects.filter(data__month = mes).filter(data__year = ano).filter(user = user)
 		lancamentos = LancamentosBanco.objects.filter(data__month = mes).filter(data__year = ano).filter(user = user).filter(banco__in = listaAgencias)
-		print(lancamentos)
+
 		lancJson = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 
 		return HttpResponse(lancJson, content_type="application/json")
@@ -164,21 +161,19 @@ def addLancamento(request):
 	if(request.method == 'POST'):
 		
 		form = LancamentosBancoForm(request.POST)
+		agencia = request.POST.get('banco')
 		
 		if(form.is_valid()):
 			lancamento = form.save(commit = False)
 
-			saldo = SaldoBanco.objects.get(user = request.user)
+			conta = ContaBanco.objects.get(pk = agencia)
 
-			saldo.saldoAnterior = saldo.saldoAtual
-
-			if (lancamento.tipo == "1"):
-				
-				saldo.saldoAtual += lancamento.valor
+			if (lancamento.tipo == "1"):				
+				conta.saldo += lancamento.valor
 			else:
-				saldo.saldoAtual -= lancamento.valor
+				conta.saldo -= lancamento.valor
 
-			saldo.save()
+			conta.save()
 
 			#relacionao o usuario logado com o lançamento
 			lancamento.user = request.user
@@ -193,6 +188,8 @@ def editLancamento(request):
 
 		id_user = request.user.id
 
+		agencia = request.POST.get('banco')
+
 		#id do lancamento clicado
 		idLancamento = request.POST.get('id')
 		#busca o lancamento a ser alterado
@@ -200,21 +197,21 @@ def editLancamento(request):
 		#atribui o lancamento ao form	
 		form = LancamentosBancoForm(request.POST, instance = lancamento)
 
-		if(form.is_valid()):
+		if(form.is_valid()):			
 			form.save()
-
-			saldoBanco = SaldoBanco.objects.get(user = request.user)
-			lancamentos = LancamentosBanco.objects.filter(user_id = id_user)
-
+			conta = ContaBanco.objects.get(pk = agencia)
+			lancamentos = LancamentosBanco.objects.filter(user_id = id_user).filter(banco = agencia)
 			saldo = 0
+
 			for l in lancamentos:
+				print(l.valor)
 				if (l.tipo == '1'):
 					saldo += l.valor
 				else:
-					saldo -= l.valor
-			
-			saldoBanco.saldoAtual = saldo 
-			saldoBanco.save()
+					saldo -= l.valor			
+			conta.saldo = saldo 
+
+			conta.save()			
 
 			return HttpResponse("Lançamento alterado com sucesso")
 		else:
@@ -301,19 +298,20 @@ def delLancamento(request):
 		if(request.user.id == lancamento.user_id):
 			lancamento.delete()
 
-
-			saldoBanco = SaldoBanco.objects.get(user=request.user)
-			lancamentos = LancamentosBanco.objects.filter(user_id=id_user)
-
+			agencia = request.POST.get('banco')
+			conta = ContaBanco.objects.get(pk = agencia)
+			lancamentos = LancamentosBanco.objects.filter(user_id = id_user).filter(banco = agencia)
 			saldo = 0
+
 			for l in lancamentos:
-				if(l.tipo == '1'):
+				print(l.valor)
+				if (l.tipo == '1'):
 					saldo += l.valor
 				else:
-					saldo -= l.valor
+					saldo -= l.valor			
+			conta.saldo = saldo 
 
-			saldoBanco.saldoAtual = saldo 
-			saldoBanco.save()
+			conta.save()
 
 			return HttpResponse("Lançamento excluído com sucesso.")
 		else:

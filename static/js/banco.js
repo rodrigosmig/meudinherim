@@ -230,7 +230,7 @@ $(function() {
 								if($(this).attr('data-saldo') === lancamentos[x].fields.banco[1]) {
 									$(this).show();	
 								}
-							})
+							});
 
 							data = lancamentos[x].fields.data;
 							dia = data.substring(8);
@@ -238,20 +238,37 @@ $(function() {
 							ano = data.substring(0, 4);
 							newData = dia + "/" + mes + "/" + ano;
 
-							if(lancamentos[x].fields.categoria[1] === "1") {
+							if(lancamentos[x].fields.tipo === "1") {
 								var valor = "<span style='color: blue' >" + lancamentos[x].fields.valor + "</span>";
 							}
 							else {
 								var valor = "<span style='color: red' >-" + lancamentos[x].fields.valor + "</span>";
 							}
 
+							var tipo = "";
+							if(lancamentos[x].fields.tipo === '1') {
+								tipo = 'Crédito';
+							}
+							else {
+								tipo = 'Débito'
+							}
+
 							table.row.add([newData,
 							lancamentos[x].fields.descricao,
+							tipo,
 							lancamentos[x].fields.categoria[2],
 							valor,
 							"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
 							]).draw(false);
 						}
+					}
+					else {
+						//mostrar o saldo da conta
+						$('.saldoBanco').each(function() {
+							if($(this).attr('data-saldo') === $('#select_agencia').val()) {
+								$(this).show();	
+							}
+						});						
 					}
 				},
 				error: function(msg) {
@@ -298,14 +315,23 @@ $(function() {
 						ano = data.substring(0, 4);
 						newData = dia + "/" + mes + "/" + ano;
 
-						if(lancamentos[x].fields.categoria[1] === "1") {
+						if(lancamentos[x].fields.tipo === "1") {
 							var categoria = "<span style='color: blue' >" + lancamentos[x].fields.valor + "</span>";
 						}else{
 							var categoria = "<span style='color: red' >-" + lancamentos[x].fields.valor + "</span>";
 						}
 
+						var tipo = "";
+						if(lancamentos[x].fields.tipo === '1') {
+							tipo = 'Crédito';
+						}
+						else {
+							tipo = 'Débito'
+						}
+
 						table.row.add([newData,
 						lancamentos[x].fields.descricao,
+						tipo,
 						lancamentos[x].fields.categoria[2],
 						categoria,
 						"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
