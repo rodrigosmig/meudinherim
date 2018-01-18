@@ -189,42 +189,34 @@ $(function() {
 
 	$('#card_change').hide();
 
-	//gerar combobox com os meses anteriores
-	var meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+	//selecionar o mês/ano atual no combobox	
 	var data = new Date();
 	var mesAtual = data.getMonth();
-	var conteudo = "";
-	
-	
-	for(var x = 0; x <= mesAtual; x++) {
-		// if(x === mesAtual) {
-		// 	conteudo += "<option value =" + (x + 1) + " selected>" + meses[x] + "</option>";
-		// }
-		// else {
-		conteudo += "<option value =" + (x + 1) + ">" + meses[x] + "</option>";
-		// }
-	}
-	$('#lanc_meses').html(conteudo);
-	$('#lanc_meses_change').html(conteudo);
+	var anoAtual = data.getFullYear();
+	$('#lanc_meses').val(mesAtual).prop('selected', true);
+	$('#lanc_meses_change').val(mesAtual).prop('selected', true);
+	$('#lanc_anos').val(anoAtual).prop('selected', true);
+	$('#lanc_anos_change').val(anoAtual).prop('selected', true);
 
-	$('.meses_change').on('change', function() {
+	$('.filtrar').on('click', function() {
 
 		$('#card_atual').hide();
 		$('#card_change').show();
 
-		var mes = $(this).val();
+		var mes = parseInt($('#lanc_meses_change').val()) + 1;
+		var ano = $('#lanc_anos_change').val()
 
 		$.ajax({
 			type: 'POST',
 			url: '/caixa/',
 			data: {
-				'mes': mes, 
+				'mes': mes,
+				'ano': ano,
 				'csrfmiddlewaretoken': csrftokenPOST
 			},
 			datatype: 'json',
 			success: function(lancamentos) {
 				var table = $('#dataCaixaChange').DataTable();
-				console.log(lancamentos)
 
 				var rows = table.clear().draw();					
 
@@ -235,32 +227,40 @@ $(function() {
 						data = lancamentos[x].fields.data;
 						dia = data.substring(8);
 						mes = data.substring(5, 7);
-						ano = data.substring(0, 4)
-						newData = dia + "/" + mes + "/" + ano
+						ano = data.substring(0, 4);
+						newData = dia + "/" + mes + "/" + ano;
 
 						if(lancamentos[x].fields.categoria[1] === "1") {
 							var categoria = "<span style='color: blue' >" + lancamentos[x].fields.valor + "</span>";
 						}else{
-							var categoria = "<span style='color: red' >" + lancamentos[x].fields.valor + "</span>";
+							var categoria = "<span style='color: red' >-" + lancamentos[x].fields.valor + "</span>";
 						}
 
 						table.row.add([newData,
 						lancamentos[x].fields.descricao,
-						lancamentos[x].fields.categoria[1],
+						lancamentos[x].fields.categoria[2],
 						categoria,
 						"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
 						]).draw(false);
-
 					}
 				}					
 			},
 			error: function(msg) {
 				//mensagem de retorno em caso de erro
-				alert('erro')
+				$.alert('erro')
 				console.log(msg.responseText);
 				
 			},
 		});
+	});
+
+	//Deixar os valores das duas caixa iguais
+	$('#lanc_anos').on('change', function() {
+		$('#lanc_anos_change').val($('#lanc_anos').val()).prop('selected', true);
+	})
+
+	$('#lanc_meses').on('change', function() {
+		$('#lanc_meses_change').val($('#lanc_meses').val()).prop('selected', true);
 	})
 
 });

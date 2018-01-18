@@ -19,7 +19,9 @@ def lancamentos(request):
 
 	if(request.method == 'POST'):
 		mes = request.POST.get('mes')
-		lancamentos = LancamentosCaixa.objects.filter(data__month = mes).filter(user_id = id_user)
+		ano = request.POST.get('ano')
+
+		lancamentos = LancamentosCaixa.objects.filter(data__month = mes).filter(data__year = ano).filter(user_id = id_user)
 
 		lancJson = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 
@@ -39,9 +41,9 @@ def lancamentos(request):
 	saldoC = SaldoCaixa.objects.get(user = request.user)
 	contexto['saldoCaixa'] = saldoC.saldoAtual
 
-	#busca o saldo de Banco do usuario e atribui ao contexto
-	saldoB = SaldoBanco.objects.get(user = request.user)
-	contexto['saldoBanco'] = saldoB.saldoAtual
+	#para saldo de cada agencia
+	agencias = ContaBanco.objects.filter(user = request.user)
+	contexto['agencias'] = agencias
 
 
 	formCaixa = LancamentosForm()
@@ -107,9 +109,9 @@ def categoria(request):
 	saldoC = SaldoCaixa.objects.get(user = user)
 	contexto['saldoCaixa'] = saldoC.saldoAtual
 
-	#busca o saldo de Banco do usuario e atribui ao contexto
-	saldoB = SaldoBanco.objects.get(user = user)
-	contexto['saldoBanco'] = saldoB.saldoAtual
+	#para saldo de cada agencia
+	agencias = ContaBanco.objects.filter(user = user)
+	contexto['agencias'] = agencias
 
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
@@ -263,7 +265,6 @@ def editLancamento(request):
 			saldo = 0
 			
 			for l in lancamentos:
-				print(saldo)
 				if (l.categoria.tipo == '1'):
 					saldo += l.valor
 				else:

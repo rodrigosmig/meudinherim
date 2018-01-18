@@ -44,12 +44,12 @@ def contasAReceber(request):
 	contexto = {'contReceber': contas, 'contReceberForm': form}
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
-	saldoC = SaldoCaixa.objects.get(user = request.user)
+	saldoC = SaldoCaixa.objects.get(user = user)
 	contexto['saldoCaixa'] = saldoC.saldoAtual
 
-	#busca o saldo de Banco do usuario e atribui ao contexto
-	saldoB = SaldoBanco.objects.get(user = request.user)
-	contexto['saldoBanco'] = saldoB.saldoAtual
+	#para saldo de cada agencia
+	agencias = ContaBanco.objects.filter(user = user)
+	contexto['agencias'] = agencias
 
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()

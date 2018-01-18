@@ -19,7 +19,6 @@
 
 <!-- Custom Js -->
 <script src="{% static 'js/jquery-datatable.js' %}"></script>
-<script src="{% static 'js/banco.js' %}"></script>
 
 {% endblock %}
 
@@ -34,16 +33,51 @@
     
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="card">
+            <div id="card_atual" class="card">
                 <div class="header">
-                    
-                    <ul class="header-dropdown">
-                        {% if saldoBanco < 0  %}
-                            <h2 class ="saldoBanco" style="color: red"> Saldo: {{ saldoBanco }}</h2>
-                        {% else %}
-                             <h2 class="saldoBanco" style="color: blue"> Saldo: {{ saldoBanco }}</h2>
-                        {% endif %}
-                    </ul>                    
+                    <label class="select_agencia">Selecione a agência: </label>
+                    <select id="select_agencia"></select>
+
+                    <br \><br \>
+
+                    <div id="select_data">
+                        <label class="select_mes">Mês/Ano: </label>
+                        <!-- Caixa para filtrar por mês -->
+                        <select id="lanc_meses" class="meses_change">
+                            <option value="0">Janeiro</option>
+                            <option value="1">Fevereiro</option>
+                            <option value="2">Março</option>
+                            <option value="3">Abril</option>
+                            <option value="4">Maio</option>
+                            <option value="5">Junho</option>
+                            <option value="6">Julho</option>
+                            <option value="7">Agosto</option>
+                            <option value="8">Setembro</option>
+                            <option value="9">Outubro</option>
+                            <option value="10">Novembro</option>
+                            <option value="11">Dezembro</option>
+                        </select>
+                        <!-- Caixa para filtrar por mês -->
+                        <select id="lanc_anos" class="anos_change">
+                            <option value="2015" >2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                        </select>
+                        <button type="button" class="btn btn-primary btn-sm filtrar">Filtrar</button>
+                    </div>
+
+                    <ul id="mostrar_saldo" class="header-dropdown">
+                        {% for a in agencias %}
+                            {% if a.saldo < 0  %}
+                                <span id="{{ a.banco }}" class="saldoBanco" data-saldo="{{ a.banco }}" style="color: red"> Saldo: {{ a.saldo }}</span>
+                            {% else %}
+                                <span id="{{ a.banco }}" class="saldoBanco" data-saldo="{{ a.banco }}" style="color: blue"> Saldo: {{ a.saldo }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
 
                 </div>
                 
@@ -54,8 +88,8 @@
                             <thead>
                                 <tr>
                                     <th>Data</th>
-                                    <th>Banco</th>
                                     <th>Descrição</th>
+                                    <th>Tipo</th>
                                     <th>Categoria</th>
                                     <th>Valor</th>
                                     <th>Editar</th>
@@ -64,32 +98,16 @@
                             <tfoot>
                                 <tr>
                                     <th>Data</th>
-                                    <th>Banco</th>
                                     <th>Descrição</th>
+                                    <th>Tipo</th>
                                     <th>Categoria</th>
                                     <th>Valor</th>
                                     <th>Editar</th>
                                 </tr>
                             </tfoot>
                             
-                            <tbody>
-                            {% for l in lancBanco %}
-                                <tr>
-                                    <td>{{ l.data | date:"d/m/Y" }}</td>
-                                    <td>{{ l.banco }}</td>
-                                    <td>{{ l.descricao }}</td>
-                                    <td>{{ l.categoria }}</td>
-                                    
-                                    {% if l.tipo == '1' %}
-                                        <td style="color: blue">{{ l.valor }}</td>
-                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
-                                    
-                                    {% else %}
-                                        <td style="color: red">-{{ l.valor }}</td>                                    
-                                        <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
+                            <tbody id="table_lanc_banco">
+
                             </tbody>
                             
                         </table>
@@ -128,5 +146,21 @@
 </div>    
 <!-- Modal Edição de Lançamento -->
 
+<script type="text/javascript">
+    var agencias = JSON.parse("{{ selectAgencias | safe | escapejs }}");    
+
+    if (agencias.length !== 0) {
+        var conteudo = "<option value='nenhum'>Nenhum</option>";
+        for(var x = 0; x < agencias.length; x++) {
+            conteudo += "<option value =" + agencias[x].agencia + ">" + agencias[x].agencia + "</option>";
+        }
+        $('#select_agencia').html(conteudo);
+    }
+    
+</script>
+
+<script src="{% static 'js/banco.js' %}"></script>
 
 {% endblock %}
+
+<meta charset="utf-8">

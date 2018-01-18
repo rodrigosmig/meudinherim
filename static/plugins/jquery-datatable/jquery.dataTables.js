@@ -11363,7 +11363,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sEmptyTable": "Sem dados disponíveis na tabela",
+			"sEmptyTable": "Nenhum registro encontrado.",
 	
 	
 			/**

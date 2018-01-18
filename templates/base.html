@@ -172,17 +172,19 @@
                 <div class="collapse navbar-collapse" id="navbar-collapse">
 
                     <!--Infobox -->
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-1">
-                        <div id="infoBoxBanco"  class="info-box-2 btn-xs">
-                            <div class="icon">
-                                <i id="iconsInfoBox" class="material-icons" >account_balance</i>
+                    {% for a in agencias %}
+                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-1">
+                            <div id="infoBoxBanco"  class="info-box-2 btn-xs">
+                                <div class="icon">
+                                    <i id="iconsInfoBox" class="material-icons" >account_balance</i>
+                                </div>
+                                <div class="content">
+                                    <div id="textInfoBox" class="text">{{ a.banco }}</div>
+                                    <div id="numberInfoBox" class="number">{{ a.saldo }}</div>
+                                </div>        
                             </div>
-                            <div class="content">
-                                <div id="textInfoBox" class="text">Banco</div>
-                                <div id="numberInfoBox" class="number">{{ saldoBanco }}</div>
-                            </div>        
                         </div>
-                    </div>
+                    {% endfor %}
 
                     <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
                         <div id="infoBoxCaixa" class="info-box-2 btn-xs">

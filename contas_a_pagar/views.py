@@ -47,9 +47,9 @@ def contasAPagar(request):
 	saldoC = SaldoCaixa.objects.get(user = request.user)
 	context['saldoCaixa'] = saldoC.saldoAtual
 
-	#busca o saldo de Banco do usuario e atribui ao contexto
-	saldoB = SaldoBanco.objects.get(user = request.user)
-	context['saldoBanco'] = saldoB.saldoAtual
+	#para saldo de cada agencia
+	agencias = ContaBanco.objects.filter(user = request.user)
+	context['agencias'] = agencias
 
 	
 	#para adicionar lancamento
