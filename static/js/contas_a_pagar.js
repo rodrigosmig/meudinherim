@@ -96,9 +96,9 @@ $(function() {
 					}
 				});	
 				$('#datepickerCP').val("");
-				$('#id_categoria').val("");
-				$('#id_descricao').val("");
-				$('#id_valor').val("");
+				$('#id_categoriaCP').val("");
+				$('#id_descricaoCP').val("");
+				$('#id_valorCP').val("");
 
 			},
 			error: function(msg) {

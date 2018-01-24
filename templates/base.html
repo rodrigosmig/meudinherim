@@ -70,6 +70,16 @@
         <!-- Sparkline Chart Plugin Js -->
         <script src="{% static 'plugins/jquery-sparkline/jquery.sparkline.js' %}"></script>
 
+        <link href="{% static 'css/caixa.css' %}" rel="stylesheet">
+
+        <!-- JQuery DataTable Css -->
+        <link href="{% static 'plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css' %}" rel="stylesheet">
+        <!-- Jquery DataTable Plugin Js -->
+        <script src="{% static 'plugins/jquery-datatable/jquery.dataTables.js' %}"></script>
+        <script src="{% static 'plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js' %}"></script>
+        <script src="{% static 'plugins/jquery-datatable/extensions/export/dataTables.buttons.min.js' %}"></script>
+        <script src="{% static 'plugins/jquery-datatable/extensions/export/buttons.flash.min.js' %}"></script>
+
         <!-- Custom Js -->
         <script src="{% static 'js/admin.js' %}"></script>
         <script src="{% static 'js/index.js' %}"></script>
@@ -82,6 +92,7 @@
         {% block staticContasPagar %}{% endblock %}
         {% block staticContasReceber %}{% endblock %}
         {% block staticMetas %}{% endblock %}
+        {% block staticRelCP %}{% endblock %}
 
 
         <!-- Chamadas JS Alertas -->
@@ -299,6 +310,40 @@
                                 <span>Contas a Pagar</span>
                             </a>
                         </li>
+
+
+
+                        <!-- Cadastrar -->
+                        {% block activeRel %}<li>{% endblock %}
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <i class="material-icons">view_list</i>
+                                <span>Relatórios</span>
+                            </a>
+                            <ul class="ml-menu">
+                                {% block activseRelCR %}<li>{% endblock %}
+                                    <a href="{% url 'relatorios:contas_a_receber' %}">
+                                        <span>Contas a Receber</span>
+                                    </a>
+                                </li>
+                                {% block activeRelCP %}<li>{% endblock %}                                
+                                    <a href="{% url 'relatorios:contas_a_pagar' %}">
+                                        <span>Contas a Pagar</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+
+
+
+
+
+
+
+
+
+
+
                         <!-- Divisão -->
                         <li class="header"></li>
                         <!-- Configurações -->

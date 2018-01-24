@@ -1,0 +1,25 @@
+#card_result h2, #card_result p {
+	text-align: center;
+}
+
+#inicial_cp, #final_cp {
+	font-weight: bold;
+}
+
+#card_result p {
+	color: red;
+	font-style: italic;
+}
+
+.valor_total {
+	font-weight: bold;
+}
+
+
+
+
+
+
+
+
+
