@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^contas_a_pagar/', include('contas_a_pagar.urls', namespace='contas_a_pagar')),
     url(r'^contas_a_receber/', include('contas_a_receber.urls', namespace='contas_a_receber')),
     url(r'^metas/', include('metas.urls', namespace='metas')),
+    url(r'^relatorios/', include('relatorio.urls', namespace='relatorios')),
     url(r'^config/', include('config.urls', namespace='config'))
 ]
 
