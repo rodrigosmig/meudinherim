@@ -19,7 +19,7 @@ $(function() {
 
 	$('#card_result').hide();
 
-	$('#form_relatorio_cp').on('submit', function(evento) {
+	$('#form_relatorio_cr').on('submit', function(evento) {
 		evento.preventDefault();
 
 		var inicio = $('#vencimento_inicial').val();
@@ -39,7 +39,7 @@ $(function() {
 			else {
 				$.ajax({
 					type: 'POST',
-					url: '/relatorios/contas_a_pagar/',
+					url: '/relatorios/contas_a_receber/',
 					data: {
 						'inicio': inicio,
 						'fim': fim,
@@ -48,7 +48,7 @@ $(function() {
 					},
 					success: function(contas) {
 						
-						var table = $('#dataRelatorioCP').DataTable();
+						var table = $('#dataRelatorioCR').DataTable();
 						var rows = table.clear().draw();
 						var total = 0.0;
 
@@ -73,15 +73,15 @@ $(function() {
 							}
 
 							//preenchimento das tags de acordo do o filtro
-							$('#totalCP').html(String(total.toFixed(2)).replace('.', ','));
-							$('#inicial_cp').html(inicio);
-							$('#final_cp').html(fim);
+							$('#total_cr').html(String(total.toFixed(2)).replace('.', ','));
+							$('#inicial_cr').html(inicio);
+							$('#final_cr').html(fim);
 
 						}
 						else {
-							$('#totalCP').html("0,0");
-							$('#inicial_cp').html(inicio);
-							$('#final_cp').html(fim);
+							$('#total_cr').html("0,0");
+							$('#inicial_cr').html(inicio);
+							$('#final_cr').html(fim);
 						}
 
 						//oculta/exibe os cards
@@ -90,17 +90,17 @@ $(function() {
 
 
 						if(status === "vencidas") {
-							$('#statusCP').html("Vencidas")
+							$('#status_cr').html("Vencidas")
 						}
-						else if(status === "pagas") {
-							$('#statusCP').html("Pagas")
+						else if(status === "recebidas") {
+							$('#status_cr').html("Recebidas")
 						}
-						else if(status === "a_pagar") {
-							$('#statusCP').html("A Pagar")
+						else if(status === "a_receber") {
+							$('#status_cr').html("A Receber")
 						}
 					},
 					error: function(msg) {
-
+						$.alert(msg.responseText);
 					},
 				});
 			}
