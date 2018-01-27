@@ -8,12 +8,15 @@ from banco.models import SaldoBanco, ContaBanco, LancamentosBanco
 from banco.forms import LancamentosBancoForm
 from caixa.forms import LancamentosForm
 from django import forms
+from datetime import datetime
 from usuario.models import UsuarioProfile
 from django.core import serializers
 import json
 
 @login_required
 def contasAPagar(request):
+	user = request.user
+
 	if(request.method == 'POST'):
 		form = ContasAPagarForm(request.POST)
 
@@ -29,12 +32,14 @@ def contasAPagar(request):
 
 	template = 'contas_a_pagar/contas_a_pagar.html'
 
-	contas = ContasAPagar.objects.filter(user = request.user)
+	hoje = datetime.today()
+
+	contas = ContasAPagar.objects.filter(user = user).filter(data__month = hoje.month)
 
 	form = ContasAPagarForm()
 	#seleciona apenas as categorias do usuario logado e do tipo saida
 	form.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id).filter(tipo = 2),
+			queryset = Categoria.objects.filter(user = user).filter(tipo = 2),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control', 'id': 'id_categoriaCP'}
@@ -44,11 +49,11 @@ def contasAPagar(request):
 	context = {'contPagar': contas, 'contPagarForm': form}
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
-	saldoC = SaldoCaixa.objects.get(user = request.user)
+	saldoC = SaldoCaixa.objects.get(user = user)
 	context['saldoCaixa'] = saldoC.saldoAtual
 
 	#para saldo de cada agencia
-	agencias = ContaBanco.objects.filter(user = request.user)
+	agencias = ContaBanco.objects.filter(user = user)
 	context['agencias'] = agencias
 
 	
@@ -56,7 +61,7 @@ def contasAPagar(request):
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
 	formCaixa.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
+			queryset = Categoria.objects.filter(user = user),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control'}
@@ -65,7 +70,7 @@ def contasAPagar(request):
 	formBanco = LancamentosBancoForm()
 	#Seleciona apenas o banco do usuario para o formulario
 	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user_id = request.user.id),
+		queryset = ContaBanco.objects.filter(user = user),
 		empty_label = 'Nenhum',
         widget = forms.Select(
             attrs = {'class': 'form-control'}
@@ -73,7 +78,7 @@ def contasAPagar(request):
 	)
 	#seleciona apenas as categorias do usuario logado
 	formBanco.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
+			queryset = Categoria.objects.filter(user = user),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
@@ -83,7 +88,7 @@ def contasAPagar(request):
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco
 
-	userProfile = UsuarioProfile.objects.get(user = request.user)
+	userProfile = UsuarioProfile.objects.get(user = user)
 	context['profile'] = userProfile
 
 	return render(request, template, context)
@@ -325,3 +330,27 @@ def verificarPagamento(request):
 			return HttpResponse(idPagamento)
 	else:
 		HttpResponseServerError("Conta inexistente")
+
+@login_required
+def filtrarContas(request):
+	if(request.method == 'POST'):
+		user = request.user
+		mes = request.POST.get('mes')
+		ano = request.POST.get('ano')
+		status = request.POST.get('status')
+
+		if(status == 'todas'):
+			contas = ContasAPagar.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano)
+		elif(status == 'pagas'):
+			contas = ContasAPagar.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(paga = True)
+		elif(status == 'abertas'):
+			contas = ContasAPagar.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(paga = False)
+
+		if(len(contas) != 0):
+			contasJson = serializers.serialize('json', contas, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+			return HttpResponse(contasJson, content_type="application/json")
+
+		else:
+			return HttpResponseServerError("Nenhum conta foi encontrada.")
+
+		

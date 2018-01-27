@@ -8,6 +8,9 @@ from caixa.forms import LancamentosForm
 from contas_a_receber.models import ContasAReceber
 from contas_a_receber.forms import ContasAReceberForm
 from django import forms
+from datetime import datetime
+from django.core import serializers
+import json
 
 @login_required
 def contasAReceber(request):
@@ -29,7 +32,9 @@ def contasAReceber(request):
 
 	template = 'contas_a_receber/contas_a_receber.html'
 
-	contas = ContasAReceber.objects.filter(user = user)
+	hoje = datetime.today()
+
+	contas = ContasAReceber.objects.filter(user = user).filter(data__month = hoje.month)
 
 	form = ContasAReceberForm()
 
@@ -309,3 +314,25 @@ def verificarRecebimento(request):
 			return HttpResponse(idRecebimento)
 	else:
 		HttpResponseServerError("Conta inexistente")
+
+@login_required
+def filtrarContas(request):
+	if(request.method == 'POST'):
+		user = request.user
+		mes = request.POST.get('mes')
+		ano = request.POST.get('ano')
+		status = request.POST.get('status')
+
+		if(status == 'todas'):
+			contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano)
+		elif(status == 'recebidas'):
+			contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(recebido = True)
+		elif(status == 'abertas'):
+			contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(recebido = False)
+
+		if(len(contas) != 0):
+			contasJson = serializers.serialize('json', contas, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+			return HttpResponse(contasJson, content_type="application/json")
+
+		else:
+			return HttpResponseServerError("Nenhum conta foi encontrada.")

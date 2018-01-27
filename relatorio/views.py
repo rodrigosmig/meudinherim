@@ -26,7 +26,7 @@ def relatorioAPagar(request):
 		data_inicio = datetime.strptime(inicio, "%d/%m/%Y")
 		data_fim = datetime.strptime(fim, "%d/%m/%Y")
 
-		if(status == 'a_pagar'):
+		if(status == 'abertas'):
 			contas = ContasAPagar.objects.filter(data__gte = data_inicio, data__lte = data_fim).filter(user = user).filter(paga = False)
 		elif(status == 'pagas'):
 			contas = ContasAPagar.objects.filter(data__gte = data_inicio, data__lte = data_fim).filter(user = user).filter(paga = True)
@@ -96,7 +96,7 @@ def relatorioAReceber(request):
 		data_inicio = datetime.strptime(inicio, "%d/%m/%Y")
 		data_fim = datetime.strptime(fim, "%d/%m/%Y")
 
-		if(status == 'a_receber'):
+		if(status == 'abertas'):
 			contas = ContasAReceber.objects.filter(data__gte = data_inicio, data__lte = data_fim).filter(user = user).filter(recebido = False)
 		elif(status == 'recebidas'):
 			contas = ContasAReceber.objects.filter(data__gte = data_inicio, data__lte = data_fim).filter(user = user).filter(recebido = True)
