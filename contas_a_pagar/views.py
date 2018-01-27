@@ -202,17 +202,17 @@ def banco(request):
 def pagamento(request):
 	if(request.method == 'POST'):
 		#id do usuario
-		id_user = request.user.id
+		user = request.user
 
 		tipoPagamento = request.POST.get('banco')
 
 		#busca o saldo do caixa do usuario logado
-		saldoCaixa = SaldoCaixa.objects.get(user = request.user)
+		saldoCaixa = SaldoCaixa.objects.get(user = user)
 		#atribui o valor do saldo anterior
 		saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
 
 		#busca o saldo de Banco do usuario logado
-		saldoBanco = SaldoBanco.objects.get(user = request.user)
+		saldoBanco = SaldoBanco.objects.get(user = user)
 		#atribui o valor do saldo anterior
 		saldoBanco.saldoAnterior = saldoBanco.saldoAtual
 		
@@ -246,7 +246,7 @@ def pagamento(request):
 			#para pagamento feito no banco
 			conta.tipo_conta = "b"
 
-			agencias = ContaBanco.objects.filter(user_id = id_user)
+			agencias = ContaBanco.objects.filter(user = user)
 
 			for agencia in agencias:
 				if(agencia.banco == tipoPagamento):
@@ -261,10 +261,11 @@ def pagamento(request):
 					banco.user = request.user
 					banco.conta_a_pagar = conta
 					
-					saldoBanco.saldoAtual -= banco.valor
+					#altera o saldo da conta
+					agencia.saldo -= banco.valor
 
+					agencia.save()
 					banco.save()
-					saldoBanco.save()
 
 		conta.paga = True
 		conta.save()
@@ -300,18 +301,21 @@ def cancelaPagamento(request):
 			else:
 				#busca o lançamento gerado pelo pagamento
 				lancamentoBanco = LancamentosBanco.objects.get(conta_a_pagar = conta)
+				
+				agencias = ContaBanco.objects.filter(user = user)
+
+				for a in agencias:
+					if(a == lancamentoBanco.banco):				
+						#muda o status do pagamento
+						conta.paga = False
+						#deixa em branco o tipo da conta de pagamento
+						conta.tipo_conta = None
+						#devolve o valor do pagamento
+						a.saldo += conta.valor
+						a.save()
+
 				#deleta o lançamento gerado pelo pagamento
 				lancamentoBanco.delete()
-				#muda o status do pagamento
-				conta.paga = False
-				#deixa em branco o tipo da conta de pagamento
-				conta.tipo_conta = None
-
-				#busca o saldo do caixa do usuario logado e faz o ajuste
-				saldoBanco = SaldoBanco.objects.get(user = user)
-				saldoBanco.saldoAnterior = saldoBanco.saldoAtual
-				saldoBanco.saldoAtual += conta.valor
-				saldoBanco.save()
 				conta.save()
 
 			return HttpResponse('Pagamento cancelado com sucesso.')

@@ -107,8 +107,8 @@ $( function() {
                         	<thead>
                                 <tr>
                                     <th>Data</th>
-                                    <th>Categoria</th>
-                                    <th>Descrição</th>                                    
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>                     
                                     <th>Valor</th>
                                     <th>Editar</th>
                                     <th>Recebido</th>
@@ -117,8 +117,8 @@ $( function() {
                             <tfoot>
                                 <tr>
                                     <th>Data</th>
-                                    <th>Categoria</th>
                                     <th>Descrição</th> 
+                                    <th>Categoria</th>
                                     <th>Valor</th>
                                     <th>Editar</th>
                                     <th>Recebido</th>
@@ -129,8 +129,8 @@ $( function() {
                             {% for cr in contReceber %}
                                 <tr id="{{ cr.id }}">
                                     <td class="conta_data">{{ cr.data | date:"d/m/Y"}}</td>
-                                    <td class="conta_cat" data-id_cat="{{ cr.categoria.id }}">{{ cr.categoria }}</td>
                                     <td class="conta_desc">{{ cr.descricao }}</td>
+                                    <td class="conta_cat" data-id_cat="{{ cr.categoria.id }}">{{ cr.categoria }}</td>
                                     <td class="conta_val">{{ cr.valor }}</td>
                                     <td>
                                     	<i class="material-icons"><a data-toggle="modal" href="#editContasReceber" title="Clique para editar"><span class="openEdit" data-cr="{{ cr.id }}">edit</span></a></i>

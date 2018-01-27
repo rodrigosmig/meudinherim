@@ -193,11 +193,6 @@ def recebimento(request):
 		#atribui o valor do saldo anterior
 		saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
 
-		#busca o saldo de Banco do usuario logado
-		saldoBanco = SaldoBanco.objects.get(user = request.user)
-		#atribui o valor do saldo anterior
-		saldoBanco.saldoAnterior = saldoBanco.saldoAtual
-		
 		idConta = request.POST.get('id')
 
 		#busca a conta a pagar
@@ -228,7 +223,7 @@ def recebimento(request):
 		else:
 			#para pagamento feito no banco
 			conta.tipo_conta = "b"
-			print('banco')
+
 			agencias = ContaBanco.objects.filter(user = user)
 
 			for agencia in agencias:
@@ -244,10 +239,11 @@ def recebimento(request):
 					banco.user = request.user
 					banco.conta_a_receber = conta
 					
-					saldoBanco.saldoAtual += banco.valor
+					#altera o saldo da conta
+					agencia.saldo += banco.valor
 
 					banco.save()
-					saldoBanco.save()
+					agencia.save()
 
 		conta.recebido = True
 		conta.save()
@@ -283,18 +279,22 @@ def cancelaRecebimento(request):
 			else:
 				#busca o lançamento gerado pelo recebimento
 				lancamentoBanco = LancamentosBanco.objects.get(conta_a_receber = conta)
+				
+				agencias = ContaBanco.objects.filter(user = user)
+
+				for a in agencias:
+					if(a == lancamentoBanco.banco):						
+						#muda o status do recebimento
+						conta.recebido = False
+						#deixa em branco o tipo da conta de recebimento
+						conta.tipo_conta = None
+						#subtrai o valor do recebimento
+						a.saldo -= conta.valor
+						a.save()
+
+				
 				#deleta o lançamento gerado pelo recebimento
 				lancamentoBanco.delete()
-				#muda o status do recebimento
-				conta.recebido = False
-				#deixa em branco o tipo da conta de recebimento
-				conta.tipo_conta = None
-
-				#busca o saldo do caixa do usuario logado e faz o ajuste
-				saldoBanco = SaldoBanco.objects.get(user = user)
-				saldoBanco.saldoAnterior = saldoBanco.saldoAtual
-				saldoBanco.saldoAtual -= conta.valor
-				saldoBanco.save()
 				conta.save()
 
 			return HttpResponse('Recebimento cancelado com sucesso.')

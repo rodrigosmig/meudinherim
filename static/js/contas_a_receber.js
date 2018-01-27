@@ -301,7 +301,7 @@ $(function() {
 		});		
 	});
 
-	$('.cancelReceive').on('click', function() {
+	$(document).on('click', '.cancelReceive', function() {
 		var id_pagamento = $(this).attr('data-cr');
 
 		$.confirm({
