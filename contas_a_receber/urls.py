@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^receber/', views.recebimento, name='receber'),
     url(r'^cancelar/', views.cancelaRecebimento, name='cancelar'),
     url(r'^verificar/', views.verificarRecebimento, name='verificar'),
+    url(r'^filtrar/', views.filtrarContas, name='filtrar'),
 ]

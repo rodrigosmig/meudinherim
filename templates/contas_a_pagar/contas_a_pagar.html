@@ -58,6 +58,49 @@ $( function() {
                 <div class="header">
                 	<i class="material-icons addCP"><a data-toggle="modal" href="#contas_a_pagar" title="Adicionar">add</a></i>
                 </div>
+
+                <div class="header">
+                    <form id="form_filtro_cp" class="form-inline">
+                    
+                        <select id="filter_mes_cp" class="form-control">
+                            <option value="nenhum">--Meses--</option>
+                            <option value="0">Janeiro</option>
+                            <option value="1">Fevereiro</option>
+                            <option value="2">Março</option>
+                            <option value="3">Abril</option>
+                            <option value="4">Maio</option>
+                            <option value="5">Junho</option>
+                            <option value="6">Julho</option>
+                            <option value="7">Agosto</option>
+                            <option value="8">Setembro</option>
+                            <option value="9">Outubro</option>
+                            <option value="10">Novembro</option>
+                            <option value="11">Dezembro</option>
+                        </select>
+
+                        <select id="filter_ano_cp" class="form-control">
+                            <option value="nenhum">--Ano--</option>
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                        </select>
+
+                        <select id="filter_status_cp" class="form-control">
+                            <option value="nenhum">--Status--</option>
+                            <option value="todas">Todas</option>
+                            <option value="pagas">Pagas</option>
+                            <option value="abertas">Abertas</option>
+                        </select>
+
+                        <button type="submit" class="btn btn-primary waves-effect">
+                            Filtrar
+                        </button>    
+
+                    </form>
+                </div>
                 
                 <div class="body">
                     <div class="table-responsive">
@@ -66,8 +109,8 @@ $( function() {
                             <thead>
                                 <tr>
                                     <th>Data</th>
-                                    <th>Categoria</th>
-                                    <th>Descrição</th> 
+                                    <th>Descrição</th>
+                                    <th>Categoria</th> 
                                     <th>Valor</th>
                                     <th>Editar</th>
                                     <th>Pago</th>
@@ -76,8 +119,8 @@ $( function() {
                             <tfoot>
                                 <tr>
                                     <th>Data</th>
+                                    <th>Descrição</th>
                                     <th>Categoria</th>
-                                    <th>Descrição</th> 
                                     <th>Valor</th>
                                     <th>Editar</th>
                                     <th>Pago</th>
@@ -88,8 +131,8 @@ $( function() {
                             {% for cp in contPagar %}
                                 <tr id="{{ cp.id }}">
                                     <td class="conta_data">{{ cp.data | date:"d/m/Y" }}</td>
-                                    <td class="conta_cat" data-id_cat="{{ cp.categoria.id }}">{{ cp.categoria }}</td>
                                     <td class="conta_desc">{{ cp.descricao }}</td>
+                                    <td class="conta_cat" data-id_cat="{{ cp.categoria.id }}">{{ cp.categoria }}</td>
                                     <td class="conta_val">{{ cp.valor }}</td>
                                     <td>
                                     	<i class="material-icons"><a data-toggle="modal" href="#editContasPagar" title="Clique para editar"><span class="openEdit" data-cp="{{ cp.id }}">edit</span></a></i>

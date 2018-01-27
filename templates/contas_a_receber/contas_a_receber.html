@@ -56,6 +56,49 @@ $( function() {
                 <div class="header">
                 	<i class="material-icons addCR"><a data-toggle="modal" href="#contas_a_receber" title="Adicionar">add</a></i>
                 </div>
+
+                <div class="header">
+                    <form id="form_filtro_cr" class="form-inline">
+                    
+                        <select id="filter_mes_cr" class="form-control">
+                            <option value="nenhum">--Meses--</option>
+                            <option value="0">Janeiro</option>
+                            <option value="1">Fevereiro</option>
+                            <option value="2">Março</option>
+                            <option value="3">Abril</option>
+                            <option value="4">Maio</option>
+                            <option value="5">Junho</option>
+                            <option value="6">Julho</option>
+                            <option value="7">Agosto</option>
+                            <option value="8">Setembro</option>
+                            <option value="9">Outubro</option>
+                            <option value="10">Novembro</option>
+                            <option value="11">Dezembro</option>
+                        </select>
+
+                        <select id="filter_ano_cr" class="form-control">
+                            <option value="nenhum">--Ano--</option>
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                        </select>
+
+                        <select id="filter_status_cr" class="form-control">
+                            <option value="nenhum">--Status--</option>
+                            <option value="todas">Todas</option>
+                            <option value="recebidas">Recebidas</option>
+                            <option value="abertas">Abertas</option>
+                        </select>
+
+                        <button type="submit" class="btn btn-primary waves-effect">
+                            Filtrar
+                        </button>    
+
+                    </form>              
+                </div>
                 
                 <div class="body">                    
                     <div class="table-responsive">                        

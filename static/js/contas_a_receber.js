@@ -17,7 +17,7 @@ $(function() {
 	    return cookieValue;
 	}
 
-	$('.openEdit').on('click', function() {
+	$(document).on('click', '.openEdit', function() {
 		//atribui o id do lancamento a variavel
 		var id = $(this).attr('data-cr');
 		//envia a solicitacao do formulario com o id da conta via ajax
@@ -198,7 +198,7 @@ $(function() {
     	$('#campos_conta .label_conta').remove();
 	})
 
-	$('.openReceive').on('click', function() {
+	$(document).on('click', '.openReceive', function() {
 		$('#carteira').prop("checked", true);
 		//armazena o id da conta para pegar os valores cadastrados
 		var id = $(this).attr('data-cr');
@@ -359,4 +359,76 @@ $(function() {
 		return dados;
 	}
 
+	$('#form_filtro_cr').on('submit', function(evento) {
+		evento.preventDefault();
+		
+		var mes = parseInt($('#filter_mes_cr').val()) + 1;
+		var ano = $('#filter_ano_cr').val();
+		var status = $('#filter_status_cr').val();
+
+		if(mes === 'nenhum' || status ==='nenhum' || ano === 'nenhum') {
+			$.alert('Selecione o mês, o ano e o status desejado.');
+		}
+		else {
+			$.ajax({
+	    		type: 'POST',
+				url: '/contas_a_receber/filtrar/',
+				data: {
+					'mes': mes,
+					'ano': ano,
+					'status': status,
+					'csrfmiddlewaretoken': csrftokenGET,
+				},
+				success: function(contas) {
+					console.log(contas)
+
+					var table = $('#dataCR').DataTable();
+
+					var rows = table.clear().draw();
+
+
+					for(var x = 0; x < contas.length; x++) {
+						var recebido;
+
+						if(contas[x].fields.recebido === false) {
+							recebido = "<i class='material-icons'><a data-toggle='modal' href='#recebimentoConta' style='color: red' title='Clique para receber'><span class='openReceive' data-cr=" + contas[x].pk + ">close</span></a></i>"
+						}
+						else {
+							recebido = "<i class='material-icons recebido'><span class='cancelReceive' data-cr=" + contas[x].pk + "><a data-toggle='modal' href='' title='Clique para cancelar o recebimento'>done</span></i>"
+						}
+
+						data = contas[x].fields.data;
+						dia = data.substring(8);
+						mes = data.substring(5, 7);
+						ano = data.substring(0, 4);
+						newData = dia + "/" + mes + "/" + ano;
+
+						var row = table.row.add([
+							newData,
+							contas[x].fields.descricao,
+							contas[x].fields.categoria[2],
+							contas[x].fields.valor,
+							"<i class='material-icons'><a data-toggle='modal' href='#editContasReceber' title='Clique para editar'><span class='openEdit' data-cr=" + contas[x].pk + ">edit</span></a></i>",
+							recebido,
+						]);
+						//adiciona o id do pagamento na linha
+						table.row(row).node().id = contas[x].pk;
+						//adiciona as classes da tag html
+						table.row(row).column(0).nodes().to$().addClass('conta_data');
+						table.row(row).column(1).nodes().to$().addClass('conta_desc');
+						table.row(row).column(2).nodes().to$().addClass('conta_cat');
+						table.row(row).column(3).nodes().to$().addClass('conta_val');
+						table.row(row).draw(false);
+					}
+											
+				},
+				error: function(msg) {
+					//mensagem de retorno em caso de erro
+					$.alert(msg.responseText)
+				},
+	    	})
+		}
+
+		
+	});
 });
