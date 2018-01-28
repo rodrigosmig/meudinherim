@@ -113,6 +113,7 @@ $(function() {
 
 	$('.excluir').click(function(evento) {
 		evento.preventDefault();
+
 		var dados = recuperCampos();
 		//verificar se o lançamento foi gerado pelo contas a pagar
 		$.ajax({
@@ -187,40 +188,42 @@ $(function() {
     	$('#btn_salvar').prop('disabled', false);
 	});
 
-	$('#card_change').hide();
+	// $('#card_change').hide();
 
 	//selecionar o mês/ano atual no combobox	
-	var data = new Date();
-	var mesAtual = data.getMonth();
-	var anoAtual = data.getFullYear();
-	$('#lanc_meses').val(mesAtual).prop('selected', true);
-	$('#lanc_meses_change').val(mesAtual).prop('selected', true);
-	$('#lanc_anos').val(anoAtual).prop('selected', true);
-	$('#lanc_anos_change').val(anoAtual).prop('selected', true);
+	// var data = new Date();
+	// var mesAtual = data.getMonth();
+	// var anoAtual = data.getFullYear();
+	// $('#lanc_meses').val(mesAtual).prop('selected', true);
+	// $('#lanc_meses_change').val(mesAtual).prop('selected', true);
+	// $('#lanc_anos').val(anoAtual).prop('selected', true);
+	// $('#lanc_anos_change').val(anoAtual).prop('selected', true);
 
-	$('.filtrar').on('click', function() {
+	$('#form_filtro_caixa').on('submit', function(evento) {
+		evento.preventDefault();
 
-		$('#card_atual').hide();
-		$('#card_change').show();
+		var mes = $('#lanc_meses').val();
+		var ano = $('#lanc_anos').val();
 
-		var mes = parseInt($('#lanc_meses_change').val()) + 1;
-		var ano = $('#lanc_anos_change').val()
+		if(mes === 'nenhum' || ano === 'nenhum') {
+			$.alert('Selecione o mês e o ano desejado.');
+		}
+		else {
+			mes = parseInt(mes) + 1
+			$.ajax({
+				type: 'POST',
+				url: '/caixa/',
+				data: {
+					'mes': mes,
+					'ano': ano,
+					'csrfmiddlewaretoken': csrftokenPOST
+				},
+				datatype: 'json',
+				success: function(lancamentos) {
+					console.log(lancamentos)
+					var table = $('#dataCaixa').DataTable();
 
-		$.ajax({
-			type: 'POST',
-			url: '/caixa/',
-			data: {
-				'mes': mes,
-				'ano': ano,
-				'csrfmiddlewaretoken': csrftokenPOST
-			},
-			datatype: 'json',
-			success: function(lancamentos) {
-				var table = $('#dataCaixaChange').DataTable();
-
-				var rows = table.clear().draw();					
-
-				if(lancamentos.length !== 0) {
+					var rows = table.clear().draw();					
 
 					for(var x = 0; x < lancamentos.length; x++) {
 
@@ -242,25 +245,13 @@ $(function() {
 						categoria,
 						"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
 						]).draw(false);
-					}
-				}					
-			},
-			error: function(msg) {
-				//mensagem de retorno em caso de erro
-				$.alert('erro')
-				console.log(msg.responseText);
-				
-			},
-		});
+					}		
+				},
+				error: function(msg) {
+					//mensagem de retorno em caso de erro
+					$.alert(msg.responseText)		
+				},
+			});
+		}	
 	});
-
-	//Deixar os valores das duas caixa iguais
-	$('#lanc_anos').on('change', function() {
-		$('#lanc_anos_change').val($('#lanc_anos').val()).prop('selected', true);
-	})
-
-	$('#lanc_meses').on('change', function() {
-		$('#lanc_meses_change').val($('#lanc_meses').val()).prop('selected', true);
-	})
-
 });

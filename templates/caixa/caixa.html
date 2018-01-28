@@ -24,170 +24,102 @@
     </div>
     
     <div class="row clearfix">
-            <div id="card_change" class="card">
-                <div class="header">
-                    
-                    <div>
-                        <label class="select_mes">Mês/Ano: </label>
-                        <!-- Caixa para filtrar por mês -->
-                        <select id="lanc_meses_change" class="meses_change">
-                            <option value="0">Janeiro</option>
-                            <option value="1">Fevereiro</option>
-                            <option value="2">Março</option>
-                            <option value="3">Abril</option>
-                            <option value="4">Maio</option>
-                            <option value="5">Junho</option>
-                            <option value="6">Julho</option>
-                            <option value="7">Agosto</option>
-                            <option value="8">Setembro</option>
-                            <option value="9">Outubro</option>
-                            <option value="10">Novembro</option>
-                            <option value="11">Dezembro</option>
-                        </select>
-                        <select id="lanc_anos_change" class="anos_change">
-                            <option value="2015">2015</option>
-                            <option value="2016">2016</option>
-                            <option value="2017">2017</option>
-                            <option value="2018">2018</option>
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
-                        </select>
-                        <button type="button" class="btn btn-primary btn-sm filtrar">Filtrar</button>
-                    </div>
-
-                    <ul class="header-dropdown">                  
-                        {% if saldoCaixa < 0  %}
-                            <h2 class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</h2>
-                        {% else %}
-                            <h2 class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</h2>
-                        {% endif %}
-                    </ul>
-                </div>
-                <div class="body">
-                    <div class="table-responsive">
-                        <table id="dataCaixaChange" class="table table-bordered table-striped table-hover dataTable js-basic-exampleds">
-                    
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Descrição</th>
-                                    <th>Categoria</th>
-                                    <th>Valor</th>
-                                    <th>Editar</th>
-                                </tr>
-                            </thead>
-                            
-                            <tfoot>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Descrição</th>
-                                    <th>Categoria</th>
-                                    <th>Entrada</th>
-                                    <th>Valor</th>
-                                </tr>
-                            </tfoot>
-
-                            <tbody id="table_lanc">
-                            <!-- Inserido por Jquery -->
-                            </tbody>
-                            
-                        </table>
-                    </div>
-                </div>                
+        <div id="card_atual" class="card">
+            <div id="saldo_caixa" class="header">
+                <!-- <ul class="header-dropdown"> -->
+                    {% if saldoCaixa < 0  %}
+                        <span class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</span>
+                    {% else %}
+                        <span class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</span>
+                    {% endif %}
+                <!-- </ul> -->
             </div>
+            <div id="filtro_data" class="header">
+                <form id="form_filtro_caixa" class="form-inline">
 
-            <div id="card_atual" class="card">
-                <div class="header">
-                    <div>
-                        <label class="select_mes">Mês/Ano: </label>
-                        <!-- Caixa para filtrar por mês -->
-                        <select id="lanc_meses" class="meses_change">
-                            <option value="0">Janeiro</option>
-                            <option value="1">Fevereiro</option>
-                            <option value="2">Março</option>
-                            <option value="3">Abril</option>
-                            <option value="4">Maio</option>
-                            <option value="5">Junho</option>
-                            <option value="6">Julho</option>
-                            <option value="7">Agosto</option>
-                            <option value="8">Setembro</option>
-                            <option value="9">Outubro</option>
-                            <option value="10">Novembro</option>
-                            <option value="11">Dezembro</option>
-                        </select>
-                        <!-- Caixa para filtrar por mês -->
-                        <select id="lanc_anos" class="anos_change">
-                            <option>2015</option>
-                            <option>2016</option>
-                            <option>2017</option>
-                            <option>2018</option>
-                            <option>2019</option>
-                            <option>2020</option>
-                        </select>
-                        <button type="button" class="btn btn-primary btn-sm filtrar">Filtrar</button>
-                    </div>
+                    <select id="lanc_meses" class="form-control meses_change">
+                        <option value="nenhum">--Meses--</option>
+                        <option value="0">Janeiro</option>
+                        <option value="1">Fevereiro</option>
+                        <option value="2">Março</option>
+                        <option value="3">Abril</option>
+                        <option value="4">Maio</option>
+                        <option value="5">Junho</option>
+                        <option value="6">Julho</option>
+                        <option value="7">Agosto</option>
+                        <option value="8">Setembro</option>
+                        <option value="9">Outubro</option>
+                        <option value="10">Novembro</option>
+                        <option value="11">Dezembro</option>
+                    </select>
 
-                    <ul class="header-dropdown">
-                        {% if saldoCaixa < 0  %}
-                            <span class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</span>
-                        {% else %}
-                            <span class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</span>
-                        {% endif %}
-                    </ul>
-                </div>
-                <div class="body">
-                    <div class="table-responsive">
-                        <table id="mydata" class="table table-bordered table-striped table-hover dataTable js-basic-example">
-                    
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Descrição</th>
-                                    <th>Categoria</th>
-                                    <th>Valor</th>
-                                    <th>Editar</th>
-                                </tr>
-                            </thead>
-                            
-                            <tfoot>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Descrição</th>
-                                    <th>Categoria</th>
-                                    <th>Valor</th>
-                                    <th>Editar</th>
-                                   
-                                </tr>
-                            </tfoot>
+                    <select id="lanc_anos" class="form-control anos_change">
+                        <option value="nenhum">--Ano--</option>
+                        <option value="2016">2016</option>
+                        <option value="2017">2017</option>
+                        <option value="2018">2018</option>
+                        <option value="2019">2019</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                </form>
 
-                            <tbody>
-                            {% for l in lancamentos %}
-                                <tr>
-                                    <td>
-                                        {{ l.data | date:"d/m/Y" }}
-                                    </td>
-                                    <td>
-                                        {{ l.descricao }}
-                                    </td>
-                                    <td>
-                                        {{ l.categoria }}
-                                    </td>
+                
+                
+            </div>
+            <div class="body">
+                <div class="table-responsive">
+                    <table id="dataCaixa" class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Editar</th>
+                            </tr>
+                        </thead>
+                        
+                        <tfoot>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Valor</th>
+                                <th>Editar</th>
+                               
+                            </tr>
+                        </tfoot>
+
+                        <tbody>
+                        {% for l in lancamentos %}
+                            <tr>
+                                <td>
+                                    {{ l.data | date:"d/m/Y" }}
+                                </td>
+                                <td>
+                                    {{ l.descricao }}
+                                </td>
+                                <td>
+                                    {{ l.categoria }}
+                                </td>
+                                
+                                {% if l.categoria.tipo == '1' %}
+                                    <td style="color: blue">{{ l.valor }}</td>
+  
+                                {% else %}
+                                    <td style="color: red">-{{ l.valor }}</td>
                                     
-                                    {% if l.categoria.tipo == '1' %}
-                                        <td style="color: blue">{{ l.valor }}</td>
-      
-                                    {% else %}
-                                        <td style="color: red">-{{ l.valor }}</td>
-                                        
-                                    {% endif %}
-                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
-                                </tr>
+                                {% endif %}
+                                <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                            </tr>
 
-                            {% endfor %}
-                            </tbody>
-                            
-                        </table>
-                    </div>
+                        {% endfor %}
+                        </tbody>
+                        
+                    </table>
                 </div>
             </div>
         </div>
