@@ -84,16 +84,16 @@ def banco(request):
 		mes = request.POST.get('mes')
 		ano = request.POST.get('ano')
 
-		listaAgencias = ContaBanco.objects.filter(user = user).filter(banco = agencia)
+		agencia = ContaBanco.objects.get(pk = agencia)
 
-		#lancamentos = LancamentosBanco.objects.filter(data__month = mes).filter(data__year = ano).filter(user = user)
-		lancamentos = LancamentosBanco.objects.filter(data__month = mes).filter(data__year = ano).filter(user = user).filter(banco__in = listaAgencias)
+		lancamentos = LancamentosBanco.objects.filter(data__month = mes).filter(data__year = ano).filter(user = user).filter(banco = agencia)
 
-		lancJson = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
-
-		return HttpResponse(lancJson, content_type="application/json")
-		
-
+		if(len(lancamentos) != 0):
+			lancJson = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+			
+			return HttpResponse(lancJson, content_type="application/json")
+		else:
+			return HttpResponseServerError("Nenhum lançamento foi encontrado.")
 
 	template = 'banco/banco.html'
 	contexto = {}
@@ -102,12 +102,13 @@ def banco(request):
 	todasAgencias = ContaBanco.objects.filter(user = user)
 
 	for a in todasAgencias:
+		id = a.id
 		nome = a.banco
 		saldo = str(a.saldo)
-		listAgencias.append((nome, saldo))
+		listAgencias.append((id, nome, saldo))
 
 
-	listAgencias = [{'agencia': agencia, 'saldo': saldo} for agencia, saldo in listAgencias]
+	listAgencias = [{'id': id, 'agencia': agencia, 'saldo': saldo} for id, agencia, saldo in listAgencias]
 	listAgencias = json.dumps(listAgencias, ensure_ascii=False)
 	contexto['selectAgencias'] = listAgencias
 
@@ -204,7 +205,6 @@ def editLancamento(request):
 			saldo = 0
 
 			for l in lancamentos:
-				print(l.valor)
 				if (l.tipo == '1'):
 					saldo += l.valor
 				else:
@@ -304,7 +304,7 @@ def delLancamento(request):
 			saldo = 0
 
 			for l in lancamentos:
-				print(l.valor)
+				
 				if (l.tipo == '1'):
 					saldo += l.valor
 				else:

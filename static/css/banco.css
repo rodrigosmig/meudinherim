@@ -1,11 +1,3 @@
-.saldoBanco{
-	float:right;
-}
-
-div .body{
-	clear: right;
-}
-
 #datepicker-alter_banco {
 	width: 150px;
 }
@@ -14,14 +6,14 @@ div .body{
 	text-decoration: none;
 }
 
-.select_mes {
-	font-size: 18px;
-}
-
-.select_agencia {
-	font-size: 18px;
-}
-
 .saldoBanco {
 	font-size: 20px;
+}
+
+#select_agencia {
+	width: 300px;
+}
+
+#saldo_banco {
+	text-align: right;
 }

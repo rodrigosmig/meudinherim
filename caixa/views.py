@@ -22,10 +22,12 @@ def lancamentos(request):
 		ano = request.POST.get('ano')
 
 		lancamentos = LancamentosCaixa.objects.filter(data__month = mes).filter(data__year = ano).filter(user_id = id_user)
-
-		lancJson = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
-
-		return HttpResponse(lancJson, content_type="application/json")
+		
+		if(len(lancamentos) != 0):
+			lancJson = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+			return HttpResponse(lancJson, content_type="application/json")
+		else:
+			return HttpResponseServerError("Nenhum lançamento foi encontrado.")
 
 	#armazena a data atual
 	hoje = datetime.today()

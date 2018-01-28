@@ -362,7 +362,7 @@ $(function() {
 	$('#form_filtro_cp').on('submit', function(evento) {
 		evento.preventDefault();
 
-		var mes = parseInt($('#filter_mes_cp').val()) + 1;
+		var mes = $('#filter_mes_cp').val();
 		var ano = $('#filter_ano_cp').val();
 		var status = $('#filter_status_cp').val();
 
@@ -370,6 +370,7 @@ $(function() {
 			$.alert('Selecione o mês, o ano e o status desejado.');
 		}
 		else {
+			mes = parseInt(mes) + 1
 			$.ajax({
 	    		type: 'POST',
 				url: '/contas_a_pagar/filtrar/',
