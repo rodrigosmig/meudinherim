@@ -76,8 +76,7 @@ $(function() {
 				$('#editLancamento').modal('show');
 			},
 			error: function(erro) {
-				console.log(erro.responseText);
-				alert("Lançamento não encontrado. Tente novamente.");
+				$.alert("Lançamento não encontrado. Tente novamente.");
 			},
 		});
 
@@ -213,8 +212,7 @@ $(function() {
 					'csrfmiddlewaretoken': csrftokenPOST,
 				},
 				success: function(lancamentos) {
-					console.log(lancamentos)
-
+					
 					$('#select_data').show();
 
 					var table = $('#dataBanco').DataTable();

@@ -28,6 +28,15 @@
     <div class="row clearfix">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div id="card_atual" class="card">
+                <div id="saldo_banco" class="header">
+                    {% for a in agencias %}
+                        {% if a.saldo < 0  %}
+                            <span id="{{ a.banco }}" class="saldoBanco" data-saldo="{{ a.banco }}" style="color: red"> Saldo: {{ a.saldo }}</span>
+                        {% else %}
+                            <span id="{{ a.banco }}" class="saldoBanco" data-saldo="{{ a.banco }}" style="color: blue"> Saldo: {{ a.saldo }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
                 <div class="header">
                     <select id="select_agencia" class="form-control"></select>
 
@@ -64,17 +73,6 @@
                             <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
                         </form>
                     </div>
-
-                    <ul id="mostrar_saldo" class="header-dropdown">
-                        {% for a in agencias %}
-                            {% if a.saldo < 0  %}
-                                <span id="{{ a.banco }}" class="saldoBanco" data-saldo="{{ a.banco }}" style="color: red"> Saldo: {{ a.saldo }}</span>
-                            {% else %}
-                                <span id="{{ a.banco }}" class="saldoBanco" data-saldo="{{ a.banco }}" style="color: blue"> Saldo: {{ a.saldo }}</span>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-
                 </div>
                 
                 <div class="body">
