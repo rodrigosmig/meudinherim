@@ -284,68 +284,76 @@ $(function() {
 	});
 
 
-	$('.filtrar').on('click', function() {
-		
+	$('#form_filtro_banco').on('submit', function(evento) {
+		evento.preventDefault();
+
 		var agencia = $('#select_agencia').val();
-		var mes = parseInt($('#lanc_meses').val()) + 1;
+		var mes = $('#lanc_meses').val();
 		var ano = $('#lanc_anos').val();
 
-		$.ajax({
-			type: 'POST',
-			url: '/banco/',
-			data: {
-				'agencia': agencia,
-				'mes': mes,
-				'ano': ano,
-				'csrfmiddlewaretoken': csrftokenPOST
-			},
-			datatype: 'json',
-			success: function(lancamentos) {
-				var table = $('#dataBanco').DataTable();
+		if(mes === 'nenhum' || ano === 'nenhum') {
+			$.alert('Selecione o mês e o ano desejado.');
+		}
+		else {
+			mes = parseInt(mes) + 1
+			$.ajax({
+				type: 'POST',
+				url: '/banco/',
+				data: {
+					'agencia': agencia,
+					'mes': mes,
+					'ano': ano,
+					'csrfmiddlewaretoken': csrftokenPOST
+				},
+				datatype: 'json',
+				success: function(lancamentos) {
+					var table = $('#dataBanco').DataTable();
 
-				var rows = table.clear().draw();					
+					var rows = table.clear().draw();					
 
-				if(lancamentos.length !== 0) {
+					if(lancamentos.length !== 0) {
 
-					for(var x = 0; x < lancamentos.length; x++) {
+						for(var x = 0; x < lancamentos.length; x++) {
 
-						data = lancamentos[x].fields.data;
-						dia = data.substring(8);
-						mes = data.substring(5, 7);
-						ano = data.substring(0, 4);
-						newData = dia + "/" + mes + "/" + ano;
+							data = lancamentos[x].fields.data;
+							dia = data.substring(8);
+							mes = data.substring(5, 7);
+							ano = data.substring(0, 4);
+							newData = dia + "/" + mes + "/" + ano;
 
-						if(lancamentos[x].fields.tipo === "1") {
-							var categoria = "<span style='color: blue' >" + lancamentos[x].fields.valor + "</span>";
-						}else{
-							var categoria = "<span style='color: red' >-" + lancamentos[x].fields.valor + "</span>";
+							if(lancamentos[x].fields.tipo === "1") {
+								var categoria = "<span style='color: blue' >" + lancamentos[x].fields.valor + "</span>";
+							}else{
+								var categoria = "<span style='color: red' >-" + lancamentos[x].fields.valor + "</span>";
+							}
+
+							var tipo = "";
+							if(lancamentos[x].fields.tipo === '1') {
+								tipo = 'Crédito';
+							}
+							else {
+								tipo = 'Débito'
+							}
+
+							table.row.add([newData,
+							lancamentos[x].fields.descricao,
+							tipo,
+							lancamentos[x].fields.categoria[2],
+							categoria,
+							"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
+							]).draw(false);
 						}
+					}					
+				},
+				error: function(msg) {
+					//mensagem de retorno em caso de erro
+					$.alert(msg.responseText)
+					
+				},
+			});
+		}
 
-						var tipo = "";
-						if(lancamentos[x].fields.tipo === '1') {
-							tipo = 'Crédito';
-						}
-						else {
-							tipo = 'Débito'
-						}
-
-						table.row.add([newData,
-						lancamentos[x].fields.descricao,
-						tipo,
-						lancamentos[x].fields.categoria[2],
-						categoria,
-						"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
-						]).draw(false);
-					}
-				}					
-			},
-			error: function(msg) {
-				//mensagem de retorno em caso de erro
-				$.alert('erro')
-				console.log(msg.responseText);
-				
-			},
-		});
+		
 	});
 
 	

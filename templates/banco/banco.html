@@ -29,38 +29,40 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div id="card_atual" class="card">
                 <div class="header">
-                    <label class="select_agencia">Selecione a agência: </label>
-                    <select id="select_agencia"></select>
+                    <select id="select_agencia" class="form-control"></select>
 
-                    <br \><br \>
+                    <br \>
 
                     <div id="select_data">
-                        <label class="select_mes">Mês/Ano: </label>
-                        <!-- Caixa para filtrar por mês -->
-                        <select id="lanc_meses" class="meses_change">
-                            <option value="0">Janeiro</option>
-                            <option value="1">Fevereiro</option>
-                            <option value="2">Março</option>
-                            <option value="3">Abril</option>
-                            <option value="4">Maio</option>
-                            <option value="5">Junho</option>
-                            <option value="6">Julho</option>
-                            <option value="7">Agosto</option>
-                            <option value="8">Setembro</option>
-                            <option value="9">Outubro</option>
-                            <option value="10">Novembro</option>
-                            <option value="11">Dezembro</option>
-                        </select>
-                        <!-- Caixa para filtrar por mês -->
-                        <select id="lanc_anos" class="anos_change">
-                            <option value="2015" >2015</option>
-                            <option value="2016">2016</option>
-                            <option value="2017">2017</option>
-                            <option value="2018">2018</option>
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
-                        </select>
-                        <button type="button" class="btn btn-primary btn-sm filtrar">Filtrar</button>
+                        <form id="form_filtro_banco" class="form-inline">
+
+                            <select id="lanc_meses" class="form-control meses_change">
+                                <option value="nenhum">--Meses--</option>
+                                <option value="0">Janeiro</option>
+                                <option value="1">Fevereiro</option>
+                                <option value="2">Março</option>
+                                <option value="3">Abril</option>
+                                <option value="4">Maio</option>
+                                <option value="5">Junho</option>
+                                <option value="6">Julho</option>
+                                <option value="7">Agosto</option>
+                                <option value="8">Setembro</option>
+                                <option value="9">Outubro</option>
+                                <option value="10">Novembro</option>
+                                <option value="11">Dezembro</option>
+                            </select>
+                            <!-- Caixa para filtrar por mês -->
+                            <select id="lanc_anos" class="form-control anos_change">
+                                <option value="nenhum">--Ano--</option>
+                                <option value="2016">2016</option>
+                                <option value="2017">2017</option>
+                                <option value="2018">2018</option>
+                                <option value="2019">2019</option>
+                                <option value="2020">2020</option>
+                                <option value="2021">2021</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                        </form>
                     </div>
 
                     <ul id="mostrar_saldo" class="header-dropdown">
@@ -142,11 +144,12 @@
 
 <script type="text/javascript">
     var agencias = JSON.parse("{{ selectAgencias | safe | escapejs }}");    
-
+    console.log(agencias)
     if (agencias.length !== 0) {
-        var conteudo = "<option value='nenhum'>Nenhum</option>";
+        var conteudo = "<option value='nenhum'>-----------Selecione a agência-----------</option>";
         for(var x = 0; x < agencias.length; x++) {
-            conteudo += "<option value =" + agencias[x].agencia + ">" + agencias[x].agencia + "</option>";
+            conteudo += "<option value =" + agencias[x].id + ">" + agencias[x].agencia + "</option>";
+            console.log(agencias[x].agencia)
         }
         $('#select_agencia').html(conteudo);
     }
