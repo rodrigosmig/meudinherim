@@ -142,16 +142,17 @@
 
 <script type="text/javascript">
     var agencias = JSON.parse("{{ selectAgencias | safe | escapejs }}");    
-    console.log(agencias)
+
     if (agencias.length !== 0) {
         var conteudo = "<option value='nenhum'>-----------Selecione a agência-----------</option>";
         for(var x = 0; x < agencias.length; x++) {
             conteudo += "<option value =" + agencias[x].id + ">" + agencias[x].agencia + "</option>";
-            console.log(agencias[x].agencia)
         }
-        $('#select_agencia').html(conteudo);
     }
-    
+    else {
+        var conteudo = "<option>Nenhuma agência cadastrada</option>";
+    }
+    $('#select_agencia').html(conteudo);
 </script>
 
 <script src="{% static 'js/banco.js' %}"></script>
