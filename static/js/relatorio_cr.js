@@ -95,7 +95,7 @@ $(function() {
 						else if(status === "recebidas") {
 							$('#status_cr').html("Recebidas")
 						}
-						else if(status === "a_receber") {
+						else if(status === "abertas") {
 							$('#status_cr').html("A Receber")
 						}
 					},
