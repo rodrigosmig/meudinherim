@@ -22,7 +22,6 @@ from principal import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', views.index, name='index'),
     url(r'^principal/', include('principal.urls', namespace='principal')),
     url(r'^caixa/', include('caixa.urls', namespace='caixa')),
     url(r'^banco/', include('banco.urls', namespace='banco')),
