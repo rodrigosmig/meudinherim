@@ -11,6 +11,7 @@ from django import forms
 from datetime import datetime
 from django.core import serializers
 import json
+from usuario.models import UsuarioProfile
 
 @login_required
 def contasAReceber(request):
@@ -86,6 +87,9 @@ def contasAReceber(request):
 	#para adicionar lancamento
 	contexto['formLancCaixa'] = formCaixa
 	contexto['formLancBanco'] = formBanco
+
+	userProfile = UsuarioProfile.objects.get(user = request.user)
+	contexto['profile'] = userProfile
 
 	return render(request, template, contexto)
 
