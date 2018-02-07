@@ -11,7 +11,7 @@ from caixa.models import Categoria, SaldoCaixa
 from banco.forms import ContaBancoForm, LancamentosBancoForm
 from caixa.forms import LancamentosForm
 from django import forms
-
+from caixa.views import separarCategorias
 
 
 @login_required
@@ -64,6 +64,26 @@ def config(request):
             attrs = {'class': 'form-control', 'placeholder': 'Confirme a senha', }
         )
     )
+
+    formCaixa = LancamentosForm()
+    #Seleciona apenas o banco do usuario para o formulario
+    formCaixa.fields['categoria'].choices = separarCategorias(request)
+    
+    formBanco = LancamentosBancoForm()
+    #Seleciona apenas o banco do usuario para o formulario
+    formBanco.fields['banco'] = forms.ModelChoiceField(
+        queryset = ContaBanco.objects.filter(user_id = request.user.id),
+        empty_label = 'Nenhum',
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        )
+    )
+    #seleciona apenas as categorias do usuario logado
+    formBanco.fields['categoria'].choices = separarCategorias(request)
+
+    #para adicionar lancamento
+    contexto['formLancCaixa'] = formCaixa
+    contexto['formLancBanco'] = formBanco
 
     contexto['formConfig'] = formDados
     contexto['formSenha'] = formSenha
@@ -130,9 +150,25 @@ def editSenha(request):
     contexto['formSenha'] = formSenha
     contexto['formConfig'] = formDados
 
+    formCaixa = LancamentosForm()
+    #Seleciona apenas o banco do usuario para o formulario
+    formCaixa.fields['categoria'].choices = separarCategorias(request)
+    
+    formBanco = LancamentosBancoForm()
+    #Seleciona apenas o banco do usuario para o formulario
+    formBanco.fields['banco'] = forms.ModelChoiceField(
+        queryset = ContaBanco.objects.filter(user_id = request.user.id),
+        empty_label = 'Nenhum',
+        widget = forms.Select(
+            attrs = {'class': 'form-control'}
+        )
+    )
+    #seleciona apenas as categorias do usuario logado
+    formBanco.fields['categoria'].choices = separarCategorias(request)
+
     return render(request, template, contexto)
 
-
+@login_required
 def editoFoto(request):
     if(request.method == 'POST'):
         foto = UsuarioProfile.objects.get(user = request.user)

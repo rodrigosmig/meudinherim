@@ -12,6 +12,7 @@ from datetime import datetime
 from usuario.models import UsuarioProfile
 from django.core import serializers
 import json
+from caixa.views import separarCategorias
 
 @login_required
 def contasAPagar(request):
@@ -60,13 +61,8 @@ def contasAPagar(request):
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
-	        )
-		)
+	formCaixa.fields['categoria'].choices = separarCategorias(request)
+
 	formBanco = LancamentosBancoForm()
 	#Seleciona apenas o banco do usuario para o formulario
 	formBanco.fields['banco'] = forms.ModelChoiceField(
@@ -77,13 +73,8 @@ def contasAPagar(request):
         )
 	)
 	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
-	        )
-		)
+	formBanco.fields['categoria'].choices = separarCategorias(request)
+
 	#para adicionar lancamento
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco
@@ -356,5 +347,3 @@ def filtrarContas(request):
 
 		else:
 			return HttpResponseServerError("Nenhum conta foi encontrada.")
-
-		

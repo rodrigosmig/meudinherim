@@ -5,10 +5,12 @@ from banco.models import ContaBanco, LancamentosBanco, SaldoBanco
 from caixa.models import Categoria, SaldoCaixa
 from banco.forms import ContaBancoForm, LancamentosBancoForm
 from caixa.forms import LancamentosForm
+import caixa.views
 from django import forms
 from usuario.models import UsuarioProfile
 from django.core import serializers
 import json
+from caixa.views import separarCategorias
 
 @login_required
 def cadastroBanco(request):
@@ -41,13 +43,8 @@ def cadastroBanco(request):
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
-	        )
-		)
+	formCaixa.fields['categoria'].choices = separarCategorias(request)
+
 	#para adicionar lancamento
 	formBanco = LancamentosBancoForm()
 	#Seleciona apenas o banco do usuario para o formulario
@@ -59,13 +56,8 @@ def cadastroBanco(request):
         )
 	)
 	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
-	        )
-		)
+	formBanco.fields['categoria'].choices = separarCategorias(request)
+
 	#para adicionar lancamento
 	contexto['formLancCaixa'] = formCaixa
 	contexto['formLancBanco'] = formBanco
@@ -114,13 +106,7 @@ def banco(request):
 
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
-	        )
-		)
+	formCaixa.fields['categoria'].choices = separarCategorias(request)
 	
 	formBanco = LancamentosBancoForm()
 	#Seleciona apenas o banco do usuario para o formulario
@@ -132,13 +118,7 @@ def banco(request):
         )
 	)
 	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
-	        )
-		)
+	formBanco.fields['categoria'].choices = separarCategorias(request)
 
 	#para adicionar lancamento
 	contexto['formLancCaixa'] = formCaixa
@@ -231,13 +211,8 @@ def editLancamento(request):
 	        )
 		)
 	#seleciona apenas as categorias do usuario logado
-	form.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'id_categoria-alter_banco'}
-	        )
-		)
+	form.fields['categoria'].choices = separarCategorias(request)
+	
 	form.fields['data'] = forms.DateField(
 		label = 'Data',
 		required = True,

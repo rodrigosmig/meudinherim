@@ -13,6 +13,7 @@ from metas.forms import MetasForm
 from metas.models import Metas
 from usuario.models import UsuarioProfile
 import json
+from caixa.views import separarCategorias
 
 @login_required
 def metas(request):
@@ -65,13 +66,8 @@ def metas(request):
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
-	        )
-		)
+	formCaixa.fields['categoria'].choices = separarCategorias(request)
+
 	#para adicionar lancamento
 	formBanco = LancamentosBancoForm()
 	#Seleciona apenas o banco do usuario para o formulario
@@ -83,13 +79,8 @@ def metas(request):
         )
 	)
 	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
-	        )
-		)
+	formBanco.fields['categoria'].choices = separarCategorias(request)
+	
 	#para adicionar lancamento
 	contexto['formLancCaixa'] = formCaixa
 	contexto['formLancBanco'] = formBanco
