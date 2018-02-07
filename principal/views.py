@@ -19,6 +19,7 @@ from usuario.models import UsuarioProfile
 import json
 from django.contrib import messages
 from django.conf import settings
+from caixa.views import separarCategorias
 
 
 def index(request):
@@ -199,13 +200,7 @@ def home(request):
 
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control'}
-	        )
-		)
+	formCaixa.fields['categoria'].choices = separarCategorias(request)
 	
 	formBanco = LancamentosBancoForm()
 	#Seleciona apenas o banco do usuario para o formulario
@@ -217,13 +212,7 @@ def home(request):
         )
 	)
 	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'categoria_banco'}
-	        )
-		)
+	formBanco.fields['categoria'].choices = separarCategorias(request)
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
 	saldoC = SaldoCaixa.objects.get(user = user)
