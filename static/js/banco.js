@@ -33,6 +33,9 @@ $(function() {
 				var statusConta = $('#status_conta').html();
 				var status = $('#status').html()
 
+				//altera o id do select
+				$('#editLanc #categoria_banco').prop('id', 'id_categoria-alter_banco')
+
 				//desabilita os campos quando o lançamento for feito pelo contas a pagar/receber
 				if(statusConta === 'Pago' || statusConta === 'Recebido') {
 					$('#status').html(status + " (" + statusConta + ")").css('color', 'red');
