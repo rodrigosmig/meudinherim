@@ -273,6 +273,7 @@ $(function() {
 					}
 				},
 				error: function(msg) {
+					$('#select_data').show();
 					$.alert(msg.responseText)
 				},
 			});
