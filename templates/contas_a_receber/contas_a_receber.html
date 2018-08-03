@@ -132,14 +132,17 @@ $( function() {
                                     <td class="conta_desc">{{ cr.descricao }}</td>
                                     <td class="conta_cat" data-id_cat="{{ cr.categoria.id }}">{{ cr.categoria }}</td>
                                     <td class="conta_val">{{ cr.valor }}</td>
-                                    <td>
-                                    	<i class="material-icons"><a data-toggle="modal" href="#editContasReceber" title="Clique para editar"><span class="openEdit" data-cr="{{ cr.id }}">edit</span></a></i>
-                                    </td>
                                     {% if cr.recebido == False %}
+                                        <td>
+                                            <i class="material-icons"><a data-toggle="modal" href="#editContasReceber" title="Clique para editar"><span class="openEdit" data-cr="{{ cr.id }}">edit</span></a></i>
+                                        </td>
                                         <td>
                                             <i class="material-icons"><a data-toggle="modal" href="#recebimentoConta" style="color: red" title="Clique para receber"><span class="openReceive" data-cr="{{ cr.id }}">close</span></a></i>
                                         </td>
                                     {% else %}
+                                        <td>
+                                            <i class="material-icons"><a title="Cancele o recebimento para editar"><span data-cr="{{ cr.id }}">edit</span></a></i>
+                                        </td>
                                         <td>
                                             <i class="material-icons recebido"><span class="cancelReceive" data-cr="{{ cr.id }}"><a data-toggle="modal" href="" title="Clique para cancelar o recebimento">done</span></i>
                                         </td>
