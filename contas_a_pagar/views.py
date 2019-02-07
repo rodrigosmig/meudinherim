@@ -54,7 +54,7 @@ def contasAPagar(request):
 	form = ContasAPagarForm()
 	#seleciona apenas as categorias do usuario logado e do tipo saida
 	form.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user).filter(tipo = 2),
+			queryset = Categoria.objects.filter(user = user).filter(tipo = 2).order_by('descricao'),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control', 'id': 'id_categoriaCP'}

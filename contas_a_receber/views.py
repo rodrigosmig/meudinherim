@@ -54,7 +54,7 @@ def contasAReceber(request):
 	form = ContasAReceberForm()
 
 	form.fields['categoria'] = forms.ModelChoiceField(
-        queryset = Categoria.objects.filter(user = user).filter(tipo = 1),
+        queryset = Categoria.objects.filter(user = user).filter(tipo = 1).order_by('descricao'),
         empty_label = 'Nenhum',
         widget = forms.Select(
             attrs = {'class': 'form-control', 'id': 'id_categoriaCR'}

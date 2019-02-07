@@ -356,10 +356,10 @@ def separarCategorias(request):
     categorias = []
     entrada = []
     saida = []
-    for categoria in Categoria.objects.filter(tipo = '1').filter(user = user):
+    for categoria in Categoria.objects.filter(tipo = '1').filter(user = user).order_by('descricao'):
         entrada.append([categoria.id, categoria.descricao])
 
-    for categoria in Categoria.objects.filter(tipo = '2').filter(user = user):
+    for categoria in Categoria.objects.filter(tipo = '2').filter(user = user).order_by('descricao'):
         saida.append([categoria.id, categoria.descricao])
 
     categorias.append(['Entradas', entrada])
