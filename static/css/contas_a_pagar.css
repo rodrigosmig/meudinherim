@@ -12,7 +12,7 @@
 	font-size: 40px;
 }
 
-#datepickerCP {
+#datepickerCP, #datepickerCP_edit, #outras_parcelas {
 	width: 150px;
 }
 

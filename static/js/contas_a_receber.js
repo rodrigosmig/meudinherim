@@ -71,6 +71,7 @@ $(function() {
 		var categoria = $('#id_categoriaCR').val();
 		var descricao = $('#id_descricaoCR').val();
 		var valor = $('#id_valorCR').val();
+		var parcelas = $('#outras_parcelas').val();
 
 		$.ajax({
 			type: 'POST',
@@ -80,6 +81,7 @@ $(function() {
 				'categoria': categoria,
 				'descricao': descricao,
 				'valor': valor,
+				'parcelas': parcelas,
 				'csrfmiddlewaretoken': csrftokenPOST,
 			},
 			success: function(msg) {

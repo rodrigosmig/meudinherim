@@ -134,14 +134,17 @@ $( function() {
                                     <td class="conta_desc">{{ cp.descricao }}</td>
                                     <td class="conta_cat" data-id_cat="{{ cp.categoria.id }}">{{ cp.categoria }}</td>
                                     <td class="conta_val">{{ cp.valor }}</td>
-                                    <td>
-                                    	<i class="material-icons"><a data-toggle="modal" href="#editContasPagar" title="Clique para editar"><span class="openEdit" data-cp="{{ cp.id }}">edit</span></a></i>
-                                    </td>
                                     {% if cp.paga == False %}
+                                        <td>
+                                            <i class="material-icons"><a data-toggle="modal" href="#editContasPagar" title="Clique para editar"><span class="openEdit" data-cp="{{ cp.id }}">edit</span></a></i>
+                                        </td>
                                         <td>
                                             <i class="material-icons"><a data-toggle="modal" href="#pagamentoConta" style="color: red" title="Clique para pagar"><span class="openPay" data-cp="{{ cp.id }}">close</span></a></i>
                                         </td>
                                     {% else %}
+                                        <td>
+                                            <i class="material-icons"><a title="Cancele o pagamento para editar" disabled><span data-cp="{{ cp.id }}">edit</span></a></i>
+                                        </td>
                                         <td>
                                             <i class="material-icons pago"><span class="cancelPay" data-cp="{{ cp.id }}"><a data-toggle="modal" href="" title="Clique para cancelar o pagamento">done</span></i>
                                         </td>
@@ -175,8 +178,8 @@ $( function() {
 
                             {% for campo in contPagarForm %}
                                 {{ campo.label_tag }}
-                                {{ campo }}                                    
-                            {% endfor %}              
+                                {{ campo }}                            
+                            {% endfor %}
                 </div>
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">

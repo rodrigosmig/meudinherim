@@ -9,6 +9,7 @@ from banco.forms import LancamentosBancoForm
 from caixa.forms import LancamentosForm
 from django import forms
 from datetime import datetime
+import datedelta
 from usuario.models import UsuarioProfile
 from django.core import serializers
 import json
@@ -20,12 +21,25 @@ def contasAPagar(request):
 
 	if(request.method == 'POST'):
 		form = ContasAPagarForm(request.POST)
+		parcelas = int(request.POST.get('parcelas')) + 1
 
 		if(form.is_valid()):
 			contaPagar = form.save(commit = False)
 			contaPagar.user = request.user
 			contaPagar.paga = False
 			contaPagar.save()
+			
+			if(parcelas > 0):
+				for x in range(1, parcelas):
+					novaParcela = ContasAPagar()
+					novaParcela.data = contaPagar.data + datedelta.datedelta(months = x)
+					novaParcela.categoria = contaPagar.categoria
+					novaParcela.descricao = contaPagar.descricao + " " + str(x + 1) + "/" + str(parcelas)
+					novaParcela.valor = contaPagar.valor
+					novaParcela.paga = False
+					novaParcela.user = request.user
+					novaParcela.save()
+
 			return HttpResponse('Conta a pagar adicionada com sucesso')
 		else:
 			return HttpResponseServerError("Formulário inválido.")
@@ -35,12 +49,12 @@ def contasAPagar(request):
 
 	hoje = datetime.today()
 
-	contas = ContasAPagar.objects.filter(user = user).filter(data__month = hoje.month)
+	contas = ContasAPagar.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
 
 	form = ContasAPagarForm()
 	#seleciona apenas as categorias do usuario logado e do tipo saida
 	form.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user).filter(tipo = 2),
+			queryset = Categoria.objects.filter(user = user).filter(tipo = 2).order_by('descricao'),
 			empty_label = 'Nenhum',
 	        widget = forms.Select(
 	            attrs = {'class': 'form-control', 'id': 'id_categoriaCP'}

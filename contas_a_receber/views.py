@@ -9,6 +9,7 @@ from contas_a_receber.models import ContasAReceber
 from contas_a_receber.forms import ContasAReceberForm
 from django import forms
 from datetime import datetime
+import datedelta
 from django.core import serializers
 import json
 from usuario.models import UsuarioProfile
@@ -20,12 +21,24 @@ def contasAReceber(request):
 
 	if(request.method == 'POST'):
 		form = ContasAReceberForm(request.POST)
+		parcelas = int(request.POST.get('parcelas')) + 1
 
 		if(form.is_valid()):
 			contReceber = form.save(commit = False)
 			contReceber.user = user
 			contReceber.recebido = False
 			contReceber.save()
+
+			if(parcelas > 0):
+				for x in range(1, parcelas):
+					novaParcela = ContasAReceber()
+					novaParcela.data = contReceber.data + datedelta.datedelta(months = x)
+					novaParcela.categoria = contReceber.categoria
+					novaParcela.descricao = contReceber.descricao + " " + str(x + 1) + "/" + str(parcelas)
+					novaParcela.valor = contReceber.valor
+					novaParcela.recebido = False
+					novaParcela.user = request.user
+					novaParcela.save()			
 
 			return HttpResponse("Conta a receber adicionada com sucesso.")
 		else:
@@ -36,12 +49,12 @@ def contasAReceber(request):
 
 	hoje = datetime.today()
 
-	contas = ContasAReceber.objects.filter(user = user).filter(data__month = hoje.month)
+	contas = ContasAReceber.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
 
 	form = ContasAReceberForm()
 
 	form.fields['categoria'] = forms.ModelChoiceField(
-        queryset = Categoria.objects.filter(user = user).filter(tipo = 1),
+        queryset = Categoria.objects.filter(user = user).filter(tipo = 1).order_by('descricao'),
         empty_label = 'Nenhum',
         widget = forms.Select(
             attrs = {'class': 'form-control', 'id': 'id_categoriaCR'}
