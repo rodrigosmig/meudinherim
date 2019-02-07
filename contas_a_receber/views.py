@@ -49,7 +49,7 @@ def contasAReceber(request):
 
 	hoje = datetime.today()
 
-	contas = ContasAReceber.objects.filter(user = user).filter(data__month = hoje.month)
+	contas = ContasAReceber.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
 
 	form = ContasAReceberForm()
 

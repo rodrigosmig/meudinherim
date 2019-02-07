@@ -39,7 +39,7 @@ def contasAPagar(request):
 					novaParcela.paga = False
 					novaParcela.user = request.user
 					novaParcela.save()
-					
+
 			return HttpResponse('Conta a pagar adicionada com sucesso')
 		else:
 			return HttpResponseServerError("Formulário inválido.")
@@ -49,7 +49,7 @@ def contasAPagar(request):
 
 	hoje = datetime.today()
 
-	contas = ContasAPagar.objects.filter(user = user).filter(data__month = hoje.month)
+	contas = ContasAPagar.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
 
 	form = ContasAPagarForm()
 	#seleciona apenas as categorias do usuario logado e do tipo saida
