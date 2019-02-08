@@ -15,13 +15,29 @@ from django.core import serializers
 import json
 from caixa.views import separarCategorias
 
+parcela = (
+    ("0", "Não"),
+    ("1", "1"),
+    ("2", "2"),
+    ("3", "3"),
+    ("4", "4"),
+    ("5", "5"),
+    ("6", "6"),
+    ("7", "7"),
+    ("8", "8"),
+    ("9", "9"),
+    ("10", "10"),
+    ("11", "11"),
+    ("12", "12"),
+)
+
 @login_required
 def contasAPagar(request):
 	user = request.user
 
 	if(request.method == 'POST'):
 		form = ContasAPagarForm(request.POST)
-		parcelas = int(request.POST.get('parcelas')) + 1
+		parcelas = int(request.POST.get('parcelas'))
 
 		if(form.is_valid()):
 			contaPagar = form.save(commit = False)
@@ -30,6 +46,7 @@ def contasAPagar(request):
 			contaPagar.save()
 			
 			if(parcelas > 0):
+				parcelas += 1
 				for x in range(1, parcelas):
 					novaParcela = ContasAPagar()
 					novaParcela.data = contaPagar.data + datedelta.datedelta(months = x)
@@ -111,10 +128,22 @@ def editContasPagar(request):
 		
 		#atribui o lancamento ao form	
 		form = ContasAPagarForm(request.POST, instance = conta)
-
+		parcelas = int(request.POST.get('parcelas'))
 		
 		if(form.is_valid()):
 			form.save()
+
+			if(parcelas > 0):
+				parcelas += 1
+				for x in range(1, parcelas):
+					novaParcela = ContasAPagar()
+					novaParcela.data = form.cleaned_data['data'] + datedelta.datedelta(months = x)
+					novaParcela.categoria = form.cleaned_data['categoria']
+					novaParcela.descricao = form.cleaned_data['descricao'] + " " + str(x + 1) + "/" + str(parcelas)
+					novaParcela.valor = form.cleaned_data['valor']
+					novaParcela.paga = False
+					novaParcela.user = request.user
+					novaParcela.save()
 
 			return HttpResponse("Conta alterada com sucesso")
 		else:
@@ -159,6 +188,14 @@ def editContasPagar(request):
     	widget = forms.NumberInput(
     		attrs = {'class': 'form-control', 'id': 'id_valor_edit'}
         )
+    )
+
+	form.fields['parcelas'] = forms.ChoiceField(
+        label = 'Outras Parcelas',
+        widget = forms.Select(
+        attrs = {'class': 'form-control', "id": "outras_parcelas_edit"}
+        ),
+        choices = parcela
     )
 
 	#retorna o id da conta junto com o formulario

@@ -200,6 +200,7 @@ $(function() {
 		var categoria = $('#id_categoria_edit').val();
 		var descricao = $('#id_descricao_edit').val();
 		var valor = $('#id_valor_edit').val();
+		var parcelas =$('#outras_parcelas_edit').val();
 
 		dados = {
 			'id': id,
@@ -207,6 +208,7 @@ $(function() {
 			'categoria': categoria,
 			'descricao': descricao,
 			'valor': valor,
+			'parcelas': parcelas,
 			'csrfmiddlewaretoken': csrftokenPOST
 		}
 		return dados;

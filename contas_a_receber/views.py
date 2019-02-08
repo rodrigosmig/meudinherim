@@ -15,13 +15,29 @@ import json
 from usuario.models import UsuarioProfile
 from caixa.views import separarCategorias
 
+parcela = (
+    ("0", "Não"),
+    ("1", "1"),
+    ("2", "2"),
+    ("3", "3"),
+    ("4", "4"),
+    ("5", "5"),
+    ("6", "6"),
+    ("7", "7"),
+    ("8", "8"),
+    ("9", "9"),
+    ("10", "10"),
+    ("11", "11"),
+    ("12", "12"),
+)
+
 @login_required
 def contasAReceber(request):
 	user = request.user
 
 	if(request.method == 'POST'):
 		form = ContasAReceberForm(request.POST)
-		parcelas = int(request.POST.get('parcelas')) + 1
+		parcelas = int(request.POST.get('parcelas'))
 
 		if(form.is_valid()):
 			contReceber = form.save(commit = False)
@@ -30,6 +46,7 @@ def contasAReceber(request):
 			contReceber.save()
 
 			if(parcelas > 0):
+				parcelas += 1
 				for x in range(1, parcelas):
 					novaParcela = ContasAReceber()
 					novaParcela.data = contReceber.data + datedelta.datedelta(months = x)
@@ -110,9 +127,23 @@ def editContasReceber(request):
 		
 		#atribui o lancamento ao form	
 		form = ContasAReceberForm(request.POST, instance = conta)
+		parcelas = int(request.POST.get('parcelas'))
 		
 		if(form.is_valid()):
 			form.save()
+
+			if(parcelas > 0):
+				print(parcelas)
+				parcelas += 1
+				for x in range(1, parcelas):
+					novaParcela = ContasAReceber()
+					novaParcela.data = form.cleaned_data['data'] + datedelta.datedelta(months = x)
+					novaParcela.categoria = form.cleaned_data['categoria']
+					novaParcela.descricao = form.cleaned_data['descricao'] + " " + str(x + 1) + "/" + str(parcelas)
+					novaParcela.valor = form.cleaned_data['valor']
+					novaParcela.recebido = False
+					novaParcela.user = request.user
+					novaParcela.save()
 
 			return HttpResponse("Conta alterada com sucesso")
 		else:
@@ -157,6 +188,14 @@ def editContasReceber(request):
     	widget = forms.NumberInput(
     		attrs = {'class': 'form-control', 'id': 'id_valor_edit'}
         )
+    )
+
+	form.fields['parcelas'] = forms.ChoiceField(
+        label = 'Outras Parcelas',
+        widget = forms.Select(
+        attrs = {'class': 'form-control', "id": "outras_parcelas_edit"}
+        ),
+        choices = parcela
     )
 
 	#retorna o id da conta junto com o formulario
