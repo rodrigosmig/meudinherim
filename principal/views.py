@@ -232,12 +232,4 @@ def home(request):
 	for a in agencias:
 		totalSaldoAgencias += a.saldo
 
-	for m in metas:
-		#calculo do progresso da meta
-		progresso = ((totalSaldoAgencias + saldoC.saldoAtual) / m.valor) * 100
-		m.progresso = round(progresso, 2)
-		m.save()
-
-	context['metas'] = metas
-
 	return render(request, template, context)
