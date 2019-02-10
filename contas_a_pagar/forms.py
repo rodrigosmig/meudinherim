@@ -21,7 +21,7 @@ parcelas = (
 
 class ContasAPagarForm(ModelForm):
     data = forms.DateField(
-        label = 'Data',
+        label = 'Data de vencimento',
         required = True,
         widget = forms.TextInput(
             attrs = {'class': 'form-control', 'id': 'datepickerCP', 'placeholder': 'Vencimento'}

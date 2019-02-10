@@ -36,6 +36,8 @@ $( function() {
         nextText: 'Próximo',
         prevText: 'Anterior'
     });
+
+    
 });
 </script>
 {% endblock %}
@@ -108,7 +110,8 @@ $( function() {
                     
                             <thead>
                                 <tr>
-                                    <th>Data</th>
+                                    <th>Data de vencimento</th>
+                                    <th>Data do pagamento</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th> 
                                     <th>Valor</th>
@@ -118,7 +121,8 @@ $( function() {
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Data</th>
+                                    <th>Data de vencimento</th>
+                                    <th>Data do pagamento</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th>
                                     <th>Valor</th>
@@ -131,6 +135,11 @@ $( function() {
                             {% for cp in contPagar %}
                                 <tr id="{{ cp.id }}">
                                     <td class="conta_data">{{ cp.data | date:"d/m/Y" }}</td>
+                                    {% if cp.paga == True and cp.data_pagamento == None %}
+                                        <td class="conta_data">{{ cp.data | date:"d/m/Y" }}</td>
+                                    {% else %}
+                                        <td class="conta_data_pagamento">{{ cp.data_pagamento | date:"d/m/Y" }}</td>
+                                    {% endif %}
                                     <td class="conta_desc">{{ cp.descricao }}</td>
                                     <td class="conta_cat" data-id_cat="{{ cp.categoria.id }}">{{ cp.categoria }}</td>
                                     <td class="conta_val">{{ cp.valor }}</td>

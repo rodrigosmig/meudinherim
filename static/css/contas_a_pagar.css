@@ -12,7 +12,7 @@
 	font-size: 40px;
 }
 
-#datepickerCP, #datepickerCP_edit, #outras_parcelas, #outras_parcelas_edit {
+#datepickerCP, #datepickerCP_edit, #outras_parcelas, #outras_parcelas_edit, #data_vencimento, #data_pagamento {
 	width: 150px;
 }
 

@@ -165,7 +165,7 @@ def editContasPagar(request):
 
 	#altera o id dos campos
 	form.fields['data'] = forms.DateField(
-		label = 'Data',
+		label = 'Data de vencimento',
 		required = True,
 		widget = forms.TextInput(
 			attrs = {'class': 'form-control', 'id': 'datepickerCP_edit'}
@@ -246,6 +246,7 @@ def pagamento(request):
 		#id do usuario
 		user = request.user
 
+		dt_pagamento = request.POST.get('data_pagamento')
 		tipoPagamento = request.POST.get('banco')
 
 		#busca o saldo do caixa do usuario logado
@@ -262,7 +263,9 @@ def pagamento(request):
 
 		#busca a conta a pagar
 		conta = ContasAPagar.objects.get(pk = idConta)
-
+		conta.data_pagamento = dt_pagamento
+		conta.save()
+		
 		#verifica se o pagamento é no caixa ou no banco
 		if(tipoPagamento == ""):
 			#para pagamento feito no caixa
@@ -271,7 +274,7 @@ def pagamento(request):
 			#cadastra o lancamento do caixa de acordo com os dados da conta
 			caixa = LancamentosCaixa()
 
-			caixa.data = conta.data
+			caixa.data = conta.data_pagamento
 			caixa.categoria = conta.categoria
 			caixa.descricao = conta.descricao
 			caixa. valor = conta.valor
@@ -295,7 +298,7 @@ def pagamento(request):
 					banco = LancamentosBanco()
 
 					banco.banco = agencia
-					banco.data = conta.data
+					banco.data = conta.data_pagamento
 					banco.tipo = '2'
 					banco.categoria = conta.categoria
 					banco.descricao = conta.descricao
@@ -332,6 +335,8 @@ def cancelaPagamento(request):
 				conta.paga = False
 				#deixa em branco o tipo da conta de pagamento
 				conta.tipo_conta = None
+				#deixa a data de pagamento em branco
+				conta.data_pagamento = None
 
 				#busca o saldo do caixa do usuario logado e faz o ajuste
 				saldoCaixa = SaldoCaixa.objects.get(user = user)
