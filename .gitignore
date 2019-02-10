@@ -7,5 +7,6 @@ principal/migrations/
 usuario/migrations/
 usuario/migrations/
 caixa/migrations/
+metas/migrations/
 
 db.sqlite3
