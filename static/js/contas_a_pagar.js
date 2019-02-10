@@ -227,7 +227,6 @@ $(function() {
 		$('.pagar').attr('data-cp', id);
 
 		id = '#' + id
-		console.log(id)
 		//esconde o select-box
 		$('#select_bancos').hide();
 
@@ -236,11 +235,15 @@ $(function() {
 		var categoria = $(id).children('.conta_cat').html();
 		var descricao = $(id).children('.conta_desc').html();
 		var valor = $(id).children('.conta_val').html();
-		console.log(data)
+
 		//inserir os campos de acordo com a conta clicada
 		var campos = $('#campos_conta');
+
 		campos.append($("<label />").text("Data:"));
-		campos.append($("<input type='text'>").addClass("form-control").prop('disabled', true).prop('id', 'data_pagam').val(data));
+		campos.append($("<input type='text'>").addClass("form-control").prop('disabled', true).prop('id', 'data_vencimento').val(data));
+
+		campos.append($("<label />").text("Data de pagamento:"));
+		campos.append($("<input type='text'>").addClass("form-control").prop('id', 'data_pagamento'));
 
 		campos.append($("<label />").text("Categoria:"));
 		campos.append($("<input type='text'>").addClass("form-control").prop('disabled', true).prop('id', 'cat_pagam').val(categoria));
@@ -250,6 +253,17 @@ $(function() {
 
 		campos.append($("<label />").text("Valor:"));
 		campos.append($("<input type='text'>").addClass("form-control").prop('disabled', true).prop('id', 'val_pagam').val(valor));
+		
+		$("#data_pagamento").datepicker({
+			dateFormat: 'dd/mm/yy',
+			dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+			dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+			dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+			monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+			monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+			nextText: 'Próximo',
+			prevText: 'Anterior'
+		});
 	});
 
 	$(document).on('click', '.cancelPay', function() {
@@ -328,40 +342,68 @@ $(function() {
 
 	$('.pagar').click(function(evento) {
 		evento.preventDefault();
-
-		var banco = $('#select_bancos').val();
-		if(banco === undefined) {
-			banco = "";
-		}
-
-		var id = $(this).attr('data-cp');
 		
-		$.ajax({
-			type: 'POST',
-			url: '/contas_a_pagar/pagar/',
-			data: {
-				'id': id, 
-				'banco': banco,
-				'csrfmiddlewaretoken': csrftokenPOST
-			},
-			success: function(msg) {
-				$('#pagamentoConta').modal('hide');
-				//mensagem de confirmação
-				$.alert({
-					title: false,
-					theme: 'material',
-					content: msg,
-					onClose: function() {
-						//recarrega a página
-						location.reload();
-					}
-				});	
-			},
-			error: function(msg) {
-				$.alert(msg.responseText);
-			},
-		});		
+		if($("#data_pagamento").val() == "") {
+			$.alert({
+				title: false,
+				theme: 'material',
+				content: "Informe a data de pagamento!",
+			});	
+		}
+		else {
+			var banco = $('#select_bancos').val();
+			if(banco === undefined) {
+				banco = "";
+			}
+
+			var id = $(this).attr('data-cp');
+			var pagamento = $("#data_pagamento").val()
+			/* var vencimento_array = $("#data_vencimento").val().split("/")
+			var pagamento_array = $("#data_pagamento").val().split("/")
+			var vencimento = new Date(vencimento_array[2], vencimento_array[1], vencimento_array[0])
+			var pagamento = new Date(pagamento_array[2], pagamento_array[1], pagamento_array[0]) */
+
+			$.ajax({
+				type: 'POST',
+				url: '/contas_a_pagar/pagar/',
+				data: {
+					'id': id, 
+					'banco': banco,
+					'data_pagamento': dataConvert(pagamento),
+					'csrfmiddlewaretoken': csrftokenPOST
+				},
+				success: function(msg) {
+					$('#pagamentoConta').modal('hide');
+					//mensagem de confirmação
+					$.alert({
+						title: false,
+						theme: 'material',
+						content: msg,
+						onClose: function() {
+							//recarrega a página
+							location.reload();
+						}
+					});	
+				},
+				error: function(msg) {
+					$.alert(msg.responseText);
+				},
+			});
+		}
 	});
+
+	function dataConvert(data) {
+		data_array = data.split("/")
+		new_data = data_array[2] + "-" + data_array[1] + "-" + data_array[0]
+		return new_data
+	}
+
+	/* function validaDatas(vencimento, pagamento) {
+		if(vencimento <= pagamento) {
+			return true
+		}
+		return false
+	} */
 
 	$('#form_filtro_cp').on('submit', function(evento) {
 		evento.preventDefault();
@@ -385,35 +427,45 @@ $(function() {
 					'csrfmiddlewaretoken': csrftokenGET,
 				},
 				success: function(contas) {
-
 					var table = $('#dataBanco').DataTable();
 
 					var rows = table.clear().draw();
 
-
 					for(var x = 0; x < contas.length; x++) {
 						var paga;
-
+						var edit
+						
 						if(contas[x].fields.paga === false) {
 							paga = "<i class='material-icons'><a data-toggle='modal' href='#pagamentoConta' style='color: red' title='Clique para pagar'><span class='openPay' data-cp=" + contas[x].pk + ">close</span></a></i>"
+							edit = "<i class='material-icons'><a data-toggle='modal' href='#editContasPagar' title='Clique para editar'><span class='openEdit' data-cp=" + contas[x].pk + ">edit</span></a></i>"
 						}
 						else {
 							paga = "<i class='material-icons pago'><span class='cancelPay' data-cp=" + contas[x].pk + "><a data-toggle='modal' href='' title='Clique para cancelar o pagamento'>done</span></i>"
-
+							edit = "<i class='material-icons'><a title='Cancele o pagamento para editar'><span data-cp=" + contas[x].pk + ">edit</span></a></i>"
 						}
 
-						data = contas[x].fields.data;
-						dia = data.substring(8);
-						mes = data.substring(5, 7);
-						ano = data.substring(0, 4);
-						newData = dia + "/" + mes + "/" + ano;
-
+						var data_vencimento = convertData(contas[x].fields.data);
+						var data_pagamento
+						if(contas[x].fields.data_pagamento == null) {
+							if(contas[x].fields.paga == true) {
+								data_pagamento = convertData(contas[x].fields.data)
+							}
+							else {
+								data_pagamento = ""
+							}
+							
+						}
+						else {
+							data_pagamento = convertData(contas[x].fields.data_pagamento)
+						}
+	
 						var row = table.row.add([
-							newData,
+							data_vencimento,
+							data_pagamento,
 							contas[x].fields.descricao,
 							contas[x].fields.categoria[2],
 							contas[x].fields.valor,
-							"<i class='material-icons'><a data-toggle='modal' href='#editContasPagar' title='Clique para editar'><span class='openEdit' data-cp=" + contas[x].pk + ">edit</span></a></i>",
+							edit,
 							paga,
 						]);
 						//adiciona o id do pagamento na linha
@@ -436,5 +488,13 @@ $(function() {
 
 		
 	});
+
+	function convertData(data) {
+		dia = data.substring(8);
+		mes = data.substring(5, 7);
+		ano = data.substring(0, 4);
+		newData = dia + "/" + mes + "/" + ano;
+		return newData
+	}
 
 });

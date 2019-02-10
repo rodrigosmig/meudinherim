@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 class ContasAReceber(models.Model):
 
 	data = models.DateField()
+	data_recebimento = models.DateField(blank = True, null = True)
 	categoria = models.ForeignKey('caixa.Categoria', on_delete = models.CASCADE, blank = True)
 	descricao = models.CharField(max_length = 64)
 	valor = models.DecimalField(max_digits = 8, decimal_places = 2)

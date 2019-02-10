@@ -3,22 +3,6 @@ from django import forms
 from metas.models import Metas
 
 class MetasForm(ModelForm):
-    
-    dataInicio = forms.DateField(
-        label = 'Data Inicio',
-        required = True,
-        widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'id': 'datepickerMI', 'placeholder': 'Insira a início da meta'}
-        )
-    )
-
-    dataFim = forms.DateField(
-        label = 'Data Fim',
-        required = True,
-        widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'id': 'datepickerMF', 'placeholder': 'Insira a fim da meta'}
-            )
-        )
 
     titulo = forms.CharField(
         label = 'Título da Meta',
@@ -41,4 +25,4 @@ class MetasForm(ModelForm):
 
     class Meta:
         model = Metas
-        fields =['dataInicio', 'dataFim', 'titulo', 'valor']
+        fields =['titulo', 'valor']

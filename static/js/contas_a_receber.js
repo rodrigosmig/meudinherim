@@ -219,8 +219,11 @@ $(function() {
 		
 		//inserir os campos de acordo com a conta clicada
 		var campos = $('#campos_conta');
-		campos.append($("<label />").text("Data:"));
-		campos.append($("<input type='text'>").addClass("form-control").prop('disabled', true).prop('id', 'data_pagam').val(data));
+		campos.append($("<label />").text("Data de vencimento:"));
+		campos.append($("<input type='text'>").addClass("form-control").prop('disabled', true).prop('id', 'data_vencimento').val(data));
+
+		campos.append($("<label />").text("Data do recebimento:"));
+		campos.append($("<input type='text'>").addClass("form-control").prop('id', 'data_recebimento'));
 
 		campos.append($("<label />").text("Categoria:"));
 		campos.append($("<input type='text'>").addClass("form-control").prop('disabled', true).prop('id', 'cat_pagam').val(categoria));
@@ -230,6 +233,17 @@ $(function() {
 
 		campos.append($("<label />").text("Valor:"));
 		campos.append($("<input type='text'>").addClass("form-control").prop('disabled', true).prop('id', 'val_pagam').val(valor));
+
+		$("#data_recebimento").datepicker({
+			dateFormat: 'dd/mm/yy',
+			dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+			dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+			dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+			monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+			monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+			nextText: 'Próximo',
+			prevText: 'Anterior'
+		});
 	});
 
 
@@ -269,38 +283,56 @@ $(function() {
 	$('.receber').on('click', function(evento) {
 		evento.preventDefault();
 
-		var banco = $('#select_bancos').val();
-		if(banco === undefined) {
-			banco = "";
+		if($("#data_recebimento").val() == "") {
+			$.alert({
+				title: false,
+				theme: 'material',
+				content: "Informe a data do recebimento!",
+			});	
+		}
+		else {
+			var banco = $('#select_bancos').val();
+			if(banco === undefined) {
+				banco = "";
+			}
+
+			var id = $(this).attr('data-cr');
+			var recebimento = $("#data_recebimento").val()
+
+			$.ajax({
+				type: 'POST',
+				url: '/contas_a_receber/receber/',
+				data: {
+					'id': id, 
+					'banco': banco,
+					'data_recebimento': dataConvert(recebimento),
+					'csrfmiddlewaretoken': csrftokenPOST
+				},
+				success: function(msg) {
+					$('#pagamentoConta').modal('hide');
+					//mensagem de confirmação
+					$.alert({
+						title: false,
+						theme: 'material',
+						content: msg,
+						onClose: function() {
+							//recarrega a página
+							location.reload();
+						}
+					});	
+				},
+				error: function(msg) {
+					$.alert(msg.responseText);
+				},
+			});
 		}
 
-		var id = $(this).attr('data-cr');
-
-		$.ajax({
-			type: 'POST',
-			url: '/contas_a_receber/receber/',
-			data: {
-				'id': id, 
-				'banco': banco,
-				'csrfmiddlewaretoken': csrftokenPOST
-			},
-			success: function(msg) {
-				$('#pagamentoConta').modal('hide');
-				//mensagem de confirmação
-				$.alert({
-					title: false,
-					theme: 'material',
-					content: msg,
-					onClose: function() {
-						//recarrega a página
-						location.reload();
-					}
-				});	
-			},
-			error: function(msg) {
-				$.alert(msg.responseText);
-			},
-		});		
+		function dataConvert(data) {
+			data_array = data.split("/")
+			new_data = data_array[2] + "-" + data_array[1] + "-" + data_array[0]
+			return new_data
+		}
+				
 	});
 
 	$(document).on('click', '.cancelReceive', function() {
@@ -384,35 +416,45 @@ $(function() {
 					'csrfmiddlewaretoken': csrftokenGET,
 				},
 				success: function(contas) {
-					console.log(contas)
-
 					var table = $('#dataCR').DataTable();
 
 					var rows = table.clear().draw();
 
-
 					for(var x = 0; x < contas.length; x++) {
 						var recebido;
+						var edit;
 
 						if(contas[x].fields.recebido === false) {
 							recebido = "<i class='material-icons'><a data-toggle='modal' href='#recebimentoConta' style='color: red' title='Clique para receber'><span class='openReceive' data-cr=" + contas[x].pk + ">close</span></a></i>"
+							edit = "<i class='material-icons'><a data-toggle='modal' href='#editContasReceber' title='Clique para editar'><span class='openEdit' data-cr=" + contas[x].pk + ">edit</span></a></i>"
 						}
 						else {
 							recebido = "<i class='material-icons recebido'><span class='cancelReceive' data-cr=" + contas[x].pk + "><a data-toggle='modal' href='' title='Clique para cancelar o recebimento'>done</span></i>"
+							edit = "<i class='material-icons'><a title='Cancele o recebimento para editar'><span data-cr=" + contas[x].pk + ">edit</span></a></i>"
 						}
 
-						data = contas[x].fields.data;
-						dia = data.substring(8);
-						mes = data.substring(5, 7);
-						ano = data.substring(0, 4);
-						newData = dia + "/" + mes + "/" + ano;
+						var data_vencimento = convertData(contas[x].fields.data);
+						var data_recebimento;
+						if(contas[x].fields.data_recebimento == null) {
+							if(contas[x].fields.recebido == true) {
+								data_recebimento = convertData(contas[x].fields.data)
+							}
+							else {
+								data_recebimento = ""
+							}
+							
+						}
+						else {
+							data_recebimento = convertData(contas[x].fields.data_recebimento)
+						}
 
 						var row = table.row.add([
-							newData,
+							data_vencimento,
+							data_recebimento,
 							contas[x].fields.descricao,
 							contas[x].fields.categoria[2],
 							contas[x].fields.valor,
-							"<i class='material-icons'><a data-toggle='modal' href='#editContasReceber' title='Clique para editar'><span class='openEdit' data-cr=" + contas[x].pk + ">edit</span></a></i>",
+							edit,
 							recebido,
 						]);
 						//adiciona o id do pagamento na linha
@@ -431,8 +473,15 @@ $(function() {
 					$.alert(msg.responseText)
 				},
 	    	})
-		}
-
-		
+		}		
 	});
+
+	function convertData(data) {
+		dia = data.substring(8);
+		mes = data.substring(5, 7);
+		ano = data.substring(0, 4);
+		newData = dia + "/" + mes + "/" + ano;
+		return newData
+	}
+
 });

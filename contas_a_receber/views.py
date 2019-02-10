@@ -233,6 +233,7 @@ def recebimento(request):
 		#usuario
 		user = request.user
 
+		dt_recebimento = request.POST.get('data_recebimento')
 		tipoRecebimento = request.POST.get('banco')
 
 		#busca o saldo do caixa do usuario logado
@@ -244,8 +245,9 @@ def recebimento(request):
 
 		#busca a conta a pagar
 		conta = ContasAReceber.objects.get(pk = idConta)
+		conta.data_recebimento = dt_recebimento
+		conta.save()
 
-		print(tipoRecebimento)
 		#verifica se o pagamento é no caixa ou no banco
 		if(tipoRecebimento == ""):
 			#para pagamento feito no caixa
@@ -254,7 +256,7 @@ def recebimento(request):
 			#cadastra o lancamento do caixa de acordo com os dados da conta
 			caixa = LancamentosCaixa()
 
-			caixa.data = conta.data
+			caixa.data = conta.data_recebimento
 			caixa.categoria = conta.categoria
 			caixa.descricao = conta.descricao
 			caixa. valor = conta.valor
@@ -278,7 +280,7 @@ def recebimento(request):
 					banco = LancamentosBanco()
 
 					banco.banco = agencia
-					banco.data = conta.data
+					banco.data = conta.data_recebimento
 					banco.tipo = '1'
 					banco.categoria = conta.categoria
 					banco.descricao = conta.descricao
@@ -315,6 +317,8 @@ def cancelaRecebimento(request):
 				conta.recebido = False
 				#deixa em branco o tipo da conta de recebimento
 				conta.tipo_conta = None
+				#deixa a data de recebimento em branco
+				conta.data_recebimento = None
 
 				#busca o saldo do caixa do usuario logado e faz o ajuste
 				saldoCaixa = SaldoCaixa.objects.get(user = user)

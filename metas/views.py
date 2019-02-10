@@ -50,11 +50,26 @@ def metas(request):
 	for a in agencias:
 		totalSaldoAgencias += a.saldo
 
+	saldoTotal = totalSaldoAgencias + saldoC.saldoAtual
+	somaMetas = 0
 	for m in metas:
-		progresso = ((totalSaldoAgencias + saldoC.saldoAtual) / m.valor) * 100
-		m.progresso = round(progresso, 2)
+		if(saldoTotal >= m.valor):
+			m.progresso = 100.00
+		else:
+			progresso = (saldoTotal / m.valor) * 100
+			m.progresso = round(progresso, 2)
+		somaMetas += m.valor
 		m.save()
 
+	print(somaMetas)
+	if(saldoTotal > somaMetas):
+		totalMetas = 100.00
+	else:
+		progressoTotal = (saldoTotal / somaMetas) * 100
+		totalMetas = round(progressoTotal, 2)
+
+	contexto['totalMetas'] = totalMetas
+	contexto['somaMetas'] = somaMetas
 	form = MetasForm() 	
 
 	contexto['formCad'] = form
