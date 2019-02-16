@@ -35,7 +35,7 @@ def lancamentos(request):
 	template = 'caixa/caixa.html'
 	
 	#seleciona os lancamentos do mes atual
-	lancamentos = LancamentosCaixa.objects.filter(data__month = hoje.month).filter(user_id = id_user)
+	lancamentos = LancamentosCaixa.objects.filter(data__month = hoje.month).filter(data__year = hoje.year).filter(user_id = id_user)
 	
 	contexto = {'lancamentos': lancamentos}
   	
