@@ -84,6 +84,7 @@
         <script src="{% static 'js/admin.js' %}"></script>
         <script src="{% static 'js/index.js' %}"></script>
         <script src="{% static 'js/lancamento.js' %}"></script>
+        <script src="{% static 'js/list_metas.js' %}"></script>
         
         {% block staticCaixa %}{% endblock %}
         {% block staticBanco %}{% endblock %}
@@ -182,9 +183,8 @@
                 
                 <!-- Itens que ficaram no DropDown ao diminiur a tela -->
                 <div class="collapse navbar-collapse" id="navbar-collapse">
-
                     <!--Infobox -->
-                    {% for a in agencias %}
+                    <!-- {% for a in agencias %}
                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-1">
                             <div id="infoBoxBanco"  class="info-box-2 btn-xs">
                                 <div class="icon">
@@ -208,10 +208,29 @@
                                 <div  id="numberInfoBox" class="number">{{ saldoCaixa }}</div>
                             </div>        
                         </div>
-                    </div>
+                    </div> -->
                     <!--/Infobox -->
 
-                    <ul class="nav navbar-nav navbar-right">       
+                    <ul class="nav navbar-nav navbar-right"> 
+                         <!-- Metas -->
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" title="Metas">
+                                <i class="material-icons">flag</i>
+                                <span id="quantidade_metas" class="label-count"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">Metas</li>
+                                <li class="body">
+                                    <ul id="menu_metas" class="menu tasks" style="list-style-type: none">
+                                        <!-- metas adicionadas via jquery -->
+                                    </ul>
+                                </li>
+                                <li class="footer">
+                                    <a href="{% url 'metas:metas' %}">Ver todas as metas</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- #END# Metas -->
                         <li class="pull-right"><a href="{% url 'principal:logout' %}" class="js-right-sidebar" data-close="true" title="Sair"><i class="glyphicon glyphicon-off"></i></a></li>
                     </ul>
                 </div>
@@ -361,10 +380,10 @@
                 <!-- Rodapé Menu -->
                 <div class="legal">
                     <div class="copyright">
-                        &copy; 2017 <a href="javascript:void(0);">Meu Dinherim - PAS</a>
+                        &copy; 2017 <a href="javascript:void(0);">Meu Dinherim</a>
                     </div>
                     <div class="version">
-                        <b>Version: </b> 0.3
+                        <b>Version: </b> 1.0
                     </div>
                 </div>
                 <!--/ Rodapé Menu -->
