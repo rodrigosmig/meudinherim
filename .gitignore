@@ -1,12 +1,19 @@
 *.pyc
+*.cpython*.pyc
+
 media/foto_perfil/
 meudinherim/migrations/
 principal/migrations/
 usuario/migrations/
 principal/migrations/
-usuario/migrations/
-usuario/migrations/
 caixa/migrations/
 metas/migrations/
+
+media/__pycache__/
+meudinherim/__pycache__/
+principal/__pycache__/
+usuario/__pycache__/
+caixa/__pycache__/
+metas/__pycache__/
 
 db.sqlite3

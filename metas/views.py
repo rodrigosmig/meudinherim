@@ -12,8 +12,10 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerEr
 from metas.forms import MetasForm
 from metas.models import Metas
 from usuario.models import UsuarioProfile
+from django.core import serializers
 import json
 from caixa.views import separarCategorias
+from django.shortcuts import get_object_or_404
 
 @login_required
 def metas(request):
@@ -25,6 +27,7 @@ def metas(request):
 			cadastroMeta=form.save(commit = False)
 			cadastroMeta.user=request.user
 			cadastroMeta.progresso = 0
+			cadastroMeta.concluida = False
 			cadastroMeta.save()
 			return HttpResponse('Meta cadastrada com sucesso.')
 		else:
@@ -61,7 +64,6 @@ def metas(request):
 		somaMetas += m.valor
 		m.save()
 
-	print(somaMetas)
 	if(saldoTotal > somaMetas):
 		totalMetas = 100.00
 	else:
@@ -177,7 +179,7 @@ def editMeta(request):
 def delMeta(request):
 	if(request.method == 'POST'):
 		#id do usuario
-		user = request
+		user = request.user
 		#id da meta a ser deletada
 		idMeta = request.POST.get('id')
 
@@ -193,3 +195,48 @@ def delMeta(request):
 		
 
 	return HttpResponseServerError("Meta não encontrada.")
+
+@login_required
+def calcMetas(request):
+	user = request.user
+	saldoC = SaldoCaixa.objects.get(user = user)
+	agencias = ContaBanco.objects.filter(user = user)
+	metas = Metas.objects.filter(user = user).filter(concluida = False)
+
+	totalSaldoAgencias = 0
+	for a in agencias:
+		totalSaldoAgencias += a.saldo
+
+	saldoTotal = totalSaldoAgencias + saldoC.saldoAtual
+
+	for m in metas:
+		if(saldoTotal >= m.valor):
+			m.progresso = 100.00
+		else:
+			progresso = (saldoTotal / m.valor) * 100
+			m.progresso = round(progresso, 2)
+		m.save()
+
+	metasJson = serializers.serialize('json', metas)
+			
+	return HttpResponse(metasJson, content_type="application/json")
+
+@login_required
+def concluiMeta(request):
+	id_meta = request.POST.get('id_meta')
+	meta = get_object_or_404(Metas, pk = id_meta)
+
+	if(meta.concluida):
+		meta.concluida = False
+	else:
+		meta.concluida = True
+	
+	meta.save()
+
+	response = {
+		'id': meta.id,
+		'msg': "Meta alterada com sucesso",
+		'concluida': meta.concluida
+	}
+
+	return HttpResponse(json.dumps(response))

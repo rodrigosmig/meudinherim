@@ -203,4 +203,69 @@ $(function() {
 		    }
 		});
 	});
+
+	$(document).on('click', '.conclui_meta', function() {
+		var id_meta = $(this).attr('data-meta')
+		var concluida = $(this).attr('data-concluida')
+		console.log(concluida)
+		var html = "<div class='preloader pl-size-xs'> \
+					<div class='spinner-layer pl-red-grey'> \
+					<div class='circle-clipper left'> \
+					<div class='circle'></div> \
+					</div> \
+					</div> \
+					</div>"
+
+		$(this).html(html)
+
+		$.ajax({
+			type: 'POST',
+			url: '/metas/conclui_meta/',
+			dataType: 'JSON',
+			data: {
+				'id_meta': id_meta,
+				'csrfmiddlewaretoken': csrftokenPOST,
+			},
+			success: function(response) {
+				console.log(response)
+				insereConcluido(response)
+			},
+			error: function(msg) {
+				if(concluida == "True") {					
+					concluida = true
+				}
+				else {					
+					concluida = false	
+				}
+					
+				var response = {
+					'concluida': concluida,
+					'id': id_meta
+				}
+				insereConcluido(response)
+				$.alert({
+					title: false,
+					content: "Meta não encontrada",
+					theme: 'material',
+					/* onClose: function() {
+						//recarrega a página
+						location.reload();
+					} */
+				});		
+			},
+		})
+	})
+
+	function insereConcluido(response) {
+		if(response.concluida) {
+			console.log(response.concluida)
+			var html = "<i class='material-icons'><a href='javascript:void(0);' style='color: green' title='Meta concluída. Clique para desfazer.'><span class='conclui_meta' data-meta=" + response.id + " data-concluida=True>done</span></a></i>"
+			$("#"+response.id + " .concluida").html(html)
+		}
+		else {
+			console.log("else")
+			var html = "<i class='material-icons'><a href='javascript:void(0);' style='color: red' title='Clique para concluir a meta.'><span class='conclui_meta' data-meta=" + response.id + " data-concluida=False>close</span></a></i>"
+			$("#"+response.id + " .concluida").html(html)
+		}
+	}
 });

@@ -225,8 +225,6 @@ def home(request):
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco
 
-	metas = Metas.objects.filter(user = user)
-
 	#soma o valor de saldo de todas as agencias
 	totalSaldoAgencias = 0
 	for a in agencias:
