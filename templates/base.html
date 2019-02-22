@@ -85,6 +85,7 @@
         <script src="{% static 'js/index.js' %}"></script>
         <script src="{% static 'js/lancamento.js' %}"></script>
         <script src="{% static 'js/list_metas.js' %}"></script>
+        <script src="{% static 'js/list_contas.js' %}"></script>
         
         {% block staticCaixa %}{% endblock %}
         {% block staticBanco %}{% endblock %}
@@ -212,6 +213,25 @@
                     <!--/Infobox -->
 
                     <ul class="nav navbar-nav navbar-right"> 
+                        <!-- Notifications -->
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" title="Contas">
+                                <i class="material-icons">account_balance</i>
+                                <span id="quantidade_contas" class="label-count"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">Contas</li>
+                                <li class="body">
+                                    <ul id="menu_contas" class="menu" style="list-style-type: none">
+                                        <!-- metas adicionadas via jquery -->
+                                    </ul>
+                                </li>
+                                <li id="footer_agencia" class="footer">
+                                    <a href="javascript:void(0);"><b>Total</b>: <span id="total_contas"></span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- #END# Notifications -->
                          <!-- Metas -->
                         <li class="dropdown">
                             <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" title="Metas">
