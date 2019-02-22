@@ -464,7 +464,7 @@ $(function() {
 							data_pagamento,
 							contas[x].fields.descricao,
 							contas[x].fields.categoria[2],
-							contas[x].fields.valor,
+							contas[x].fields.valor.replace('.', ','),
 							edit,
 							paga,
 						]);

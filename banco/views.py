@@ -399,3 +399,13 @@ def verificarContas(request):
 
 	else:
 		HttpResponseServerError("Conta inexistente")
+
+@login_required
+def getAgencias(request):
+	user = request.user
+	agencias = ContaBanco.objects.filter(user = user)
+
+	if(len(agencias) != 0):
+		agenciasJson = serializers.serialize('json', agencias, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+	
+	return HttpResponse(agenciasJson, content_type="application/json")
