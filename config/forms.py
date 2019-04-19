@@ -4,7 +4,7 @@ from caixa.models import ConfigModal
 
 class ConfigForm(ModelForm):
     nick = forms.Charfield(
-        label = 'Nick',
+        label = 'Usuário',
         max_length = 20,
         required = True,
         widget = forms.TextInput(

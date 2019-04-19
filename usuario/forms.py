@@ -63,6 +63,12 @@ class RegisterForm(UserCreationForm):
 
 
 class EditAccountsForm(forms.ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(EditAccountsForm, self).__init__(*args, **kwargs)        
+		self.fields['username'].widget.attrs.update({'class': 'form-control', 'readonly': 'readonly'})
+		self.fields['email'].widget.attrs.update({'class': 'form-control', 'required': 'required'})
+		self.fields['first_name'].widget.attrs.update({'class': 'form-control', 'required': 'required'})
+
 	def clean_email(self):
 		email = self.cleaned_data['email']
 		queryset = User.objects.filter(email = email).exclude(pk = self.instance.pk)
@@ -72,7 +78,7 @@ class EditAccountsForm(forms.ModelForm):
 
 	class Meta:
 		model = User
-		fields = ['username', 'email', 'first_name', 'last_name']
+		fields = ['username', 'email', 'first_name']
 
 class UsuarioProfileForm(ModelForm):
 	class Meta:

@@ -6,7 +6,7 @@
 	padding: 10px;
 }
 
-#infoBoxBanco{
+/* #infoBoxBanco{
 	background: #F33122;  
 	max-height: 60px; 
 	width: 100px;
@@ -39,7 +39,7 @@
 #numberInfoBox{
 	color: white; 
 	font-size:10pt;
-}
+} */
 
 .i-circle {
     background: #ff0000;
@@ -55,5 +55,9 @@
 
 #footer_agencia a {
 	font-size: 16px
+}
+
+.errorlist li {
+	list-style-type: none;
 }
 
