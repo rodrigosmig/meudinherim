@@ -12,6 +12,7 @@ from django.core import serializers
 import json
 from usuario.models import UsuarioProfile
 from django.contrib import messages
+from django.db.models import ProtectedError
 
 @login_required
 def lancamentos(request):
@@ -89,8 +90,13 @@ def categoria(request):
 			idCategoria = request.POST.get('id_categoria')
 			categoria = Categoria.objects.get(pk = idCategoria)		
 			if(request.user == categoria.user):
-				categoria.delete()
-				messages.success(request, "Categoria " + categoria.descricao + " excluída com sucesso!")
+				try:
+					categoria.delete()
+					messages.success(request, "Categoria " + categoria.descricao + " excluída com sucesso!")
+				except ProtectedError as exception:
+					messages.error(request, "Não é possível excluir uma categoria relacionada a um laçamento!")
+					print(messages)
+				
 		else:
 			form = CategoriaForm(request.POST)
 			if(form.is_valid()):

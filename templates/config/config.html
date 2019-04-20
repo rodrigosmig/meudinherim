@@ -12,14 +12,6 @@
 
 
 {% block content %}
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-success alert-dismissible">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
 
 {% for form in formConfig %}
     {% if form.errors %}
