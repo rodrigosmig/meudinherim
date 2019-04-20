@@ -4,116 +4,168 @@
 
 {% block activeConfig %}<li class="active">{% endblock %}
 
-{% block content %}
+{% block staticConfig %}
+    <link href="{% static 'css/config.css' %}" rel="stylesheet">
+    <script src="{% static 'js/config.js' %}"></script>
+{% endblock %}
 
-<section class="content2">
-    
-    <div class="container-fluid">     
-        <div class="block-header">
-            <h1>Configuração</h1>
+
+
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% for form in formConfig %}
+    {% if form.errors %}
+        <div class="alert alert-warning alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{ form.errors }}
+        </div>    
+    {% endif %}
+{% endfor %}
+
+{% for form in formSenha %}
+    {% if form.errors %}
+        <div class="alert alert-warning alert-dismissible">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            {{ form.errors }}
+        </div>    
+    {% endif %}
+{% endfor %}
+
+<div class="row clearfix">
+    <div class="col-xs-12 col-sm-3">
+        <div class="card profile-card">
+            <div class="profile-header">&nbsp;</div>
+                <form id="formImg" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="profile-body">
+                        <div class="image-area">
+                            <img src="{{ userProfile.foto.url }}" alt='{{ user.first_name }}' width="130" height="130" />
+                        </div>
+                        <div class="content-area">
+                            <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                            <p style="text-align: center">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="profile-footer">
+                        <span class="control-fileupload">
+                            <label for="file">Escolher imagem:</label>
+                            {{ formFoto.foto }}
+                            </span>
+                        <button id="submit_foto" class="btn btn-primary btn-lg waves-effect btn-block" disabled>SALVAR</button>
+                    </div>
+                </form>
+        </div>
+
+    </div>
+
+    <div class="col-xs-12 col-sm-9">
+        <div class="card">
+            <div class="body">
+                <div>
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#profile_settings" aria-controls="settings" role="tab" data-toggle="tab">Perfil</a></li>
+                        <li role="presentation"><a href="#change_password_settings" aria-controls="settings" role="tab" data-toggle="tab">Alterar Senha</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="profile_settings">
+                            <form id="form_perfil" class="form-horizontal" method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="NameSurname" class="col-sm-2 control-label">Nome</label>
+                                    <div class="col-sm-10">
+                                        <div class="form-line">
+                                            {{ formConfig.first_name }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="InputSkills" class="col-sm-2 control-label">Usuário</label>
+                                    <div class="col-sm-10">
+                                        {% if formConfig.username.errors %}
+                                            <div class="form-line error">
+                                                {{ formConfig.username }}
+                                            </div>
+                                        {% else %}
+                                            <div class="form-line">
+                                                {{ formConfig.username }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="Email" class="col-sm-2 control-label">Email</label>
+                                    <div class="col-sm-10">
+                                        {% if formConfig.email.errors %}
+                                            <div class="form-line error">
+                                                {{ formConfig.email }}
+                                            </div>
+                                        {% else %}
+                                            <div class="form-line">
+                                                {{ formConfig.email }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div id="submit_perfil" class="col-sm-offset-2 col-sm-10">                                                
+                                        <button type="submit" class="btn btn-danger enviar_perfil">Enviar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade in" id="change_password_settings">
+                            <form id="form_senha" class="form-horizontal" method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="OldPassword" class="col-sm-3 control-label">Senha Atual</label>
+                                    <div class="col-sm-9">
+                                        <div class="form-line">
+                                            {{ formSenha.old_password }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="NewPassword" class="col-sm-3 control-label">Nova Senha</label>
+                                    <div class="col-sm-9">
+                                        <div class="form-line">
+                                            {{ formSenha.new_password1 }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="NewPasswordConfirm" class="col-sm-3 control-label">Confirma</label>
+                                    <div class="col-sm-9">
+                                        <div class="form-line">
+                                                {{ formSenha.new_password2 }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div id="submit_senha" class="col-sm-offset-3 col-sm-9">
+                                        <button type="submit" class="btn btn-danger">Enviar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    
-    <div class="row clearfix">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="card">
-                <div class="header">
-                    <h2>Dados do Usuário</h2>
-                </div>
-                {% if success %}
-                <p>Os dados foram alterados com sucesso</p>
-                {% endif %}
 
-                <!-- retorno de erros -->
-                {% if erros %}
-                    <ul><li>{{ mensagem }}</li></ul>
-                {% endif %}
+</div>
 
-                <!-- retorno de erros -->
-                <div class="body">
-                    <form class="form" method="POST">
-                        {% csrf_token %}
-                        
-                        <!-- Nome do Usuário -->
-                        <div class="row clearfix">
-                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
-                                <label>Nome Completo</label>
-                            </div>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
-                                <div class="form-group">
-                                    <div class="form-line">
-                                         {{ formConfig.first_name.errors }}
-                                    </div>
-                                    {{ formConfig.first_name }}
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Nick -->
-                        <div class="row clearfix">
-                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
-                                <label>Nick do Usuário</label>
-                            </div>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
-                                <div class="form-group">
-                                    <div class="form-line">
-                                        {{ formConfig.username }}
 
-                                    </div>
-                                    {{ formConfig.username.errors }}
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Email -->
-                        <div class="row clearfix">
-                            <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
-                                <label>Email</label>
-                            </div>
-                            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
-                                <div class="form-group">
-                                    <div class="form-line">
-                                        {{ formConfig.email }}
-                                    </div>
-                                    {{ formConfig.email.errors }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row clearfix">
-                            <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-4 col-xs-offset-5">
-                                <button type="submit" class="btn btn-primary m-t-15 waves-effect">SALVAR</button>
-                                <a class="btn btn-primary m-t-15 waves-effect alterar-senha" data-toggle="modal" href="#editSenha" title="Alterar senha">ALTERAR SENHA</a>
-
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="card">
-
-                <!-- Foto do Usuário -->
-                <div class="row clearfix">
-                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-5 form-control-label">
-                        <label>Foto de Perfil</label>
-                    </div>
-                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-7">
-                        <div class="dz-message">
-                            <div class="drag-icon-cph">
-                                <i class="material-icons">touch_app</i>
-                            </div>
-                        </div>
-                        <form class="form" method="POST" action="/config/edit-foto/" enctype="multipart/form-data">
-                            {% csrf_token %}
-
-                            <div class="fallback">
-                                {{ formFoto.foto }} <button type="submit" class="btn btn-primary m-t-15 waves-effect">SALVAR</button>
-                            </div>
-                           </form>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>    
-</section>
 
 <!-- Modal Edição de Senha -->
 <div class="modal fade" id="editSenha" tabindex="-1" role="dialog" aria-labelledby="LabelSenha" aria-hidden="true">

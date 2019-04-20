@@ -96,6 +96,7 @@
         {% block staticMetas %}{% endblock %}
         {% block staticRelCP %}{% endblock %}
         {% block staticRelCR %}{% endblock %}
+        {% block staticConfig %}{% endblock %}
 
 
         <!-- Chamadas JS Alertas -->
@@ -215,12 +216,12 @@
                     <ul class="nav navbar-nav navbar-right"> 
                         <!-- Notifications -->
                         <li class="dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" title="Contas">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" title="Contas bancárias">
                                 <i class="material-icons">account_balance</i>
                                 <span id="quantidade_contas" class="label-count"></span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li class="header">Contas</li>
+                                <li class="header">Contas bancárias</li>
                                 <li class="body">
                                     <ul id="menu_contas" class="menu" style="list-style-type: none">
                                         <!-- metas adicionadas via jquery -->
@@ -251,7 +252,6 @@
                             </ul>
                         </li>
                         <!-- #END# Metas -->
-                        <li class="pull-right"><a href="{% url 'principal:logout' %}" class="js-right-sidebar" data-close="true" title="Sair"><i class="glyphicon glyphicon-off"></i></a></li>
                     </ul>
                 </div>
             </div>
@@ -271,9 +271,26 @@
                         {% endif %}
                     </div>
                     <div class="info-container">
-                        <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user.username }}</div>
+                        <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user.first_name }}</div>
                         <div class="email">{{ user.email }}</div>
-                            
+                        <div class="btn-group user-helper-dropdown">
+                            <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="{% url 'config:config' %}">
+                                        <i class="material-icons">person</i>
+                                        Perfil
+                                    </a>
+                                </li>
+                                <li class="divider" role="separator"></li>
+                                <li>
+                                    <a href="{% url 'principal:logout' %}">
+                                        <i class="material-icons">input</i>
+                                        Sair
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <!--/ Informações do Usuário -->
@@ -372,27 +389,18 @@
                                 </li>
                             </ul>
                         </li>
-
-
-
-
-
-
-
-
-
-
-
-
+                        
                         <!-- Divisão -->
                         <li class="header"></li>
                         <!-- Configurações -->
-                        {% block activeConfig %}<li>{% endblock %}
-                            <a href="{% url 'config:config' %}">
-                                <i class="material-icons">settings</i>
-                                <span>Configurações</span>
-                            </a>
-                        </li>
+                        {% if isPerfil %}
+                            {% block activeConfig %}<li>{% endblock %}
+                                <a href="{% url 'config:config' %}">
+                                    <i class="material-icons">person</i>
+                                    <span>Perfil</span>
+                                </a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>       
                 <!--/ Menu -->
