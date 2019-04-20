@@ -43,22 +43,25 @@
     <div class="col-xs-12 col-sm-3">
         <div class="card profile-card">
             <div class="profile-header">&nbsp;</div>
-            <div class="profile-body">
-                <div class="image-area">
-                    <img src="{{ userProfile.foto.url }}" alt='{{ user.first_name }}' width="130" height="120" />
-                </div>
-                <div class="content-area">
-                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
-                    <p>{{ user.email }}</p>
-                </div>
-            </div>
-            <div class="profile-footer">
-                <span class="control-fileupload">
-                    <label for="file">Alterar imagem:</label>
-                    <input type="file" id="file" title="Clique para alterar a imagem">
-                    </span>
-                <button id="salvar_foto" class="btn btn-primary btn-lg waves-effect btn-block" disabled>SALVAR</button>
-            </div>
+                <form id="formImg" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="profile-body">
+                        <div class="image-area">
+                            <img src="{{ userProfile.foto.url }}" alt='{{ user.first_name }}' width="130" height="130" />
+                        </div>
+                        <div class="content-area">
+                            <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                            <p style="text-align: center">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="profile-footer">
+                        <span class="control-fileupload">
+                            <label for="file">Escolher imagem:</label>
+                            {{ formFoto.foto }}
+                            </span>
+                        <button id="submit_foto" class="btn btn-primary btn-lg waves-effect btn-block" disabled>SALVAR</button>
+                    </div>
+                </form>
         </div>
 
     </div>

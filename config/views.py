@@ -27,20 +27,23 @@ def config(request):
 
     formFoto = UsuarioProfileForm()
     contexto['formFoto'] = formFoto
-
     #Editar
     if(request.method == 'POST'):
         if(request.POST.get('old_password')):
             formSenha = PasswordChangeForm(data = request.POST, user = request.user)
-            print(formSenha.is_valid())
             if formSenha.is_valid():
-                print("dknfçlskdnfgçlsdkfgçldkjfgçlskdjfçkl")
                 formSenha.save()
                 formSenha = PasswordChangeForm(user = request.user)
                 messages.success(request, "Senha alterada com sucesso!")
-
+        elif(request.FILES):
+            userProfile = UsuarioProfile.objects.get(user = request.user)
+            form = UsuarioProfileForm(request.POST, request.FILES, instance = userProfile)
+            print(form.is_valid())
+            if(form.is_valid()):
+                form.save()
+                messages.success(request, "Imagem alterada com sucesso!")
         else:
-            form = UsuarioProfileForm(request.POST, request.FILES)
+            #form = UsuarioProfileForm(request.POST, request.FILES)
             formDados = EditAccountsForm(request.POST, instance = request.user)
             if formDados.is_valid():
                 formDados.save()
@@ -49,8 +52,8 @@ def config(request):
                 messages.success(request, "Usuário alterado com sucesso!")
         
     #não permite que o usuário altere o username
-    formDados.fields['username'].widget.attrs.update({'readonly': 'readonly'})
-
+    #formDados.fields['username'].widget.attrs.update({'readonly': 'readonly'})
+    print(formDados)
     formSenha.fields['old_password'] = forms.CharField(
         label = 'Senha atual',
         max_length = 32,
