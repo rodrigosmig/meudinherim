@@ -24,151 +24,158 @@
 
 {% block content %}
 
-<section class="content2">
-
-    <div class="container-fluid">
-        <div class="block-header">
-            <h1>Categorias</h1>
-        </div>
-    </div>
-    
-    <div class="row clearfix">
-        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
-                    <i class="material-icons addCat">
-                        <a class="nav-link" data-toggle="modal" href="#mCategoria" role="tab" title="Adicionar categoria de entrada">add</a>
-                    </i>
+                    <h2>
+                        CATEGORIAS
+                        <small>Gerencie as categorias</small>
+                    </h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">more_vert</i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a class="nav-link" data-toggle="modal" href="#mCategoria" role="tab" title="Adicionar categoria de entrada">Adicionar</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
                 <div class="body">
-                    <div class="table-responsive">
-                        <table id="dataCategoria" class="table table-bordered table-striped table-hover dataTable js-basic-example">
-                            <thead>
-                                <tr>
-                                    <th>Descrição</th>
-                                    <th>Editar</th>
-                               </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                  <th>Descrição</th>
-                                  <th>Editar</th>
-                               </tr>     
-                            </tfoot>
-                            
-                            <tbody>
-                                {% for c in catEntrada %}
-                                <tr>
-                                    <td>{{ c.descricao }}</td>
-                                    <td><i class="material-icons"><a data-toggle="modal" href="#editCategoria"><span class="openEdit" data-cat="{{ c.id }}">edit</span></a></i></td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs tab-nav-right" role="tablist">
+                        <li role="presentation" class="active"><a href="#entrada" data-toggle="tab">ENTRADA</a></li>
+                        <li role="presentation"><a href="#saida" data-toggle="tab">SAÍDA</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="entrada">
+                            <div class="body">
+                                <div class="table-responsive">
+                                    <table id="dataCategoria" class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                                        <thead>
+                                            <tr>
+                                                <th>Descrição</th>
+                                                <th>Editar</th>
+                                           </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                              <th>Descrição</th>
+                                              <th>Editar</th>
+                                           </tr>     
+                                        </tfoot>
+                                        
+                                        <tbody>
+                                            {% for c in catEntrada %}
+                                            <tr>
+                                                <td>{{ c.descricao }}</td>
+                                                <td><i class="material-icons"><a data-toggle="modal" href="#editCategoria"><span class="openEdit" data-cat="{{ c.id }}">edit</span></a></i></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div role="tabpanel" class="tab-pane fade" id="saida">
+                            <div class="body">
+                                <div class="table-responsive">
+                                    <table id="dataCategoria2" class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                                    
+                                        <thead>
+                                            <tr>
+                                              <th>Descrição</th>
+                                              <th>Editar</th>
+                                           </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                              <th>Descrição</th>
+                                              <th>Editar</th>
+                                           </tr>   
+                                        </tfoot>
+                                        
+                                        <tbody>
+                                            {% for c in catSaida %}
+                                            <tr>
+                                                <td>{{ c.descricao }}</td>
+                                                <td><i class="material-icons"><a data-toggle="modal" href="#editCategoria"><span class="openEdit" data-cat="{{ c.id }}">edit</span></a></i></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-            <div class="card">
-                <div class="header">
-                    <i class="material-icons addCat">
-                        <a class="nav-link" data-toggle="modal" href="#mCategoria" role="tab" title="Adicionar categoria de saída">add</a>
-                    </i>
-
-                </div>
-                <div class="body">
-                    <div class="table-responsive">
-                        <table id="dataCategoria2" class="table table-bordered table-striped table-hover dataTable js-basic-example">
-                        
-                            <thead>
-                                <tr>
-                                  <th>Descrição</th>
-                                  <th>Editar</th>
-                               </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                  <th>Descrição</th>
-                                  <th>Editar</th>
-                               </tr>   
-                            </tfoot>
-                            
-                            <tbody>
-                                {% for c in catSaida %}
-                                <tr>
-                                    <td>{{ c.descricao }}</td>
-                                    <td><i class="material-icons"><a data-toggle="modal" href="#editCategoria"><span class="openEdit" data-cat="{{ c.id }}">edit</span></a></i></td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-    
-</section>
 
-<!-- Modal Cadastro Categoria -->
-<div class="modal fade" id="mCategoria">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <!-- Título -->
-            <div class="modal-header">
-                <div class="header">
-                    <h4 >Adicionar | <small>Categoria</small></h4>
-                </div>
-            </div>
-            <!-- Campos -->
-            <form id="form_cadastro_categoria" method="POST">    
-                <div class="modal-body">                          
-                        {% csrf_token %}
-
-                            {% for campo in form %}
-                                {{ campo.label_tag }}
-                                {{ campo }}                                    
-                            {% endfor %}              
-                </div>
-                <!-- Salvar/Cancelar -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Edição de Categoria -->
-<div class="modal fade" id="editCategoria" tabindex="-1" role="dialog" aria-labelledby="LabelCategoria" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="card"
+    <!-- Modal Cadastro Categoria -->
+    <div class="modal fade" id="mCategoria">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
                 <!-- Título -->
-                <div class="header">
-                    <h4 id="LabelCategoria">Editar | <small>Categoria</small></h4>
+                <div class="modal-header">
+                    <div class="header">
+                        <h4 >Adicionar | <small>Categoria </small></h4>
+                    </div>
+                    <h6 class="loading"></h6>
                 </div>
                 <!-- Campos -->
-                <form id="form_edit_categoria" method="POST">
-                    {% csrf_token %}    
-                    <div id="editCate" class="modal-body">        
-                        <!-- Django form será inserido aqui via Jquery -->
+                <form id="form_cadastro_categoria" method="POST">    
+                    <div class="modal-body">                          
+                            {% csrf_token %}
+
+                                {% for campo in form %}
+                                    {{ campo.label_tag }}
+                                    {{ campo }}                                    
+                                {% endfor %}              
                     </div>
                     <!-- Salvar/Cancelar -->
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success waves-effect" >Salvar</button>
-                        <button class="btn btn-danger excluir">Excluir</button>
-                        <button type="button" class="btn btn-primaryid" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-secondary cancelar_categoria" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary cadastrar_categoria">Salvar</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-</div>    
-<!-- Modal Edição de Categoria -->
+
+    <!-- Modal Edição de Categoria -->
+    <div class="modal fade" id="editCategoria" tabindex="-1" role="dialog" aria-labelledby="LabelCategoria" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="card"
+                    <!-- Título -->
+                    <div class="header">
+                        <h4 id="LabelCategoria">Editar | <small>Categoria</small></h4>
+                        <h6 class="loading"></h6>
+                    </div>
+                    <!-- Campos -->
+                    <form id="form_edit_categoria" method="POST">
+                        {% csrf_token %}    
+                        <div id="editCate" class="modal-body">        
+                            <!-- Django form será inserido aqui via Jquery -->
+                        </div>
+                        <!-- Salvar/Cancelar -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primaryid cancelar_categoria" data-dismiss="modal">Cancelar</button>
+                            <button class="btn btn-danger excluir">Excluir</button>                            
+                            <button type="submit" class="btn btn-success waves-effect editar_categora">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <!-- Modal Edição de Categoria -->
 
 {% endblock %}
