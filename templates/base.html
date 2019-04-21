@@ -489,6 +489,14 @@
 
         <section class="content">
             <div clas="container-fluid"> 
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }} alert-dismissible">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
                 
                 {% block content %}
                 {% endblock %}

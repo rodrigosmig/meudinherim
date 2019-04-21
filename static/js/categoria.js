@@ -1,4 +1,15 @@
 $(function() {
+	var spinner =  "<div class='preloader pl-size-xs' style: font-size 5px> \
+                  <div class='spinner-layer'> \
+                  <div class='circle-clipper left'> \
+                  <div class='circle'></div> \
+                  </div> \
+                  <div class='circle-clipper right'> \
+                  <div class='circle'></div> \
+                  </div> \
+                  </div> \
+                  </div>";	
+	
 	var csrftokenGET = getCookie('csrftoken');
 	var csrftokenPOST = getCookie('csrftoken');
 	//funcao criada para gerar o csrftoken no envio da requisicao POST para o Django
@@ -43,73 +54,24 @@ $(function() {
 		});
 	});
 
-	$('#form_cadastro_categoria').on('submit', function(evento) {
-		evento.preventDefault();
-
-		var tipo = $('#id_tipo_categoria').val();
-		var desc = $('#id_descricao_categoria').val();
-
-		$.ajax({
-			type: 'POST',
-			url: '/caixa/categoria/',
-			data: {
-				'tipo': tipo,
-				'descricao': desc,
-				'csrfmiddlewaretoken': csrftokenPOST,
-			},
-			success: function(msg) {
-				//mensagem de confirmação
-				$.alert({
-					title: false,
-					content: msg,
-					theme: 'material',
-					onClose: function() {
-						//limpar campos
-						$(".modal-body input").val("");
-						//recarrega a página
-						location.reload();
-					}
-				});
-			},
-			error: function(msg) {
-				//mensagem de retorno em caso de erro
-				$.alert(msg.responseText);
-			},
-		});	
+	$('#form_cadastro_categoria').on('submit', function(event) {
+		$(".cadastrar_categoria").attr('disabled', 'true')
+		$(".cancelar_categoria").attr('disabled', 'true')
+		$(".loading").append(spinner)
 	});
 
-	$('#form_edit_categoria').on('submit', function(evento) {
-		evento.preventDefault();
+	$('.editar_categora').on('click', function(event) {
 		var id = $('#id_descricao-alter_categoria').attr('data-cat');
-		var tipo = $('#id_tipo-alter_categoria').val();
-		var desc = $('#id_descricao-alter_categoria').val();
-
-		$.ajax({
-			type: 'POST',
-			url: '/caixa/edit-categoria/',
-			data: {
-				'id': id,
-				'tipo': tipo,
-				'descricao': desc,
-				'csrfmiddlewaretoken': csrftokenPOST,
-			},
-			success: function(msg) {
-				//mensagem de confirmação
-				$.alert({
-					title: false,
-					content: msg,
-					theme: 'material',
-					onClose: function() {
-						//recarrega a página
-						location.reload();
-					}
-				});
-			},
-			error: function(msg) {
-				//mensagem de retorno em caso de erro
-				$.alert(msg.responseText);
-			},
-		});		
+		if(id) {
+			$("#form_edit_categoria").append("<input type='hidden' name='id_categoria' value=" + id + " />")
+			$("#form_edit_categoria").append("<input type='hidden' name='alterar' value='alterar' />")
+			$(".editar_categora").attr('disabled', 'true')
+			$(".excluir").attr('disabled', 'true')
+			$(".cancelar_categoria").attr('disabled', 'true')
+			$(".loading").append(spinner)
+			$("#form_edit_categoria").submit()
+		}
+		
 	});
 
 	$('.excluir').click(function(evento) {
@@ -123,32 +85,19 @@ $(function() {
 		    theme: 'material',
 		    buttons: {
 		        Sim: function() {
-		        	$.ajax({
-		        		type: 'POST',
-						url: '/caixa/delete-categoria/',
-						data: {
-							'id': id,
-							'csrfmiddlewaretoken': csrftokenPOST,
-						},
-						success: function(msg) {
-							//mensagem de confirmação
-							$.alert({
-								title: false,
-								content: msg,
-								theme: 'material',
-								onClose: function() {
-									//recarrega a página
-									location.reload();
-								}
-							});					
-						},
-						error: function(msg) {
-							//mensagem de retorno em caso de erro
-							$.alert(msg.responseText);
-						},
-		        	})
+					if(id) {
+						$("#form_edit_categoria").append("<input type='hidden' name='id_categoria' value=" + id + " />")
+						$("#form_edit_categoria").append("<input type='hidden' name='excluir' value='excluir' />")
+						$(".editar_categora").attr('disabled', 'true')
+						$(".excluir").attr('disabled', 'true')
+						$(".cancelar_categoria").attr('disabled', 'true')
+						$(".loading").append(spinner)
+						$("#form_edit_categoria").submit()
+					}					
 		        },
-		        Não: function() {},
+		        Não: function() {
+					return
+				},
 		    }
 		});
 	});

@@ -11,6 +11,8 @@ from datetime import datetime
 from django.core import serializers
 import json
 from usuario.models import UsuarioProfile
+from django.contrib import messages
+from django.db.models import ProtectedError
 
 @login_required
 def lancamentos(request):
@@ -74,23 +76,39 @@ def lancamentos(request):
 
 @login_required
 def categoria(request):
-	
+	form = CategoriaForm()
+
 	if(request.method == 'POST'):
-		form = CategoriaForm(request.POST)
-		if(form.is_valid()):
-			categoria = form.save(commit = False)
-			categoria.user = request.user
-			categoria.save()
-			return HttpResponse('Categoria cadastrada com sucesso.')
+		if(request.POST.get('alterar')):
+			idCategoria = request.POST.get('id_categoria')
+			categoria = Categoria.objects.get(pk = idCategoria)
+			form = CategoriaForm(request.POST, instance = categoria)
+			if(form.is_valid()):
+				form.save()
+				messages.success(request, "Categoria " + categoria.descricao + " alterada com sucesso!")
+		elif(request.POST.get('excluir')):
+			idCategoria = request.POST.get('id_categoria')
+			categoria = Categoria.objects.get(pk = idCategoria)		
+			if(request.user == categoria.user):
+				try:
+					categoria.delete()
+					messages.success(request, "Categoria " + categoria.descricao + " excluída com sucesso!")
+				except ProtectedError as exception:
+					messages.error(request, "Não é possível excluir uma categoria relacionada a um laçamento!")
+					print(messages)
+				
 		else:
-			return HttpResponseServerError("Formulário inválido.")
+			form = CategoriaForm(request.POST)
+			if(form.is_valid()):
+				categoria = form.save(commit = False)
+				categoria.user = request.user
+				categoria.save()
+				messages.success(request, "Categoria " + categoria.descricao + " adicionada com sucesso!")
 
 	user = request.user
 	template = 'caixa/categoria.html'
 	catEntrada = Categoria.objects.filter(tipo = 1).filter(user = user)
 	catSaida = Categoria.objects.filter(tipo = 2).filter(user = user)
-
-	form = CategoriaForm()
 
 	contexto = {'catEntrada': catEntrada, 'catSaida': catSaida, 'form': form}
 
