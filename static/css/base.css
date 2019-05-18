@@ -61,3 +61,7 @@
 	list-style-type: none;
 }
 
+#footer_carteira a {
+	font-size: 22px;
+	padding: 10px 0px;
+}
