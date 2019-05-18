@@ -80,7 +80,7 @@ def contasAReceber(request):
 
 	contexto = {'contReceber': contas, 'contReceberForm': form}
 
-	#busca o saldo de Caixa do usuario e atribui ao contexto
+	#busca o saldo na carteira do usuario e atribui ao contexto
 	saldoC = SaldoCaixa.objects.get(user = user)
 	contexto['saldoCaixa'] = saldoC.saldoAtual
 
@@ -133,7 +133,6 @@ def editContasReceber(request):
 			form.save()
 
 			if(parcelas > 0):
-				print(parcelas)
 				parcelas += 1
 				for x in range(1, parcelas):
 					novaParcela = ContasAReceber()
@@ -236,7 +235,7 @@ def recebimento(request):
 		dt_recebimento = request.POST.get('data_recebimento')
 		tipoRecebimento = request.POST.get('banco')
 
-		#busca o saldo do caixa do usuario logado
+		#busca o saldo na carteira do usuario logado
 		saldoCaixa = SaldoCaixa.objects.get(user = request.user)
 		#atribui o valor do saldo anterior
 		saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
@@ -248,12 +247,11 @@ def recebimento(request):
 		conta.data_recebimento = dt_recebimento
 		conta.save()
 
-		#verifica se o pagamento é no caixa ou no banco
+		#verifica se o pagamento é na carteira ou no banco
 		if(tipoRecebimento == ""):
-			#para pagamento feito no caixa
+			#para pagamento feito na carteira
 			conta.tipo_conta = "c"
-			print('caixa')
-			#cadastra o lancamento do caixa de acordo com os dados da conta
+			#cadastra o lancamento na carteira de acordo com os dados da conta
 			caixa = LancamentosCaixa()
 
 			caixa.data = conta.data_recebimento

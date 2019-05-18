@@ -384,3 +384,13 @@ def separarCategorias(request):
     categorias.append(['Saídas', saida])
 
     return categorias
+
+@login_required
+def getSaldoCaixa(request):
+	user = request.user
+	saldoCaixa = SaldoCaixa.objects.filter(user = user)
+
+	if(len(saldoCaixa) != 0):
+		saldoCaixaJson = serializers.serialize('json', saldoCaixa, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+	
+	return HttpResponse(saldoCaixaJson, content_type="application/json")

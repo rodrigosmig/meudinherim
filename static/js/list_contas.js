@@ -24,7 +24,6 @@ $(function() {
 				'csrfmiddlewaretoken': csrftokenGET
             },
             success: function(agencias) {
-                console.log(agencias)
                 if(agencias.length == 0) {
                     var html = "<li style='text-align: center'> \
                             <a class='waves-effect waves-block' href='javascript:void(0);'>Sem agências para exibir</a> \
@@ -42,7 +41,7 @@ $(function() {
                                     <div class='menu-info'> \
                                     <h4>" + agencia.fields.banco + "</h4> \
                                     <p> \
-                                    <i class='material-icons'>attach_money</i>Saldo: <b>R$ " + agencia.fields.saldo.replace(".", ",") + "</b< \
+                                    <i class='material-icons'>attach_money</i>Saldo: <b>R$ " + agencia.fields.saldo.replace(".", ",") + "</b> \
                                     </p> \
                                     </div> \
                                     </a> \

@@ -80,7 +80,7 @@ def contasAPagar(request):
 
 	context = {'contPagar': contas, 'contPagarForm': form}
 
-	#busca o saldo de Caixa do usuario e atribui ao contexto
+	#busca o saldo na carteira do usuario e atribui ao contexto
 	saldoC = SaldoCaixa.objects.get(user = user)
 	context['saldoCaixa'] = saldoC.saldoAtual
 
@@ -249,7 +249,7 @@ def pagamento(request):
 		dt_pagamento = request.POST.get('data_pagamento')
 		tipoPagamento = request.POST.get('banco')
 
-		#busca o saldo do caixa do usuario logado
+		#busca o saldo do carteira do usuario logado
 		saldoCaixa = SaldoCaixa.objects.get(user = user)
 		#atribui o valor do saldo anterior
 		saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
@@ -266,12 +266,12 @@ def pagamento(request):
 		conta.data_pagamento = dt_pagamento
 		conta.save()
 		
-		#verifica se o pagamento é no caixa ou no banco
+		#verifica se o pagamento é na carteira ou no banco
 		if(tipoPagamento == ""):
-			#para pagamento feito no caixa
+			#para pagamento feito na carteira
 			conta.tipo_conta = "c"
 
-			#cadastra o lancamento do caixa de acordo com os dados da conta
+			#cadastra o lancamento na carteira de acordo com os dados da conta
 			caixa = LancamentosCaixa()
 
 			caixa.data = conta.data_pagamento
@@ -338,7 +338,7 @@ def cancelaPagamento(request):
 				#deixa a data de pagamento em branco
 				conta.data_pagamento = None
 
-				#busca o saldo do caixa do usuario logado e faz o ajuste
+				#busca o saldo na carteira do usuario logado e faz o ajuste
 				saldoCaixa = SaldoCaixa.objects.get(user = user)
 				saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
 				saldoCaixa.saldoAtual += conta.valor
