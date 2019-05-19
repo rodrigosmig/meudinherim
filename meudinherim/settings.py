@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'usuario',
     'metas',
     'config',
+    'mail'
 ]
 
 MIDDLEWARE = [

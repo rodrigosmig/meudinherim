@@ -30,7 +30,8 @@ urlpatterns = [
     url(r'^contas_a_receber/', include('contas_a_receber.urls', namespace='contas_a_receber')),
     url(r'^metas/', include('metas.urls', namespace='metas')),
     url(r'^relatorios/', include('relatorio.urls', namespace='relatorios')),
-    url(r'^config/', include('config.urls', namespace='config'))
+    url(r'^config/', include('config.urls', namespace='config')),
+    url(r'^mail/', include('mail.urls', namespace='mail'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
