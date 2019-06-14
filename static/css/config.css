@@ -44,3 +44,22 @@ input[type=file] {
     cursor: text;
   }
 }
+
+.help {
+  font-size:16px;
+}
+
+a:link, a:visited {
+	text-decoration: none
+}
+a:hover {
+	text-decoration: none; 
+	color: black
+}
+a:active {
+	text-decoration: none
+}
+
+.row .switch {
+  margin-top: 12px
+}

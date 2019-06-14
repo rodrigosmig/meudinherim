@@ -25,8 +25,8 @@ def config(request):
     formSenha = PasswordChangeForm(user = request.user)
     formDados = EditAccountsForm(instance = request.user)
 
-    formFoto = UsuarioProfileForm()
-    contexto['formFoto'] = formFoto
+    formUser = UsuarioProfileForm()
+    contexto['formUser'] = formUser
     #Editar
     if(request.method == 'POST'):
         if(request.POST.get('old_password')):
@@ -38,22 +38,28 @@ def config(request):
         elif(request.FILES):
             userProfile = UsuarioProfile.objects.get(user = request.user)
             form = UsuarioProfileForm(request.POST, request.FILES, instance = userProfile)
-            print(form.is_valid())
             if(form.is_valid()):
                 form.save()
                 messages.success(request, "Imagem alterada com sucesso!")
+        elif(request.POST.get('mail_contas_a_pagar')):
+            lista = request.POST.getlist('mail_contas_a_pagar')
+            userProfile = UsuarioProfile.objects.get(user = request.user)
+            if(not userProfile.mail_contas_a_pagar and (lista[0] == 'on')):
+                userProfile.mail_contas_a_pagar = True
+                userProfile.save()
+            elif(userProfile.mail_contas_a_pagar and (lista[0] == '0')):
+                userProfile.mail_contas_a_pagar = False
+                userProfile.save()
+            messages.success(request, "Alerta alterado com sucesso!")
         else:
             #form = UsuarioProfileForm(request.POST, request.FILES)
             formDados = EditAccountsForm(request.POST, instance = request.user)
             if formDados.is_valid():
                 formDados.save()
                 formDados = EditAccountsForm(instance = request.user)
-                formDados.fields['username'].widget.attrs.update({'readonly': 'readonly'})
+                formDados.fields['username'].widget.attrs.update({'readonly': 'readonly'}) #não permite que o usuário altere o username
                 messages.success(request, "Usuário alterado com sucesso!")
         
-    #não permite que o usuário altere o username
-    #formDados.fields['username'].widget.attrs.update({'readonly': 'readonly'})
-    print(formDados)
     formSenha.fields['old_password'] = forms.CharField(
         label = 'Senha atual',
         max_length = 32,
