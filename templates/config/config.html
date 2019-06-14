@@ -49,7 +49,7 @@
                     <div class="profile-footer">
                         <span class="control-fileupload">
                             <label for="file">Escolher imagem:</label>
-                            {{ formFoto.foto }}
+                            {{ formUser.foto }}
                             </span>
                         <button id="submit_foto" class="btn btn-primary btn-lg waves-effect btn-block" disabled>SALVAR</button>
                     </div>
@@ -65,6 +65,7 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#profile_settings" aria-controls="settings" role="tab" data-toggle="tab">Perfil</a></li>
                         <li role="presentation"><a href="#change_password_settings" aria-controls="settings" role="tab" data-toggle="tab">Alterar Senha</a></li>
+                        <li role="presentation"><a href="#change_alert_settings" aria-controls="alerts" role="tab" data-toggle="tab">Alertas por E-mail</a></li>
                     </ul>
 
                     <div class="tab-content">
@@ -145,6 +146,38 @@
                                 <div class="form-group">
                                     <div id="submit_senha" class="col-sm-offset-3 col-sm-9">
                                         <button type="submit" class="btn btn-danger">Enviar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade in" id="change_alert_settings">
+                            <form id="form_alert" class="form-horizontal" method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">
+                                        Contas a Pagar
+                                        <a href="javascript:void(0)" class="help waves-effect" data-trigger="hover" data-container="body" data-toggle="popover"
+                                            data-placement="right" data-content="Habilitar o envio de e-mail no dia do vencimento da conta.">
+                                            <i class="material-icons help">help</i>
+                                        </a>
+                                    </label>                                   
+                                    <div class="switch">
+                                        <label>
+                                            {% if userProfile.mail_contas_a_pagar %}
+                                                <input type="checkbox" name="mail_contas_a_pagar" id="mail_contas_a_pagar" checked>
+                                            {% else %}
+                                                <input type="checkbox" name="mail_contas_a_pagar" id="mail_contas_a_pagar">
+                                            {% endif %}
+                                            <span class="lever switch-col-red form-control"></span>
+                                        </label>
+                                        <input type='hidden' value='0' name='mail_contas_a_pagar'>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div id="submit_senha" class="col-sm-offset-3 col-sm-9">
+                                            <button type="submit" class="btn btn-danger">Enviar</button>
+                                        </div>
                                     </div>
                                 </div>
                             </form>
