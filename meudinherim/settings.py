@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 from django.contrib.messages import constants as messages
-import os
+import os, secrets
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,10 +24,10 @@ STATICFILES_DIRS = [STATIC_DIR]
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'hh&gi)tu^e_8jz_-)0tj6=0#^^9q)rx@5z4#t7tzmd4*xa&em1'
+SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = secrets.DEBUG
 
 ALLOWED_HOSTS = []
 
@@ -83,30 +83,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'meudinherim.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#         # 'NAME': 'meudinherim',
-#         # 'USER': 'root',
-#         # 'PASSWORD': 'rootsql',
-#         # 'HOST': 'localhost',
-#         # 'PORT': '3306'
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'meudinherim',
-        'USER': 'root',
-        'PASSWORD': 'rootsql',
-        'HOST': 'localhost',
-        'PORT': '3306'
+        'NAME': secrets.DATABASE_NAME,
+        'USER': secrets.DATABASE_USER,
+        'PASSWORD': secrets.DATABASE_PASSWORD,
+        'HOST': secrets.DATABASE_HOST,
+        'PORT': secrets.DATABASE_PORT
     }
 }
 

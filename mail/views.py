@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 from datetime import datetime
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError
 from usuario.models import UsuarioProfile
 from contas_a_pagar.models import ContasAPagar
 from django.template.loader import render_to_string
@@ -18,7 +18,7 @@ def CronContasAPagar(request):
         html = render_to_string('mail/contas_a_pagar.html', {'contas': accounts, 'data': datetime.today()})
     
         message = Mail(
-            from_email='contas_a_pagar@meudinherim.ovh',
+            from_email='meudinherim@meudinherim.ovh',
             to_emails=user.user.email,
             subject="Contas com vencimento dia " + datetime.today().strftime("%d/%m/%Y"),
             html_content=html)
@@ -26,12 +26,7 @@ def CronContasAPagar(request):
         try:
             sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
             response = sg.send(message)
-            print(response.status_code)
-            print(response.body)
-            print(response.headers)
         except Exception as e:
-            print(e)
+            return HttpResponseServerError("EMail não enviado")
 
-    
-    #return render(request, 'mail/contas_a_pagar.html')
-    return HttpResponse("Deu certo")
+    return HttpResponse("Email enviado")
