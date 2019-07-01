@@ -16,11 +16,13 @@ from banco.models import ContaBanco, LancamentosBanco, SaldoBanco
 from caixa.models import SaldoCaixa
 from metas.models import Metas
 from usuario.models import UsuarioProfile
-import json
+import simplejson as json
 from django.contrib import messages
 from django.conf import settings
 from caixa.views import separarCategorias
-
+from datetime import datetime
+from django.db.models import Count, Sum
+import locale
 
 def index(request):
 	template = 'principal/index.html'
@@ -106,7 +108,7 @@ def home(request):
 	userProfile = UsuarioProfile.objects.get(user = user)
 	context['profile'] = userProfile
 
-	eventosCaixa = []
+	""" eventosCaixa = []
 	eventosBanco = []
 	eventosCPagar = []
 	eventosCReceber = []
@@ -194,9 +196,108 @@ def home(request):
 	#converte para o formato Json
 	todosEventos = json.dumps(todosEventos, ensure_ascii=False)
 
-	context['events'] = todosEventos
+	context['events'] = todosEventos """
 	
-	# print(teste)
+	locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+	hoje = datetime.today()
+	total_entradas 	= 0
+	total_saidas 	= 0
+
+	#calcula total de entradas
+	banco_entrada = LancamentosBanco.objects.values(
+		'categoria__descricao'
+		).annotate(
+			valor = Sum('valor'), 
+			quantidade = Count('pk')
+		).filter(
+			data__month = hoje.month
+		).filter(
+			data__year = hoje.year
+		).filter(categoria__tipo = 1)
+	
+	for b in banco_entrada:
+		total_entradas += b['valor']
+
+	caixa_entrada = LancamentosCaixa.objects.values(
+		'categoria__descricao'
+		).annotate(
+			valor = Sum('valor'), 
+			quantidade = Count('pk')
+		).filter(
+			data__month = hoje.month
+		).filter(
+			data__year = hoje.year
+		).filter(categoria__tipo = 1)	
+
+	for c in caixa_entrada:
+		total_entradas += c['valor']
+
+
+	#calcula total de saidas
+	banco_saida = LancamentosBanco.objects.values(
+		'categoria__descricao'
+		).annotate(
+			valor = Sum('valor'), 
+			quantidade = Count('pk')
+		).filter(
+			data__month = hoje.month
+		).filter(
+			data__year = hoje.year
+		).filter(categoria__tipo = 2)
+	
+	for b in banco_saida:
+		total_saidas += b['valor']
+
+	caixa_saida = LancamentosCaixa.objects.values(
+		'categoria__descricao'
+		).annotate(
+			valor = Sum('valor'), 
+			quantidade = Count('pk')
+		).filter(
+			data__month = hoje.month
+		).filter(
+			data__year = hoje.year
+		).filter(categoria__tipo = 2)	
+
+	for c in caixa_saida:
+		total_saidas += c['valor']
+	
+	context['total_entradas'] = locale.currency(total_entradas, grouping=True, symbol=None)
+	context['total_saidas'] = locale.currency(total_saidas, grouping=True, symbol=None)
+	
+	contas_abertas = ContasAPagar.objects.filter(data__month__lte = hoje.month).filter(data__year__lte = hoje.year).filter(user = user).filter(paga = False)
+	contas_vencidas = ContasAPagar.objects.filter(data__lt = hoje).filter(user = user).filter(paga = False)
+
+	context['quant_contas_abertas'] = len(contas_abertas)
+	context['quant_contas_vencidas'] = len(contas_vencidas)
+
+
+	#teste = [{'title': title, 'start': start, 'color': 'red'} for title, start in eventosCPagar]
+
+	#print(banco_entrada.values_list(), "1333")
+	#print(banco_entrada)
+
+	categorias = []
+	categorias_total = 0
+	
+
+	for b in banco_saida:
+		categorias.append({'label': b['categoria__descricao'], 'value': b['valor'], 'quantidade': b['quantidade']})
+		categorias_total += b['valor']
+		
+	for c in caixa_saida:
+		for l in categorias:			
+			if(c['categoria__descricao'] == l['label']):
+				l['value'] += c['valor']
+				l['quantidade'] += c['quantidade']
+				categorias_total += c['valor']
+				break	
+	
+	context['gastos_categoria'] = sorted(categorias, key = lambda i: (i['value'], i['quantidade']), reverse = True)
+	print(categorias)
+	categorias_json = json.dumps(categorias, ensure_ascii=False, use_decimal = True)
+	context['gastos_categoria_json'] = categorias_json
+	context['categorias_total'] = categorias_total
 
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
