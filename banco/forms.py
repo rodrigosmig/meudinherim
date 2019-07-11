@@ -6,7 +6,7 @@ from caixa.models import Categoria
 class ContaBancoForm(ModelForm):
 	banco = forms.CharField(
 		label = 'Banco',
-		max_length = 32,
+		max_length = 64,
 		required = True,
 		widget = forms.TextInput(
 			attrs = {'class': 'form-control', 'id': 'id_banco_agencia', 'placeholder': 'Nome do Banco'}
@@ -14,7 +14,7 @@ class ContaBancoForm(ModelForm):
     )
 	agencia = forms.CharField(
 		label = 'Agência',
-		max_length = 12,
+		max_length = 10,
 		required = False,
 		widget = forms.TextInput(
 			attrs = {'class': 'form-control', 'placeholder': 'Número da agência'}
@@ -22,7 +22,7 @@ class ContaBancoForm(ModelForm):
     )
 	conta = forms.CharField(
     	label = 'Conta',
-		max_length = 32,
+		max_length = 20,
         required = False,
         widget = forms.TextInput(
             attrs = {'class': 'form-control', 'placeholder': 'Número da conta'}
@@ -34,10 +34,27 @@ class ContaBancoForm(ModelForm):
 		),
 		choices = ContaBanco.TIPOS
 	)
+	dia_fechamento = forms.CharField(
+    	label = 'Vencimento',
+		max_length = 2,
+        required = False,
+        widget = forms.TextInput(
+            attrs = {'class': 'form-control', 'placeholder': 'Dia do Vencimento da Conta'}
+        )
+    )
+	limite = forms.DecimalField(
+        label = 'Limite',
+        min_value = 0.01,
+        max_value = 99999.99,
+        required = False,
+        widget = forms.NumberInput(
+            attrs = {'class': 'form-control', 'placeholder': 'Insira o limite da conta'}
+        )
+    )
 
 	class Meta:
 		model = ContaBanco
-		fields = ['banco', 'agencia', 'conta', 'tipo']
+		fields = ['banco', 'agencia', 'conta', 'tipo', 'dia_fechamento', 'limite']
 
 
 
@@ -51,7 +68,7 @@ class LancamentosBancoForm(ModelForm):
     )
 	descricao = forms.CharField(
 		label = 'Descrição',
-		max_length = 32,
+		max_length = 128,
 		required = True,
 		widget = forms.TextInput(
 		attrs = {'class': 'form-control', 'id': 'desc_Banco', 'placeholder': 'Descreva a transação'}

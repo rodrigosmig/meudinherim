@@ -16,146 +16,179 @@
 <link href="{% static 'css/agencia.css' %}" rel="stylesheet">
 <script src="{% static 'js/agencia.js' %}"></script>
 
+<script>
+    $( function() {
+            $("#id_dia_fechamento").datepicker({
+                changeMonth: false,
+                changeYear: false,
+                dateFormat: 'dd',
+                dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+                dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+                dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+                monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+                monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+                nextText: 'Próximo',
+                prevText: 'Anterior'
+            }).focus(function() {
+            $(".ui-datepicker-prev, .ui-datepicker-next, .ui-datepicker-month, .ui-datepicker-year").remove();
+            })
+        });
+</script>
 
 {% endblock %}
 
 {% block content %}
     
-<section class="content2">
-    
-    <div class="container-fluid">
-        <div class="block-header">
-            <h1>Agência Bancária</h1>
-        </div>
-    </div>
-    
-    <div class="row clearfix">
-        <div class="card">
-
-            <div class="header">                    
-                    <i class="material-icons addAgencia">
-                        <a class="nav-link" data-toggle="modal" href="" role="tab" title="Adicionar Meta" data-target="#mAgencia">add</a>
-                    </i>
-            </div>
-
-            <div class="body">
-                <div class="table-responsive">
-                    <table id="dataAgencia"class="table table-bordered table-striped table-hover dataTable js-basic-example">
-                            
-                        <thead>
-                            <th>Banco</th>
-                            <th>Agência</th>
-                            <th>Conta</th>
-                            <th>Tipo</th>
-                            <th>Editar</th>
-                        </thead>
-                        <tfoot>
-                            <th>Banco</th>
-                            <th>Agência</th>
-                            <th>Conta</th>
-                            <th>Tipo</th>
-                            <th>Editar</th>
-                        </tfoot>
-                            
-                        <tbody>
-                            {% for ag in agencias %}
-                            <tr>
-                                <td>{{ ag.banco }}</td>
-                                <td>
-                                    {% if ag.agencia == None %}
-                                    {% else %}
-                                        {{ ag.agencia }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if ag.conta == None %}
-                                    {% else %}
-                                        {{ ag.conta }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if ag.tipo == '1' %}
-                                        Corrente
-                                    {% else %}
-                                        Poupança
-                                    {% endif %}
-                                </td>
-                                <td><i class="material-icons"><a data-toggle="modal" href="#editAg"><span class="openEdit" data-ag="{{ ag.id }}">edit</span></a></i></td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<!-- Modal Cadastro Agencias Bancarias -->
-
-<div class="modal fade" id="mAgencia">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <!-- Título -->
-            <div class="modal-header">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">  
+            <div class="card">
                 <div class="header">
-                    <h4 >Adicionar | <small>Agência Bancária</small></h4>
+                    <h2>
+                        Agências Bancárias
+                        <small>Gerencie as agências bancária e o cartão de crédito</small>
+                    </h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">more_vert</i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a class="nav-link" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar Meta">Adicionar</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="body">
+                    <div class="table-responsive">
+                        <table id="dataAgencia"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                                
+                            <thead>
+                                <th>Banco</th>
+                                <th>Agência</th>
+                                <th>Conta</th>
+                                <th>Tipo</th>
+                                <th>Dia do Fechamento</th>
+                                <th>Limite</th>
+                                <th>Editar</th>
+                            </thead>
+                            <tfoot>
+                                <th>Banco</th>
+                                <th>Agência</th>
+                                <th>Conta</th>
+                                <th>Tipo</th>
+                                <th>Dia do Fechamento</th>
+                                <th>Limite
+                                <th>Editar</th>
+                            </tfoot>
+                                
+                            <tbody>
+                                {% for ag in agencias %}
+                                <tr>
+                                    <td>{{ ag.banco }}</td>
+                                    <td>
+                                        {% if ag.agencia == None %}
+                                        {% else %}
+                                            {{ ag.agencia }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if ag.conta == None %}
+                                        {% else %}
+                                            {{ ag.conta }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if ag.tipo == '1' %}
+                                            Corrente
+                                        {% elif ag.tipo == '2' %}
+                                            Poupança
+                                        {% elif ag.tipo == '3' %}
+                                            Cartão de Crédito
+                                        {% endif %}
+                                    </td>
+                                    {% if ag.dia_fechamento %}
+                                        <td>
+                                            {{ ag.dia_fechamento }}
+                                        </td>
+                                    {% else %}
+                                        <td></td>
+                                    {% endif %}
+                                    {% if ag.limite %}
+                                        <td>
+                                            {{ ag.limite }}
+                                        </td>
+                                    {% else %}
+                                        <td></td>
+                                    {% endif %}
+                                    <td><i class="material-icons"><a data-toggle="modal" href="#editAg"><span class="openEdit" data-ag="{{ ag.id }}">edit</span></a></i></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <!-- Campos -->
-            <form id="form_cadastro_agencia" method="POST">    
-                <div class="modal-body">                          
-                        {% csrf_token %}
-
-                            {% for campo in formAgencia %}
-                                {{ campo.label_tag }}
-                                {{ campo }}                                
-                            {% endfor %}              
-                </div>
-                <!-- Salvar/Cancelar -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button  type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 
+    <!-- Modal Cadastro Agencias Bancarias -->
+    <div class="modal fade" id="mAgencia">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- Título -->
+                <div class="modal-header">
+                    <div class="header">
+                        <h4 >Adicionar | <small>Agência Bancária</small></h4>
+                    </div>
+                </div>
+                <!-- Campos -->
+                <form id="form_cadastro_agencia" method="POST">    
+                    <div class="modal-body">                          
+                            {% csrf_token %}
 
-<!-- Modal Edição Agencias Bancarias -->
-
-<div class="modal fade" id="editAg">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <!-- Título -->
-            <div class="modal-header">
-                <h4 id="LabelLancamento">Editar | <small>Agência Bancária</small> </h4>
-              
+                                {% for campo in formAgencia %}
+                                    {{ campo.label_tag }}
+                                    {{ campo }}                                
+                                {% endfor %}              
+                    </div>
+                    <!-- Salvar/Cancelar -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button  type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
             </div>
-            <!-- Campos -->
-            <form id="form_edit_agencia" method="POST">    
-                                 
-                {% csrf_token %}
-                 <div id="editAgencia" class="modal-body">        
-                <!-- Django form será inserido aqui via Jquery -->
-                 </div>
-               
-                <!-- Salvar/Cancelar -->
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success waves-effect">Salvar</button>
-                    <button class="btn btn-danger excluirAg">Excluir</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 
 
-
-
-
-
+    <!-- Modal Edição Agencias Bancarias -->
+    <div class="modal fade" id="editAg">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- Título -->
+                <div class="modal-header">
+                    <div class="header">
+                        <h4 >Editar | <small>Agência Bancária</small></h4>
+                    </div>
+                    <h6 class="loading"></h6>
+                </div>
+                <!-- Campos -->
+                <form id="form_edit_agencia" method="POST">    
+                                    
+                    {% csrf_token %}
+                    <div id="editAgencia" class="modal-body">        
+                    <!-- Django form será inserido aqui via Jquery -->
+                    </div>
+                
+                    <!-- Salvar/Cancelar -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success waves-effect salvarAg">Salvar</button>
+                        <button class="btn btn-danger excluirAg">Excluir</button>
+                        <button type="button" class="btn btn-primary cancelarAg" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -1,4 +1,14 @@
 $(function() {
+	var spinner =  "<div class='preloader pl-size-xs' style: font-size 5px> \
+                  <div class='spinner-layer'> \
+                  <div class='circle-clipper left'> \
+                  <div class='circle'></div> \
+                  </div> \
+                  <div class='circle-clipper right'> \
+                  <div class='circle'></div> \
+                  </div> \
+                  </div> \
+                  </div>";	
 
 	var csrftokenGET = getCookie('csrftoken');
 	var csrftokenPOST = getCookie('csrftoken');
@@ -38,14 +48,14 @@ $(function() {
 
 			},
 			error: function(erro) {
-				console.log(erro.responseText);
+				$("#editAg").modal('hide')
 				alert("Lançamento não encontrado. Tente novamente.");
 			},
 
 		});
 	});
 
-	$('#form_cadastro_agencia').on('submit', function(evento) {
+	/* $('#form_cadastro_agencia').on('submit', function(evento) {
 		evento.preventDefault();
 
 		var banco = $('#id_banco_agencia').val();
@@ -80,70 +90,46 @@ $(function() {
 				$.alert(msg.responseText);
 			},
 		});	
-	});
+	}); */
 
 
-	$('#form_edit_agencia').on('submit', function(evento) {
-		evento.preventDefault();
+	$('.salvarAg').on('click', function(evento) {
+		var id = $('#id_banco-alter_banco').attr('data-ag');
+		
+		if(id) {
+			$("#form_edit_agencia").append("<input type='hidden' name='id_agencia' value=" + id + " />")
+			$("#form_edit_agencia").append("<input type='hidden' name='alterar' value='alterar' />")
+			$(".salvarAg").attr('disabled', 'true')
+			$(".excluirAg").attr('disabled', 'true')
+			$(".cancelarAg").attr('disabled', 'true')
+			$(".loading").append(spinner)
+			$('#form_edit_agencia').attr('action', '/banco/editag/')
 
-		var campos = recuperaCampos();
-
-		$.ajax({
-			type: 'POST',
-			url: '/banco/editag/',
-			data: campos,
-			success: function(msg) {
-				//mensagem de confirmação
-				$.alert({
-					title: false,
-					content: msg,
-					theme: 'material',
-					onClose: function() {
-						//recarrega a página
-						location.reload();
-					}
-				});
-			},
-			error: function(msg) {
-				//mensagem de retorno em caso de erro
-				$.alert(msg.responseText);
-			},
-		});	
+			$('#form_edit_agencia').submit()
+		}		
+		
 	});
 
 
 	$('.excluirAg').click(function(evento) {
 		evento.preventDefault();
-		var campos = recuperaCampos();
+		var id = $('#id_banco-alter_banco').attr('data-ag');
 
 		$.confirm({
-		    title: 'Excluir agência!',
-		    content: 'Tem certeza que deseja excluir a agência?',
+		    title: 'Excluir Conta!',
+		    content: 'Tem certeza que deseja excluir a conta ?',
 		    draggable: true,
 		    theme: 'material',
 		    buttons: {
 		        Sim: function() {
-		        	$.ajax({
-		        		type: 'POST',
-						url: '/banco/delag/',
-						data: campos,
-						success: function(msg) {
-							//mensagem de confirmação
-							$.alert({
-								title: false,
-								content: msg,
-								theme: 'material',
-								onClose: function() {
-									//recarrega a página
-									location.reload();
-								}
-							});					
-						},
-						error: function(msg) {
-							//mensagem de retorno em caso de erro
-							$.alert(msg.responseText);
-						},
-		        	})
+		        	$("#form_edit_agencia").append("<input type='hidden' name='id_agencia' value=" + id + " />")
+					$(".salvarAg").attr('disabled', 'true')
+					$(".excluirAg").attr('disabled', 'true')
+					$(".cancelarAg").attr('disabled', 'true')
+					$(".loading").append(spinner)
+					$('#form_edit_agencia').attr('action', '/banco/delag/')
+
+					$('#form_edit_agencia').submit()
 		        },
 		        Não: function() {},
 		    }

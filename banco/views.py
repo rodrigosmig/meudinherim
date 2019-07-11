@@ -11,19 +11,25 @@ from usuario.models import UsuarioProfile
 from django.core import serializers
 import json
 from caixa.views import separarCategorias
+from django.shortcuts import get_object_or_404
+from django.contrib import messages
+from django.urls import reverse
+from django.db.models import ProtectedError
 
 @login_required
 def cadastroBanco(request):
-
+	print("sdfasdfsfasdfsd")
 	if (request.method == 'POST'):
 		form = ContaBancoForm(request.POST)
-		if (form.is_valid):
+		if(form.is_valid):
 			bancos = form.save(commit = False)
 			bancos.user = request.user 
 			bancos.save()
-			return HttpResponse('Agência cadastrada com sucesso.')
+			messages.success(request, 'Agência cadastrada com sucesso.')
+			return HttpResponseRedirect(reverse('banco:agencia'))
 		else:
-			return HttpResponseServerError('Formulário inválido.')
+			messages.warning(request, "Formulário inválido")
+			return HttpResponseRedirect(reverse("banco:agencia"))
 
 	user = request.user
 
@@ -297,70 +303,43 @@ def delLancamento(request):
 
 @login_required
 def editAgencia(request):
+	usuario = request.user 
 
 	if (request.method == 'POST'):
+		idAgencia = request.POST.get('id_agencia')
 
-		id_usuario = request.user.id 
-
-		# id da agencia clicada
-		idAgencia = request.POST.get('id')
-	
-		agencia = ContaBanco.objects.get(pk = idAgencia)
+		try:
+			agencia = ContaBanco.objects.get(pk = idAgencia)
+		except ContaBanco.DoesNotExist as erro:
+			messages.warning(request, "Agência não encontrada")
+			return HttpResponseRedirect(reverse('banco:agencia'))
 
 		form = ContaBancoForm(request.POST,instance = agencia)
 
-		if (form.is_valid()):
+		if (form.is_valid() and agencia.user == usuario):
 			form.save()
-
-			return HttpResponse("Agência alterada com sucesso.")
-
+			messages.success(request, "Agência alterada com sucesso")
+			return HttpResponseRedirect(reverse('banco:agencia'))
 		else:
+			messages.warning(request, "Agência inválida")
+			return HttpResponseRedirect(reverse('banco:agencia'))
 
-			return HttpResponseServerError("Formulário inválido")
-
-	# id da agencia clicada
 	idAgencia = request.GET.get('idAgencia')
-
-	agencia = ContaBanco.objects.get(pk = idAgencia)
+	
+	try:
+		agencia = ContaBanco.objects.get(pk = idAgencia)
+	except ContaBanco.DoesNotExist as a:
+		return HttpResponseNotFound()
 	
 	form = ContaBancoForm(instance = agencia)
 
-	# redefine id do campo banco
-	form.fields['banco'] = forms.CharField(
-			#queryset = ContaBanco.objects.filter(user_id = request.user.id),
-			label = 'Banco',
-			max_length = 32,
-			required = True,
-	        widget = forms.TextInput(
-	            attrs = {'class': 'form-control', 'id':'id_banco-alter_banco', 'placeholder': 'Nome do Banco'}
-	        )
-	)
-
-	form.fields['agencia'] = forms.CharField(
-			label = 'Agência',
-			max_length = 12,
-			required = False,
-	        widget = forms.TextInput(
-	            attrs = {'class': 'form-control', 'id':'id_agencia-alter_agencia', 'placeholder': 'Nome da Agência'}
-	        )
-	)
-
-	form.fields['conta'] = forms.CharField(
-			label = 'Conta',
-			max_length = 32,
-			required = False,
-	        widget = forms.TextInput(
-	            attrs = {'class': 'form-control', 'id':'id_conta-alter_conta', 'placeholder': 'Número da Conta'}
-	        )
-	)
-
-	form.fields['tipo'] = forms.ChoiceField(
-
-		widget = forms.Select(
-			attrs = {'class': 'form-control', 'id':'id_tipo-alter_tipo'}
-		),
-		choices = ContaBanco.TIPOS
-	)
+	form.fields['banco'].widget.attrs['id'] = "id_banco-alter_banco"
+	form.fields['agencia'].widget.attrs['id'] = "id_agencia-alter_agencia"
+	form.fields['conta'].widget.attrs['id'] = "id_conta-alter_conta"
+	form.fields['tipo'].widget.attrs['id'] = "id_tipo-alter_tipo"
+	form.fields['dia_fechamento'].widget.attrs['id'] = "id_conta-alter_dia_fechamento"
+	form.fields['limite'].widget.attrs['id'] = "id_tipo-alter_limite"
+	
 	temp = 'id_agencia-alter_agencia'
 	#retorna o id do agencia junto com o formulario
 	divId = "<div id=temp>" + idAgencia + "</div>"
@@ -369,21 +348,29 @@ def editAgencia(request):
 
 @login_required
 def delAgencia(request):
+	if (request.method == 'POST'):		
+		user = request.user
+		idAgencia =  request.POST.get('id_agencia')
 
-	if (request.method == 'POST'):
-		
-		id_usuario = request.user.id 
+		try:
+			agencia = ContaBanco.objects.get(pk = idAgencia)
+		except ContaBanco.DoesNotExist as a:
+			messages.warning(request, "Agência não encontrada")
+			return HttpResponseRedirect(reverse('banco:agencia'))
 
-		idAgencia =  request.POST.get('id')
-
-		agencia = ContaBanco.objects.get(pk = idAgencia)
-
-		if(id_usuario == agencia.user.id):
-			agencia.delete()
-			return HttpResponse("Agência excluída com sucesso.")
+		if(user == agencia.user):
+			try:
+				agencia.delete()
+			except ProtectedError as erro:
+				messages.error(request, "Não é possível excluir uma conta bancária relacionada a um lançamento!")
+				return HttpResponseRedirect(reverse('banco:agencia'))
+			
+			
+			messages.success(request, "Agência excluída com sucesso")
+			return HttpResponseRedirect(reverse('banco:agencia'))
 		else:
-			return HttpResponseServerError("Agência não econtrada")
-	return HttpResponseServerError("Agência não econtrada")
+			messages.warning(request, "Agência inválida")
+			return HttpResponseRedirect(reverse('banco:agencia'))
 
 @login_required
 def verificarContas(request):
