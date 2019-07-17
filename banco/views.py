@@ -18,12 +18,17 @@ from django.db.models import ProtectedError
 
 @login_required
 def cadastroBanco(request):
-	print("sdfasdfsfasdfsd")
+	user = request.user
 	if (request.method == 'POST'):
 		form = ContaBancoForm(request.POST)
-		if(form.is_valid):
+		print(form)
+		if(form.is_valid()):
+			if(form.cleaned_data['dia_fechamento'] < 0 or form.cleaned_data['dia_fechamento'] > 31):
+				messages.warning(request, "Dia inválido")
+				return HttpResponseRedirect(reverse("banco:agencia"))
+
 			bancos = form.save(commit = False)
-			bancos.user = request.user 
+			bancos.user = user 
 			bancos.save()
 			messages.success(request, 'Agência cadastrada com sucesso.')
 			return HttpResponseRedirect(reverse('banco:agencia'))
@@ -31,13 +36,11 @@ def cadastroBanco(request):
 			messages.warning(request, "Formulário inválido")
 			return HttpResponseRedirect(reverse("banco:agencia"))
 
-	user = request.user
-
-	template = 'banco/agencia.html'
-	agencias = ContaBanco.objects.filter(user = user)
-	form_agencia = ContaBancoForm()
-
-	contexto = {'formAgencia': form_agencia, 'agencias': agencias}
+	template 		= 'banco/agencia.html'
+	agencias 		= ContaBanco.objects.filter(user = user).exclude(tipo = ContaBanco.CARTAO_DE_CREDITO)
+	credito			= ContaBanco.objects.filter(user = user).filter(tipo = ContaBanco.CARTAO_DE_CREDITO)
+	form_agencia 	= ContaBancoForm()
+	contexto 		= {'form': form_agencia, 'agencias': agencias, 'credito': credito}
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
 	saldoC = SaldoCaixa.objects.get(user = user)
@@ -362,7 +365,7 @@ def delAgencia(request):
 			try:
 				agencia.delete()
 			except ProtectedError as erro:
-				messages.error(request, "Não é possível excluir uma conta bancária relacionada a um lançamento!")
+				messages.error(request, "Não é possível excluir uma agencia/cartão que possua algum lançamento!")
 				return HttpResponseRedirect(reverse('banco:agencia'))
 			
 			

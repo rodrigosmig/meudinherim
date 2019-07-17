@@ -36,15 +36,30 @@ $(function() {
 			type: 'GET',
 			url: '/banco/editag/',
 			data: {'idAgencia': idAgencia, 'csrfmiddlewaretoken': csrftokenGET},
-			success: function(lancamento){
+			success: function(agencia){
 
-				$('#editAgencia').html(lancamento);
+				$('#editAgencia').html(agencia);
 
 				// id quem vem da view id_agencia-alter_agencia
 				var id_agencia = $("#temp").html();
 
 				$('#id_banco-alter_banco').attr('data-ag', id_agencia);
 				$('#temp').remove();
+
+				$("#id_conta-alter_dia_fechamento").datepicker({
+					changeMonth: false,
+					changeYear: false,
+					dateFormat: 'dd',
+					dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+					dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+					dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+					monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+					monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+					nextText: 'Próximo',
+					prevText: 'Anterior'
+				}).focus(function() {
+					$(".ui-datepicker-prev, .ui-datepicker-next, .ui-datepicker-month, .ui-datepicker-year").remove();
+				})
 
 			},
 			error: function(erro) {
@@ -55,43 +70,14 @@ $(function() {
 		});
 	});
 
-	/* $('#form_cadastro_agencia').on('submit', function(evento) {
-		evento.preventDefault();
-
-		var banco = $('#id_banco_agencia').val();
-		var agencia = $('#id_agencia').val();
-		var conta = $('#id_conta').val();
-		var tipo = $('#id_tipo_agencia').val()
-
-		$.ajax({
-			type: 'POST',
-			url: '/banco/agencia/',
-			data: {
-				'banco': banco,
-				'agencia': agencia,
-				'conta': conta,
-				'tipo': tipo,
-				'csrfmiddlewaretoken': csrftokenPOST
-			},
-			success: function(msg) {
-				//mensagem de confirmação
-				$.alert({
-					title: false,
-					content: msg,
-					theme: 'material',
-					onClose: function() {
-						//recarrega a página
-						location.reload();
-					}
-				});
-			},
-			error: function(msg) {
-				//mensagem de retorno em caso de erro
-				$.alert(msg.responseText);
-			},
-		});	
-	}); */
-
+	$('.add_salvar').on('click', function(event) {
+		event.preventDefault()
+		$(".add_salvar").attr('disabled', 'true')
+		$(".add_cancelar").attr('disabled', 'true')
+		$(".loading").append(spinner)
+		
+		$('#form_cadastro_agencia').submit()
+	});
 
 	$('.salvarAg').on('click', function(evento) {
 		var id = $('#id_banco-alter_banco').attr('data-ag');
@@ -145,8 +131,6 @@ $(function() {
 		var conta = $('#id_conta-alter_conta').val();
 		var tipo = $('#id_tipo-alter_tipo').val();
 
-		console.log(id);
-
 		dados = {
 			'id': id,
 			'banco': banco,
@@ -155,7 +139,6 @@ $(function() {
 			'tipo': tipo,
 			'csrfmiddlewaretoken': csrftokenPOST
 		}
-		console.log(dados);
 		return dados;
 	}
 

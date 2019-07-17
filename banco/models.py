@@ -7,11 +7,16 @@ from django.core.serializers.json import DjangoJSONEncoder
 import json
 
 class ContaBanco(models.Model):
+	CONTA_CORRENTE 		= "1"
+	CONTA_POUPANCA 		= "2"
+	CARTAO_DE_CREDITO 	= "3"
+
 	TIPOS = (
-		("1", "Conta Corrente"),
-		("2", "Conta Poupança"),
-		("3", "Cartão Crédito"),
+		(CONTA_CORRENTE, "Conta Corrente"),
+		(CONTA_POUPANCA, "Conta Poupança"),
+		(CARTAO_DE_CREDITO, "Cartão de Crédito"),
 	)
+	
 	banco = models.CharField(max_length = 64)
 	agencia = models.CharField(max_length = 10, blank = True, null = True)
 	conta = models.CharField(max_length = 20, blank = True, null = True)

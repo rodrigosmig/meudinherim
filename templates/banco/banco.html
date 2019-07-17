@@ -17,27 +17,25 @@
 {% endblock %}
 
 {% block content %}
-<section class="content2">
-    
-    <div class="container-fluid">     
-        <div class="block-header">
-            <h1>Banco</h1>
-        </div>
-    </div>
-    
-    <div class="row clearfix">
+    <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div id="card_atual" class="card">
-                <div id="saldo_banco" class="header">
-                    {% for a in agencias %}
-                        {% if a.saldo < 0  %}
-                            <span id="{{ a.banco }}" class="saldoBanco" data-saldo="{{ a.banco }}" style="color: red"> Saldo: {{ a.saldo }}</span>
-                        {% else %}
-                            <span id="{{ a.banco }}" class="saldoBanco" data-saldo="{{ a.banco }}" style="color: blue"> Saldo: {{ a.saldo }}</span>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+            <div class="card">
                 <div class="header">
+                    <h2>
+                        Banco / Cartão de Crédito
+                        <small>Lançamentos na contas bancária e no cartão de crédito</small>
+                    </h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">more_vert</i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a class="nav-link" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar Meta">Efetuar lançamento</a></li>
+                                <li><a class="nav-link" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar Meta">Gerenciar Contas</a></li>
+                            </ul>
+                        </li>
+                    </ul>
                     <select id="select_agencia" class="form-control"></select>
 
                     <br \>
@@ -110,35 +108,34 @@
             </div>
         </div>
     </div>
-</section>
 
-<!-- Modal Edição de Lançamento -->
-<div class="modal fade" id="editLancamento" tabindex="-1" role="dialog" aria-labelledby="LabelLancamento" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="card"
-                <!-- Título -->
-                <div class="header">
-                    <h4 id="LabelLancamento">Editar | <small>Lançamento bancário<span id="status"></span></small></h4>
+    <!-- Modal Edição de Lançamento -->
+    <div class="modal fade" id="editLancamento" tabindex="-1" role="dialog" aria-labelledby="LabelLancamento" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="card"
+                    <!-- Título -->
+                    <div class="header">
+                        <h4 id="LabelLancamento">Editar | <small>Lançamento bancário<span id="status"></span></small></h4>
+                    </div>
+                    <!-- Campos -->
+                    <form id="form_lancamento_banco">
+                    {% csrf_token %}    
+                        <div id="editLanc" class="modal-body">        
+                            <!-- Django form será inserido aqui via Jquery -->
+                        </div>
+                        <!-- Salvar/Cancelar -->
+                        <div class="modal-footer">
+                            <button id="btn_salvar" type="submit" class="btn btn-success waves-effect" >Salvar</button>
+                            <button class="btn btn-danger excluir">Excluir</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </form> 
                 </div>
-                <!-- Campos -->
-                <form id="form_lancamento_banco">
-                {% csrf_token %}    
-                    <div id="editLanc" class="modal-body">        
-                        <!-- Django form será inserido aqui via Jquery -->
-                    </div>
-                    <!-- Salvar/Cancelar -->
-                    <div class="modal-footer">
-                        <button id="btn_salvar" type="submit" class="btn btn-success waves-effect" >Salvar</button>
-                        <button class="btn btn-danger excluir">Excluir</button>
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                    </div>
-                </form> 
             </div>
         </div>
-    </div>
-</div>    
-<!-- Modal Edição de Lançamento -->
+    </div>    
+    <!-- Modal Edição de Lançamento -->
 
 <script type="text/javascript">
     var agencias = JSON.parse("{{ selectAgencias | safe | escapejs }}");    

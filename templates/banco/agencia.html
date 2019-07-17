@@ -30,7 +30,7 @@
                 nextText: 'Próximo',
                 prevText: 'Anterior'
             }).focus(function() {
-            $(".ui-datepicker-prev, .ui-datepicker-next, .ui-datepicker-month, .ui-datepicker-year").remove();
+                $(".ui-datepicker-prev, .ui-datepicker-next, .ui-datepicker-month, .ui-datepicker-year").remove();
             })
         });
 </script>
@@ -44,7 +44,7 @@
             <div class="card">
                 <div class="header">
                     <h2>
-                        Agências Bancárias
+                        Agências Bancárias / Cartão de Crédito
                         <small>Gerencie as agências bancária e o cartão de crédito</small>
                     </h2>
                     <ul class="header-dropdown m-r--5">
@@ -59,73 +59,148 @@
                     </ul>
                 </div>
                 <div class="body">
-                    <div class="table-responsive">
-                        <table id="dataAgencia"class="table table-bordered table-striped table-hover dataTable js-basic-example">
-                                
-                            <thead>
-                                <th>Banco</th>
-                                <th>Agência</th>
-                                <th>Conta</th>
-                                <th>Tipo</th>
-                                <th>Dia do Fechamento</th>
-                                <th>Limite</th>
-                                <th>Editar</th>
-                            </thead>
-                            <tfoot>
-                                <th>Banco</th>
-                                <th>Agência</th>
-                                <th>Conta</th>
-                                <th>Tipo</th>
-                                <th>Dia do Fechamento</th>
-                                <th>Limite
-                                <th>Editar</th>
-                            </tfoot>
-                                
-                            <tbody>
-                                {% for ag in agencias %}
-                                <tr>
-                                    <td>{{ ag.banco }}</td>
-                                    <td>
-                                        {% if ag.agencia == None %}
-                                        {% else %}
-                                            {{ ag.agencia }}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if ag.conta == None %}
-                                        {% else %}
-                                            {{ ag.conta }}
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if ag.tipo == '1' %}
-                                            Corrente
-                                        {% elif ag.tipo == '2' %}
-                                            Poupança
-                                        {% elif ag.tipo == '3' %}
-                                            Cartão de Crédito
-                                        {% endif %}
-                                    </td>
-                                    {% if ag.dia_fechamento %}
-                                        <td>
-                                            {{ ag.dia_fechamento }}
-                                        </td>
-                                    {% else %}
-                                        <td></td>
-                                    {% endif %}
-                                    {% if ag.limite %}
-                                        <td>
-                                            {{ ag.limite }}
-                                        </td>
-                                    {% else %}
-                                        <td></td>
-                                    {% endif %}
-                                    <td><i class="material-icons"><a data-toggle="modal" href="#editAg"><span class="openEdit" data-ag="{{ ag.id }}">edit</span></a></i></td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs tab-nav-right" role="tablist">
+                        <li role="presentation" class="active"><a href="#agencias" data-toggle="tab">AGÊNCIAS</a></li>
+                        <li role="presentation"><a href="#credito" data-toggle="tab">CARTÃO</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="agencias">
+                            <div class="table-responsive">                        
+                                <table id="dataAgencia"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                                    <thead>
+                                        <th>Banco</th>
+                                        <th>Agência</th>
+                                        <th>Conta</th>
+                                        <th>Tipo</th>
+                                        <th>Dia do Fechamento</th>
+                                        <th>Limite</th>
+                                        <th>Editar</th>
+                                    </thead>
+                                    <tfoot>
+                                        <th>Banco</th>
+                                        <th>Agência</th>
+                                        <th>Conta</th>
+                                        <th>Tipo</th>
+                                        <th>Dia do Fechamento</th>
+                                        <th>Limite
+                                        <th>Editar</th>
+                                    </tfoot>
+                                        
+                                    <tbody>
+                                        {% for ag in agencias %}
+                                        <tr>
+                                            <td>{{ ag.banco }}</td>
+                                            <td>
+                                                {% if ag.agencia == None %}
+                                                {% else %}
+                                                    {{ ag.agencia }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if ag.conta == None %}
+                                                {% else %}
+                                                    {{ ag.conta }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if ag.tipo == '1' %}
+                                                    Corrente
+                                                {% elif ag.tipo == '2' %}
+                                                    Poupança
+                                                {% elif ag.tipo == '3' %}
+                                                    Cartão de Crédito
+                                                {% endif %}
+                                            </td>
+                                            {% if ag.dia_fechamento %}
+                                                <td>
+                                                    {{ ag.dia_fechamento }}
+                                                </td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
+                                            {% if ag.limite %}
+                                                <td>
+                                                    {{ ag.limite }}
+                                                </td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
+                                            <td><i class="material-icons"><a data-toggle="modal" href="#editAg"><span class="openEdit" data-ag="{{ ag.id }}">edit</span></a></i></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div role="tabpanel" class="tab-pane fade" id="credito">
+                            <div class="table-responsive">                        
+                                <table id="dataAgencia"class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                                    <thead>
+                                        <th>Nome</th>
+                                        <th>Agência</th>
+                                        <th>Conta</th>
+                                        <th>Tipo</th>
+                                        <th>Dia do Fechamento</th>
+                                        <th>Limite</th>
+                                        <th>Editar</th>
+                                    </thead>
+                                    <tfoot>
+                                        <th>Nome</th>
+                                        <th>Agência</th>
+                                        <th>Conta</th>
+                                        <th>Tipo</th>
+                                        <th>Dia do Fechamento</th>
+                                        <th>Limite
+                                        <th>Editar</th>
+                                    </tfoot>
+                                        
+                                    <tbody>
+                                        {% for c in credito %}
+                                        <tr>
+                                            <td>{{ c.banco }}</td>
+                                            <td>
+                                                {% if c.agencia == None %}
+                                                {% else %}
+                                                    {{ c.agencia }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if c.conta == None %}
+                                                {% else %}
+                                                    {{ c.conta }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if c.tipo == '3' %}
+                                                    Cartão de Crédito
+                                                {% endif %}
+                                            </td>
+                                            {% if c.dia_fechamento %}
+                                                <td>
+                                                    {{ c.dia_fechamento }}
+                                                </td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
+                                            {% if c.limite %}
+                                                <td>
+                                                    {{ c.limite }}
+                                                </td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
+                                            <td><i class="material-icons"><a data-toggle="modal" href="#editAg"><span class="openEdit" data-ag="{{ c.id }}">edit</span></a></i></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
+                   
                 </div>
             </div>
         </div>
@@ -140,21 +215,22 @@
                     <div class="header">
                         <h4 >Adicionar | <small>Agência Bancária</small></h4>
                     </div>
+                    <h6 class="loading"></h6>
                 </div>
                 <!-- Campos -->
                 <form id="form_cadastro_agencia" method="POST">    
                     <div class="modal-body">                          
                             {% csrf_token %}
 
-                                {% for campo in formAgencia %}
+                                {% for campo in form %}
                                     {{ campo.label_tag }}
                                     {{ campo }}                                
                                 {% endfor %}              
                     </div>
                     <!-- Salvar/Cancelar -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button  type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" class="btn btn-secondary add_cancelar" data-dismiss="modal">Cancelar</button>
+                        <button  type="submit" class="btn btn-primary add_salvar">Salvar</button>
                     </div>
                 </form>
             </div>
