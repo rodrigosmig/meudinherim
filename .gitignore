@@ -9,6 +9,11 @@ principal/migrations/
 caixa/migrations/
 metas/migrations/
 mail/migrations/
+config/migrations/
+contas_a_pagar/migrations/
+contas_a_receber/migrations/
+banco/migrations/
+relatorio/migrations/
 
 media/__pycache__/
 meudinherim/__pycache__/
