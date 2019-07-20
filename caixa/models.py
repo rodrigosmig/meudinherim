@@ -8,7 +8,7 @@ class LancamentosCaixa(models.Model):
 
 	data = models.DateField()
 	categoria = models.ForeignKey('Categoria', on_delete = models.PROTECT)
-	descricao = models.CharField(max_length = 32)
+	descricao = models.CharField(max_length = 100)
 	valor = models.DecimalField(max_digits = 6, decimal_places = 2)
 	user = models.ForeignKey(User, on_delete = models.CASCADE)
 	conta_a_pagar = models.ForeignKey(ContasAPagar, on_delete = models.CASCADE, blank = True, null = True)
@@ -21,7 +21,7 @@ class LancamentosCaixa(models.Model):
 
 class Categoria(models.Model):
 
-	descricao = models.CharField(max_length = 32)
+	descricao = models.CharField(max_length = 64)
 	TIPOS = (
 		("1", "Entrada"),
 		("2", "Saida"),
