@@ -13,7 +13,7 @@ class LancamentosForm(ModelForm):
     )    
     descricao = forms.CharField(
         label = 'Descrição',
-        max_length = 32,
+        max_length = 100,
         required = True,
         widget = forms.TextInput(
             attrs = {'class': 'form-control', 'placeholder': 'Descreva a transação'}
@@ -49,7 +49,7 @@ class CategoriaForm(ModelForm):
     )
     descricao = forms.CharField(
         label = 'Descrição',
-        max_length = 32,
+        max_length = 64,
         required = True,
         widget = forms.TextInput(
             attrs = {'class': 'form-control', 'id': 'id_descricao_categoria', 'placeholder': 'Descreva a categoria'}
