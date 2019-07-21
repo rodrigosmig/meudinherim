@@ -69,14 +69,30 @@ function initSparkline() {
 }
 
 function initDonutChart() {
-    console.log(gastos_categoria, categorias_total)
     Morris.Donut({
-        element: 'categorias_chart',
-        data: gastos_categoria,
+        element: 'categorias_entrada_chart',
+        data: categoria_entrada,
         colors: ['rgb(233, 30, 99)', 'rgb(0, 188, 212)', 'rgb(255, 152, 0)', 'rgb(0, 150, 136)', 'rgb(96, 125, 139)'],
         formatter: function (y) {
-            console.log(parseFloat(categorias_total))
-            return ((y / parseFloat(categorias_total)) * 100).toFixed(2) + '%'
+            return ((y / parseFloat(categorias_entrada_total)) * 100).toFixed(2) + '%'
+        }
+    });
+
+    Morris.Donut({
+        element: 'categorias_saida_chart',
+        data: categoria_saida,
+        colors: ['rgb(233, 30, 99)', 'rgb(0, 188, 212)', 'rgb(255, 152, 0)', 'rgb(0, 150, 136)', 'rgb(96, 125, 139)'],
+        formatter: function (y) {
+            return ((y / parseFloat(categorias_saida_total)) * 100).toFixed(2) + '%'
+        }
+    });
+
+    Morris.Donut({
+        element: 'cartao_credito_chart',
+        data: categoria_credito,
+        colors: ['rgb(233, 30, 99)', 'rgb(0, 188, 212)', 'rgb(255, 152, 0)', 'rgb(0, 150, 136)', 'rgb(96, 125, 139)'],
+        formatter: function (y) {
+            return ((y / parseFloat(categorias_credito_total)) * 100).toFixed(2) + '%'
         }
     });
 }
