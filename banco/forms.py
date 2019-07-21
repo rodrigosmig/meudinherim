@@ -35,12 +35,12 @@ class ContaBancoForm(ModelForm):
 		choices = ContaBanco.TIPOS
 	)
 	dia_fechamento = forms.IntegerField(
-    	label = 'Vencimento',
+    	label = 'Dia do fechamento',
 		min_value = 1,
         max_value = 31,
         required = False,
         widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'placeholder': 'Dia do Vencimento da Conta'}
+            attrs = {'class': 'form-control', 'placeholder': 'Dia do Vencimento da Conta/Fatura'}
         )
     )
 	limite = forms.DecimalField(

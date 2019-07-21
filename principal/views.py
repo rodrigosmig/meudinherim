@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from caixa.forms import LancamentosForm
 from caixa.models import LancamentosCaixa, Categoria, SaldoCaixa
 from banco.forms import LancamentosBancoForm
@@ -16,11 +15,14 @@ from banco.models import ContaBanco, LancamentosBanco, SaldoBanco
 from caixa.models import SaldoCaixa
 from metas.models import Metas
 from usuario.models import UsuarioProfile
-import json
+import simplejson as json
 from django.contrib import messages
 from django.conf import settings
 from caixa.views import separarCategorias
-
+from datetime import datetime
+from django.db.models import Count, Sum
+import locale
+from django.core import serializers
 
 def index(request):
 	template = 'principal/index.html'
@@ -31,7 +33,6 @@ def index(request):
 		form = RegisterForm(request.POST)
 
 		if form.is_valid():
-			print("Usuário")
 			user = form.save()
 
 			#criar saldo caixa para o usuario
@@ -105,98 +106,158 @@ def home(request):
 
 	userProfile = UsuarioProfile.objects.get(user = user)
 	context['profile'] = userProfile
-
-	eventosCaixa = []
-	eventosBanco = []
-	eventosCPagar = []
-	eventosCReceber = []
-
-	#carrega os lançamentos do caixa do usuário
-	lancamentosCaixa = LancamentosCaixa.objects.filter(user = user)
-	#carrega os lançamentos do banco do usuário
-	lancamentosBanco = LancamentosBanco.objects.filter(user = user)
-	#carrega as contas a pagar do usuário
-	contasAPagar = ContasAPagar.objects.filter(user = user).filter(paga = False)
-	#carrega as contas a receber do usuário
-	contasAReceber = ContasAReceber.objects.filter(user = user).filter(recebido = False)
-
-	#separa os dados do caixa que serão utilizados no calendario em um tupla
-	for lancamento in lancamentosCaixa:
-		dia = str(lancamento.data.day)
-		if(len(dia) == 1):
-			dia = "0" + dia
-		mes = str(lancamento.data.month)
-		if(len(mes) == 1):
-			mes = "0" + mes
-		ano = str(lancamento.data.year)
-		#concatena a data para o formato do fullcalendar
-		data = ano + "-" + mes + "-" + dia
-		titulo = lancamento.descricao + " : " + " R$" + str(lancamento.valor) 
-		eventosCaixa.append((titulo, data))
 	
-	#converte a tupla para dicionario
-	eventosCaixa = [{'title': title, 'start': start} for title, start in eventosCaixa]
+	locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+	hoje 			= datetime.today()
+	total_credito 	= 0
+	total_entradas 	= 0
+	total_saidas 	= 0
+	entradas_array	= []
+	saidas_array	= []
 
-	#separa os dados do banco que serão utilizados no calendario em um tupla
-	for lancamento in lancamentosBanco:
-		dia = str(lancamento.data.day)
-		if(len(dia) == 1):
-			dia = "0" + dia
-		mes = str(lancamento.data.month)
-		if(len(mes) == 1):
-			mes = "0" + mes
-		ano = str(lancamento.data.year)
-		#concatena a data para o formato do fullcalendar
-		data = ano + "-" + mes + "-" + dia
-		titulo = lancamento.descricao + " : " + " R$" + str(lancamento.valor) 
-		eventosBanco.append((titulo, data))
-
-	#converte a tupla para para dicionario
-	eventosBanco = [{'title': title, 'start': start, 'color': 'yellow', 'textColor': 'black'} for title, start in eventosBanco]
-
-	#separa os dados do contas a pagar que serão utilizados no calendario em um tupla
-	for conta in contasAPagar:
-		dia = str(conta.data.day)
-		if(len(dia) == 1):
-			dia = "0" + dia
-		mes = str(conta.data.month)
-		if(len(mes) == 1):
-			mes = "0" + mes
-		ano = str(conta.data.year)
-		#concatena a data para o formato do fullcalendar
-		data = ano + "-" + mes + "-" + dia
-		titulo = conta.descricao + " : " + " R$" + str(conta.valor) 
-		eventosCPagar.append((titulo, data))
-
-	#converte a tupla para para dicionario
-	eventosCPagar = [{'title': title, 'start': start, 'color': 'red'} for title, start in eventosCPagar]
-
-	#separa os dados do contas a receber que serão utilizados no calendario em um tupla
-	for conta in contasAReceber:
-		dia = str(conta.data.day)
-		if(len(dia) == 1):
-			dia = "0" + dia
-		mes = str(conta.data.month)
-		if(len(mes) == 1):
-			mes = "0" + mes
-		ano = str(conta.data.year)
-		#concatena a data para o formato do fullcalendar
-		data = ano + "-" + mes + "-" + dia
-		titulo = conta.descricao + " : " + " R$" + str(conta.valor) 
-		eventosCReceber.append((titulo, data))
-
-	#converte a tupla para para dicionario
-	eventosCReceber = [{'title': title, 'start': start, 'color': 'green'} for title, start in eventosCReceber]
-
+	#calcula total de entradas
+	banco_entrada = LancamentosBanco.objects.values(
+		'categoria__pk', 'categoria__descricao', 'banco__tipo'
+		).annotate(
+			valor = Sum('valor'), 
+			quantidade = Count('pk')
+		).filter(
+			user = user
+		).filter(
+			data__month = hoje.month
+		).filter(
+			data__year = hoje.year
+		).filter(
+			categoria__tipo = 1
+		).exclude(
+			banco__tipo = ContaBanco.CARTAO_DE_CREDITO
+		)
 	
-	#junta os lancamento de caixa, banco e contas a pagar
-	todosEventos = eventosBanco + eventosCaixa + eventosCPagar + eventosCReceber
-	#converte para o formato Json
-	todosEventos = json.dumps(todosEventos, ensure_ascii=False)
+	for b in banco_entrada:
+		entradas_array.append(b)
+		total_entradas += b['valor']
 
-	context['events'] = todosEventos
+	caixa_entrada = LancamentosCaixa.objects.values(
+		'categoria__pk', 'categoria__descricao'
+		).annotate(
+			valor = Sum('valor'), 
+			quantidade = Count('pk')
+		).filter(
+			user = user
+		).filter(
+			data__month = hoje.month
+		).filter(
+			data__year = hoje.year
+		).filter(categoria__tipo = 1)	
+
+	for c in caixa_entrada:
+		entradas_array.append(c)
+		total_entradas += c['valor']
+
+	#calcula total de saidas
+	banco_saida = LancamentosBanco.objects.values(
+		'categoria__pk', 'categoria__descricao', 'banco__tipo'
+		).annotate(
+			valor = Sum('valor'), 
+			quantidade = Count('pk')
+		).filter(
+			user = user
+		).filter(
+			data__month = hoje.month
+		).filter(
+			data__year = hoje.year
+		).filter(
+			categoria__tipo = 2
+		).exclude(banco__tipo = ContaBanco.CARTAO_DE_CREDITO)
 	
-	# print(teste)
+	for b in banco_saida:
+		saidas_array.append(b)
+		total_saidas += b['valor']
+
+	caixa_saida = LancamentosCaixa.objects.values(
+		'categoria__pk', 'categoria__descricao'
+		).annotate(
+			valor = Sum('valor'), 
+			quantidade = Count('pk')
+		).filter(
+			user = user
+		).filter(
+			data__month = hoje.month
+		).filter(
+			data__year = hoje.year
+		).filter(categoria__tipo = 2)	
+
+	for c in caixa_saida:
+		saidas_array.append(c)
+		total_saidas += c['valor']
+
+	#calcula total de lançamentos do cartão de crédito
+	cartao_credito = LancamentosBanco.objects.values(
+		'categoria__pk', 'categoria__descricao', 'banco__tipo'
+		).annotate(
+			valor = Sum('valor'), 
+			quantidade = Count('pk')
+		).filter(
+			user = user
+		).filter(
+			data__month = hoje.month
+		).filter(
+			data__year = hoje.year
+		).filter(
+			categoria__tipo = 2
+		).filter(banco__tipo = ContaBanco.CARTAO_DE_CREDITO)
+	
+	for cr in cartao_credito:
+		total_credito += cr['valor']
+	
+	context['total_entradas'] 		= locale.currency(total_entradas, grouping=True, symbol=None)
+	context['total_saidas'] 		= locale.currency(total_saidas, grouping=True, symbol=None)
+	context['total_credito'] 		= locale.currency(total_credito, grouping=True, symbol=None)
+	
+	contas_abertas 					= ContasAPagar.objects.filter(data__month__lte = hoje.month).filter(data__year__lte = hoje.year).filter(user = user).filter(paga = False)
+	context['contas_abertas'] 		= contas_abertas	
+	context['quant_contas_abertas'] = len(contas_abertas)
+
+	categorias_entrada 			= []
+	categorias_saida 			= []
+	categorias_credito 			= []
+	categorias_entradas_total 	= 0
+	categorias_saidas_total 	= 0
+	categorias_credito_total 	= 0
+
+	for cr in cartao_credito:
+		categorias_credito.append({'categoria_id': cr['categoria__pk'], 'label': cr['categoria__descricao'], 'tipo': cr['banco__tipo'], 'value': cr['valor'], 'quantidade': cr['quantidade']})
+		categorias_credito_total += cr['valor']
+
+	for e in entradas_array:
+		tipo = 'caixa'
+		if('banco__tipo' in e):
+			tipo = e['banco__tipo']		
+		categorias_entrada.append({'categoria_id': e['categoria__pk'], 'tipo': tipo, 'label': e['categoria__descricao'], 'value': e['valor'], 'quantidade': e['quantidade']})
+		categorias_entradas_total += e['valor']
+
+	for s in saidas_array:
+		tipo = 'caixa'
+		if('banco__tipo' in s):
+			tipo = s['banco__tipo']		
+		categorias_saida.append({'categoria_id': s['categoria__pk'], 'tipo': tipo, 'label': s['categoria__descricao'], 'value': s['valor'], 'quantidade': s['quantidade']})
+		categorias_saidas_total += s['valor']
+
+	print(categorias_entrada)
+	context['categoria_saida'] 			= sorted(categorias_saida, key = lambda i: (i['value'], i['quantidade']), reverse = True)
+	categorias_saidas_json 				= json.dumps(categorias_saida, ensure_ascii=False, use_decimal = True)
+	context['categoria_saida_json']		= categorias_saidas_json
+	context['categorias_saidas_total'] 	= categorias_saidas_total
+
+	context['categoria_entrada'] 		= sorted(categorias_entrada, key = lambda i: (i['value'], i['quantidade']), reverse = True)
+	categorias_entrada_json 			= json.dumps(categorias_entrada, ensure_ascii=False, use_decimal = True)
+	context['categoria_entrada_json'] 	= categorias_entrada_json
+	context['categorias_entrada_total'] = categorias_saidas_total
+	
+	context['categoria_credito'] 		= sorted(categorias_credito, key = lambda i: (i['value'], i['quantidade']), reverse = True)
+	categorias_credito_json 			= json.dumps(categorias_credito, ensure_ascii=False, use_decimal = True)
+	context['categoria_credito_json'] 	= categorias_credito_json
+	context['categorias_credito_total']  = categorias_credito_total
 
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
@@ -215,19 +276,83 @@ def home(request):
 	formBanco.fields['categoria'].choices = separarCategorias(request)
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
-	saldoC = SaldoCaixa.objects.get(user = user)
-	context['saldoCaixa'] = saldoC.saldoAtual
+	saldoC 					= SaldoCaixa.objects.get(user = user)
+	context['saldoCaixa'] 	= saldoC.saldoAtual
 
 	#para saldo de cada agencia
-	agencias = ContaBanco.objects.filter(user = user)
+	agencias 			= ContaBanco.objects.filter(user = user)
 	context['agencias'] = agencias
 
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco
-
+	context['data'] = hoje
 	#soma o valor de saldo de todas as agencias
 	totalSaldoAgencias = 0
 	for a in agencias:
 		totalSaldoAgencias += a.saldo
 
 	return render(request, template, context)
+
+def detalhesLancamento(request):
+	user = request.user
+	hoje = datetime.today()
+	
+	id_categoria 	= request.GET.get('categoria_id')
+	tipo_conta	 	= request.GET.get('tipo_conta')
+
+	categoria = Categoria.objects.filter(id = id_categoria)
+
+	if not categoria:
+		return HttpResponseNotFound()
+	
+	if tipo_conta == ContaBanco.CARTAO_DE_CREDITO:
+		lancamentos = LancamentosBanco.objects.filter(
+			user = user
+			).filter(
+				categoria = categoria
+			).filter(
+				data__month = hoje.month
+			).filter(
+				data__year = hoje.year
+			).filter(
+				banco__tipo = ContaBanco.CARTAO_DE_CREDITO
+			)
+		lancamentos_json = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+		return HttpResponse(lancamentos_json, content_type="application/json")
+	
+	else:
+		lancamentos_array = []
+		
+		lancamentos = LancamentosBanco.objects.filter(
+			user = user
+			).filter(
+				categoria = categoria
+			).filter(
+				data__month = hoje.month
+			).filter(
+				data__year = hoje.year
+			).exclude(
+				banco__tipo = ContaBanco.CARTAO_DE_CREDITO
+			)
+
+		lancamentos_caixa = LancamentosCaixa.objects.filter(
+			user = user
+			).filter(
+				categoria = categoria
+			).filter(
+				data__month = hoje.month
+			).filter(
+				data__year = hoje.year
+			)
+		for l in lancamentos:
+			lancamentos_array.append(l)
+		
+		for lc in lancamentos_caixa:
+			lancamentos_array.append(lc)
+
+		lancamentos_json = serializers.serialize('json', lancamentos_array, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+		return HttpResponse(lancamentos_json, content_type="application/json")
+		
+
+
+	return HttpResponse("OK")

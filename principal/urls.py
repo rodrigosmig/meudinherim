@@ -9,5 +9,5 @@ urlpatterns = [
     #url(r'^login/$', login, {'template_name': 'principal/login.html'}, name='login'),
     url(r'^entrar/$', views.entrar, name='entrar'),
     url(r'^sair/$', logout, {'next_page': 'principal:entrar'}, name='logout'),
-
+    url(r'^detalhes/$', views.detalhesLancamento, name='detalhes'),
 ]
