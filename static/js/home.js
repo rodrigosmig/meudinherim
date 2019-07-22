@@ -36,8 +36,8 @@ $(function() {
         return newDate
     }
 
-	$('.openDetails').on('click', function() {
-        
+	$(document).on('click', '.openDetails', function() {
+        alert('teste')
         var categoria_id    = $(this).attr('data-categoria');
         var tipo_conta      = $(this).attr('data-tipo');
 
