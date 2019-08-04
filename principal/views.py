@@ -19,10 +19,12 @@ import simplejson as json
 from django.contrib import messages
 from django.conf import settings
 from caixa.views import separarCategorias
-from datetime import datetime
+from datetime import datetime, date
 from django.db.models import Count, Sum
 import locale
 from django.core import serializers
+from dateutil.relativedelta import relativedelta
+from json import dumps
 
 def index(request):
 	template = 'principal/index.html'
@@ -99,16 +101,30 @@ def entrar(request):
 
 @login_required
 def home(request):
-	template = 'principal/home.html'
-	context = {}
-	#id do usuario logado
-	user = request.user
+	template 	= 'principal/home.html'
+	context 	= {}
+	user 		= request.user
 
 	userProfile = UsuarioProfile.objects.get(user = user)
 	context['profile'] = userProfile
 	
 	locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
-	hoje 			= datetime.today()
+	
+	if 'data' in request.session:
+		data = datetime.strptime(request.session.get('data'), "%Y-%m-%d %H-%M-%S")
+	else:
+		data = datetime.today()
+	
+	if(request.method == 'POST' and 'mes' in request.POST):
+		tipo_mes = request.POST.get('mes')
+
+		if(tipo_mes == 'anterior'):
+			data = data - relativedelta(months = 1)
+		else:
+			data = data + relativedelta(months = 1)
+		
+		request.session['data'] = data.strftime("%Y-%m-%d %H-%M-%S")
+
 	total_credito 	= 0
 	total_entradas 	= 0
 	total_saidas 	= 0
@@ -116,97 +132,34 @@ def home(request):
 	saidas_array	= []
 
 	#calcula total de entradas
-	banco_entrada = LancamentosBanco.objects.values(
-		'categoria__pk', 'categoria__descricao', 'banco__tipo'
-		).annotate(
-			valor = Sum('valor'), 
-			quantidade = Count('pk')
-		).filter(
-			user = user
-		).filter(
-			data__month = hoje.month
-		).filter(
-			data__year = hoje.year
-		).filter(
-			categoria__tipo = 1
-		).exclude(
-			banco__tipo = ContaBanco.CARTAO_DE_CREDITO
-		)
-	
+	banco_entrada = ContaBanco.getLancamentosGroupByCategoria(user, data, 'entrada', 'banco')
+
 	for b in banco_entrada:
 		entradas_array.append(b)
 		total_entradas += b['valor']
 
-	caixa_entrada = LancamentosCaixa.objects.values(
-		'categoria__pk', 'categoria__descricao'
-		).annotate(
-			valor = Sum('valor'), 
-			quantidade = Count('pk')
-		).filter(
-			user = user
-		).filter(
-			data__month = hoje.month
-		).filter(
-			data__year = hoje.year
-		).filter(categoria__tipo = 1)	
+	caixa_entrada = LancamentosCaixa.getLancamentosGroupByCategoria(user, data, 'entrada')
 
 	for c in caixa_entrada:
 		entradas_array.append(c)
 		total_entradas += c['valor']
 
 	#calcula total de saidas
-	banco_saida = LancamentosBanco.objects.values(
-		'categoria__pk', 'categoria__descricao', 'banco__tipo'
-		).annotate(
-			valor = Sum('valor'), 
-			quantidade = Count('pk')
-		).filter(
-			user = user
-		).filter(
-			data__month = hoje.month
-		).filter(
-			data__year = hoje.year
-		).filter(
-			categoria__tipo = 2
-		).exclude(banco__tipo = ContaBanco.CARTAO_DE_CREDITO)
+	banco_saida = ContaBanco.getLancamentosGroupByCategoria(user, data, 'saida', 'banco')
 	
 	for b in banco_saida:
 		saidas_array.append(b)
 		total_saidas += b['valor']
 
-	caixa_saida = LancamentosCaixa.objects.values(
-		'categoria__pk', 'categoria__descricao'
-		).annotate(
-			valor = Sum('valor'), 
-			quantidade = Count('pk')
-		).filter(
-			user = user
-		).filter(
-			data__month = hoje.month
-		).filter(
-			data__year = hoje.year
-		).filter(categoria__tipo = 2)	
-
+	caixa_saida = LancamentosCaixa.getLancamentosGroupByCategoria(user, data, 'saida')
+	
 	for c in caixa_saida:
 		saidas_array.append(c)
 		total_saidas += c['valor']
-
-	#calcula total de lançamentos do cartão de crédito
-	cartao_credito = LancamentosBanco.objects.values(
-		'categoria__pk', 'categoria__descricao', 'banco__tipo'
-		).annotate(
-			valor = Sum('valor'), 
-			quantidade = Count('pk')
-		).filter(
-			user = user
-		).filter(
-			data__month = hoje.month
-		).filter(
-			data__year = hoje.year
-		).filter(
-			categoria__tipo = 2
-		).filter(banco__tipo = ContaBanco.CARTAO_DE_CREDITO)
 	
+	#calcula total de lançamentos do cartão de crédito
+	cartao_credito = ContaBanco.getLancamentosGroupByCategoria(user, data, 'saida', 'credito')
+
 	for cr in cartao_credito:
 		total_credito += cr['valor']
 	
@@ -214,7 +167,7 @@ def home(request):
 	context['total_saidas'] 		= locale.currency(total_saidas, grouping=True, symbol=None)
 	context['total_credito'] 		= locale.currency(total_credito, grouping=True, symbol=None)
 	
-	contas_abertas 					= ContasAPagar.objects.filter(data__month__lte = hoje.month).filter(data__year__lte = hoje.year).filter(user = user).filter(paga = False)
+	contas_abertas 					= ContasAPagar.objects.filter(data__month__lte = data.month).filter(data__year__lte = data.year).filter(user = user).filter(paga = False)
 	context['contas_abertas'] 		= contas_abertas	
 	context['quant_contas_abertas'] = len(contas_abertas)
 
@@ -243,7 +196,6 @@ def home(request):
 		categorias_saida.append({'categoria_id': s['categoria__pk'], 'tipo': tipo, 'label': s['categoria__descricao'], 'value': s['valor'], 'quantidade': s['quantidade']})
 		categorias_saidas_total += s['valor']
 
-	print(categorias_entrada)
 	context['categoria_saida'] 			= sorted(categorias_saida, key = lambda i: (i['value'], i['quantidade']), reverse = True)
 	categorias_saidas_json 				= json.dumps(categorias_saida, ensure_ascii=False, use_decimal = True)
 	context['categoria_saida_json']		= categorias_saidas_json
@@ -285,12 +237,15 @@ def home(request):
 
 	context['formLancCaixa'] = formCaixa
 	context['formLancBanco'] = formBanco
-	context['data'] = hoje
+	context['data'] = data
 	#soma o valor de saldo de todas as agencias
 	totalSaldoAgencias = 0
 	for a in agencias:
 		totalSaldoAgencias += a.saldo
 
+	if(request.method == 'POST'):
+		return redirect('principal:home')
+		
 	return render(request, template, context)
 
 def detalhesLancamento(request):

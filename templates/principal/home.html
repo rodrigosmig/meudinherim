@@ -32,14 +32,21 @@ var categorias_credito_total    = "{{ categorias_credito_total }}";
 {% endblock %}
 
 {% block content %}
-
-
-    
        
         <div class="block-header">
-            <h3>{{ data|date:"F, Y" }} - <small>Detalhe dos gastos do mês</small></h3>
+            <form id="form_mes" method="POST" action="{% url 'principal:home' %}">
+                {% csrf_token %}
+                <button id="mes_anterior" type="button" class="btn bg-red waves-effect" data-mes="anterior" data-toggle="tooltip" data-placement="top" title="Mês anterior">
+                    <i class="material-icons">arrow_back_ios</i>
+                </button>
+
+                <button id="mes_seguinte" type="button" class="btn bg-red waves-effect" data-mes="seguinte" data-toggle="tooltip" data-placement="top" title="Mês seguinte">
+                    <i class="material-icons">arrow_forward_ios</i>
+                </button>
+            </form>
+            
         </div>
-    
+    <span style="font-size:25px; font-weight: bold">{{ data|date:"F, Y" }}</span>
 
     <div class="row clearfix">
 
