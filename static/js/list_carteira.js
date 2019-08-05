@@ -34,7 +34,7 @@ $(function() {
                                 </a> \
                                 </li>"
 
-                    $('#menudfdf_carteira').append(html)
+                    //$('#menu_carteira').append(html)
                     $("#total_carteira").html(" " + saldo.fields.saldoAtual.replace(".", ","))
                 });
            

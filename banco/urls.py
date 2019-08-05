@@ -12,4 +12,5 @@ urlpatterns = [
    	url(r'^delag/', views.delAgencia, name='delag'),
    	url(r'^verificar/', views.verificarContas, name='verificar'),
     url(r'^getAgencias/', views.getAgencias, name='getAgencias'),
+    url(r'^getCredito/', views.getCartao_Credito, name='getCredito'),
 ]

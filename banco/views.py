@@ -393,9 +393,18 @@ def verificarContas(request):
 @login_required
 def getAgencias(request):
 	user = request.user
-	agencias = ContaBanco.objects.filter(user = user)
+	agencias = ContaBanco.objects.filter(user = user).exclude(tipo = ContaBanco.CARTAO_DE_CREDITO)
 
 	if(len(agencias) != 0):
 		agenciasJson = serializers.serialize('json', agencias, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+	
+	return HttpResponse(agenciasJson, content_type="application/json")
+
+@login_required
+def getCartao_Credito(request):
+	user = request.user
+	agencias = ContaBanco.objects.filter(user = user).filter(tipo = ContaBanco.CARTAO_DE_CREDITO)
+
+	agenciasJson = serializers.serialize('json', agencias, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 	
 	return HttpResponse(agenciasJson, content_type="application/json")

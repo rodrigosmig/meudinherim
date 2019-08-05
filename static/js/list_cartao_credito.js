@@ -19,47 +19,45 @@ $(function() {
     
     $.ajax({
         type: 'GET',
-			url: '/banco/getAgencias/',
+			url: '/banco/getCredito/',
 			data: {
 				'csrfmiddlewaretoken': csrftokenGET
             },
-            success: function(agencias) {
+            success: function(creditos) {
                 var soma = 0;
-                
-                if(agencias.length == 0) {
+
+                if(creditos.length == 0) {
                     var html = "<li style='text-align: center'> \
-                            <a class='waves-effect waves-block' href='javascript:void(0);'>Sem agências para exibir</a> \
+                            <a class='waves-effect waves-block' href='javascript:void(0);'>Sem cartão de crédito para exibir</a> \
                             </li>"
 
-                    $('#menu_contas').append(html)
+                    $('#menu_credito').append(html)
                 }
                 else {
-                    
-                    agencias.forEach(agencia => {
-                        soma += parseFloat(agencia.fields.saldo)
+                    creditos.forEach(credito => {
+                        soma += parseFloat(credito.fields.saldo)
                         var html = "<li> \
-                                    <a class='waves-effect waves-block teste' href='javascript:void(0);'> \
-                                    <span class='i-circle'>" + agencia.fields.banco.substring(0, 1).toUpperCase() + "</span> \
+                                    <a class='waves-effect waves-block' href='javascript:void(0);'> \
+                                    <span class='i-circle'>" + credito.fields.banco.substring(0, 1).toUpperCase() + "</span> \
                                     <div class='menu-info'> \
-                                    <h4>" + agencia.fields.banco + "</h4> \
+                                    <h4>" + credito.fields.banco + "</h4> \
                                     <p> \
-                                    <i class='material-icons'>attach_money</i>Saldo: <b>R$ " + agencia.fields.saldo.replace(".", ",") + "</b> \
+                                    <i class='material-icons'>attach_money</i>Saldo: <b>R$ " + credito.fields.saldo.replace(".", ",") + "</b> \
                                     </p> \
                                     </div> \
                                     </a> \
                                     </li>"
     
-                        $('#menu_contas').append(html)
+                        $('#menu_credito').append(html)
                     });
-                }                
-                $('#quantidade_contas').html(agencias.length);
+                }
+                $('#quantidade_credito').html(creditos.length);
                 if(soma >= 0) {
-                    $("#total_contas").html("R$ " + soma.toFixed(2).replace(".", ",")).css('color', 'blue');
+                    $("#total_credito").html("R$ " + soma.toFixed(2).replace(".", ",")).css('color', 'blue');
                 }
                 else {
-                    $("#total_contas").html("R$ " + soma.toFixed(2).replace(".", ",")).css('color', 'red');
+                    $("#total_credito").html("R$ " + soma.toFixed(2).replace(".", ",")).css('color', 'red');
                 }
-                
             },
             error: function(erro) {
                 var html = "<li style='text-align: center'> \
