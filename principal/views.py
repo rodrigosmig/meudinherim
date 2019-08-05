@@ -125,6 +125,8 @@ def home(request):
 		
 		request.session['data'] = data.strftime("%Y-%m-%d %H-%M-%S")
 
+		return redirect('principal:home')
+
 	total_credito 	= 0
 	total_entradas 	= 0
 	total_saidas 	= 0
@@ -242,10 +244,7 @@ def home(request):
 	totalSaldoAgencias = 0
 	for a in agencias:
 		totalSaldoAgencias += a.saldo
-
-	if(request.method == 'POST'):
-		return redirect('principal:home')
-		
+	
 	return render(request, template, context)
 
 def detalhesLancamento(request):

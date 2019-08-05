@@ -33,72 +33,72 @@ var categorias_credito_total    = "{{ categorias_credito_total }}";
 
 {% block content %}
        
-        <div class="block-header">
-            <form id="form_mes" method="POST" action="{% url 'principal:home' %}">
-                {% csrf_token %}
-                <button id="mes_anterior" type="button" class="btn bg-red waves-effect" data-mes="anterior" data-toggle="tooltip" data-placement="top" title="Mês anterior">
-                    <i class="material-icons">arrow_back_ios</i>
-                </button>
+    <div class="block-header">
+        <form id="form_mes" method="POST" action="{% url 'principal:home' %}">
+            {% csrf_token %}
+            <button id="mes_anterior" type="button" class="btn bg-red waves-effect" data-mes="anterior" data-toggle="tooltip" data-placement="top" title="Mês anterior">
+                <i class="material-icons">arrow_back_ios</i>
+            </button>
 
-                <button id="mes_seguinte" type="button" class="btn bg-red waves-effect" data-mes="seguinte" data-toggle="tooltip" data-placement="top" title="Mês seguinte">
-                    <i class="material-icons">arrow_forward_ios</i>
-                </button>
-            </form>
-            
-        </div>
+            <button id="mes_seguinte" type="button" class="btn bg-red waves-effect" data-mes="seguinte" data-toggle="tooltip" data-placement="top" title="Mês seguinte">
+                <i class="material-icons">arrow_forward_ios</i>
+            </button>
+        </form>
+        
+    </div>
     <span style="font-size:25px; font-weight: bold">{{ data|date:"F, Y" }}</span>
 
     <div class="row clearfix">
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-cyan hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">arrow_upward</i>
+                </div>
+                <div class="content">
+                    <div class="text">ENTRADA</div>
+                    <div class="number " data-from="0" data-to="0" data-speed="0" data-fresh-interval="0">{{ total_entradas }}</div>
+                </div>
+            </div>
+        </div>
 
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="info-box bg-cyan hover-expand-effect">
-                    <div class="icon">
-                        <i class="material-icons">arrow_upward</i>
-                    </div>
-                    <div class="content">
-                        <div class="text">ENTRADA</div>
-                        <div class="number " data-from="0" data-to="0" data-speed="0" data-fresh-interval="0">{{ total_entradas }}</div>
-                    </div>
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-pink hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">arrow_downward</i>
+                </div>
+                <div class="content">
+                    <div class="text">SAÍDA</div>
+                    <div class="number" data-from="0" data-to="0" data-speed="0" data-fresh-interval="0">{{ total_saidas }}</div>
                 </div>
             </div>
-    
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="info-box bg-pink hover-expand-effect">
-                    <div class="icon">
-                        <i class="material-icons">arrow_downward</i>
-                    </div>
-                    <div class="content">
-                        <div class="text">SAÍDA</div>
-                        <div class="number" data-from="0" data-to="0" data-speed="0" data-fresh-interval="0">{{ total_saidas }}</div>
-                    </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-light-green hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">forum</i>
+                </div>
+                <div class="content">
+                    <div class="text">CRÉDITO</div>
+                    <div class="number" data-from="0" data-to="0" data-speed="0" data-fresh-interval="0">{{ total_credito }}</div>
                 </div>
             </div>
-    
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="info-box bg-light-green hover-expand-effect">
-                    <div class="icon">
-                        <i class="material-icons">forum</i>
-                    </div>
-                    <div class="content">
-                        <div class="text">CRÉDITO</div>
-                        <div class="number" data-from="0" data-to="0" data-speed="0" data-fresh-interval="0">{{ total_credito }}</div>
-                    </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-orange hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">forum</i>
+                </div>
+                <div class="content">
+                    <div class="text">CONTAS ABERTAS</div>
+                    <div class="number" data-from="0" data-to="" data-speed="0" data-fresh-interval="0">{{ quant_contas_abertas }}</div>
                 </div>
             </div>
-    
-            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                <div class="info-box bg-orange hover-expand-effect">
-                    <div class="icon">
-                        <i class="material-icons">forum</i>
-                    </div>
-                    <div class="content">
-                        <div class="text">CONTAS ABERTAS</div>
-                        <div class="number" data-from="0" data-to="" data-speed="0" data-fresh-interval="0">{{ quant_contas_abertas }}</div>
-                    </div>
-                </div>
-            </div>
-    
-            <!-- Porcentagem Entrada -->
+        </div>
+
+        <!-- Porcentagem Entrada -->
+        {% if total_entradas != "0,00" %}
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                 <div class="card">
                     <div class="header bg-cyan">
@@ -109,9 +109,11 @@ var categorias_credito_total    = "{{ categorias_credito_total }}";
                     </div>
                 </div>
             </div>
-            <!-- #END# Porcentagem Entrada -->
-    
-            <!-- Porcentagem Saida -->
+        {% endif %}
+        <!-- #END# Porcentagem Entrada -->
+
+        <!-- Porcentagem Saida -->
+        {% if total_saidas != "0,00" %}    
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                 <div class="card">
                     <div class="header bg-pink">
@@ -122,10 +124,12 @@ var categorias_credito_total    = "{{ categorias_credito_total }}";
                     </div>
                 </div>
             </div>
-            <!-- #END# Porcentagem Saida -->
-    
-             <!-- Porcentagem Cartão -->
-             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        {% endif %}
+        <!-- #END# Porcentagem Saida -->
+
+            <!-- Porcentagem Cartão -->
+        {% if total_credito != "0,00" %}
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                 <div class="card">
                     <div class="header bg-light-green">
                         <h2>CARTÃO DE CRÉDITO (%)</h2>
@@ -135,152 +139,186 @@ var categorias_credito_total    = "{{ categorias_credito_total }}";
                     </div>
                 </div>
             </div>
-            <!-- #END# Porcentagem Cartão -->
-    
-            <!-- Total Entradas -->
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="card">
-                    <div class="header bg-cyan">
-                        <h2>ENTRADAS POR CATEGORIA (DETALHADO)</h2>
+        {% endif %}
+        <!-- #END# Porcentagem Cartão -->
+
+        
+
+        <!-- Detalhes lançamentos -->
+        <div class="modal fade" id="modalDetalhes" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="modalDetalhesLabel">CATEGORIA: <span id="labelCategoria"></span></h4>
                     </div>
-                    <div class="body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped datable js-basic-example">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Categoria</th>
-                                        <th>Quantidade</th>
-                                        <th>Valor</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for categoria in categoria_entrada %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            <td>{{ categoria.label }}</td>
-                                            <td><a class="openDetails" href="#" data-toggle="modal" data-target="#modalDetalhes" data-categoria={{ categoria.categoria_id }} data-tipo={{ categoria.tipo }}><span class="label bg-green">{{ categoria.quantidade }}</span></a></td>
-                                            <td>{{ categoria.value }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- #END# Total Entradas -->
-    
-            <!-- Total Saídas -->
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="card">
-                    <div class="header bg-pink">
-                        <h2>SAÍDAS POR CATEGORIA (DETALHADO)</h2>
-                    </div>
-                    <div class="body">
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped datable js-basic-example">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Categoria</th>
-                                        <th>Quantidade</th>
-                                        <th>Valor</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for categoria in categoria_saida %}
-                                        <tr>
-                                            <td>{{ forloop.counter }}</td>
-                                            <td>{{ categoria.label }}</td>
-                                            <td><a class="openDetails" href="#" data-toggle="modal" data-target="#modalDetalhes" data-categoria={{ categoria.categoria_id }} data-tipo={{ categoria.tipo }}><span class="label bg-green">{{ categoria.quantidade }}</span></a></td>
-                                            <td>{{ categoria.value }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- #END# Total Saidas -->
-    
-            <!-- Total Entradas -->
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="card">
-                        <div class="header bg-light-green">
-                            <h2>CARTÃO DE CRÉDITO POR CATEGORIA (DETALHADO)</h2>
-                        </div>
-                        <div class="body">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-striped datable js-basic-example">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Categoria</th>
-                                            <th>Quantidade</th>
-                                            <th>Valor</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for categoria in categoria_credito %}
+                    <div class="modal-body">
+                            <div class="body table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
                                             <tr>
-                                                <td>{{ forloop.counter }}</td>
-                                                <td>{{ categoria.label }}</td>
-                                                <td><a class="openDetails" href="#" data-toggle="modal" data-target="#modalDetalhes" data-categoria={{ categoria.categoria_id }} data-tipo={{ categoria.tipo }}><span class="label bg-green">{{ categoria.quantidade }}</span></a></td>
-                                                <td>{{ categoria.value }}</td>
+                                                <th>#</th>
+                                                <th>Descrição</th>
+                                                <th>Data</th>
+                                                <th>Valor</th>
                                             </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                        </thead>
+                                        <tbody id="table-body">
+                                                                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
                     </div>
                 </div>
-                <!-- #END# Total Entradas -->
-    
-                <!-- Detalhes lançamentos -->
-                <div class="modal fade" id="modalDetalhes" tabindex="-1" role="dialog">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="modalDetalhesLabel">CATEGORIA: <span id="labelCategoria"></span></h4>
-                            </div>
-                            <div class="modal-body">
-                                    <div class="body table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Descrição</th>
-                                                        <th>Data</th>
-                                                        <th>Valor</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="table-body">
-                                                                                                   
-                                                </tbody>
-                                            </table>
-                                        </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-            {% comment %} <div class="card">
-                <div id='calendar'></div>
-            </div> {% endcomment %}
-    
+            </div>
+        </div>
+        
     </div>
 
+    <div class="panel-group" id="accordion_2" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-success">
+            <div class="panel-heading" role="tab" id="headingOne_2">
+                <h4 class="panel-title bg-cyan">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion_2" href="#detalhes_entrada" aria-expanded="true" aria-controls="collapseOne_2">
+                        ENTRADAS (DETALHES)
+                    </a>
+                </h4>
+            </div>
+            <div id="detalhes_entrada" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne_2">
+                <div class="panel-body">
+                    <!-- Total Entradas -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2>ENTRADAS POR CATEGORIA (DETALHADO)</h2>
+                            </div>
+                            <div class="body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped datable js-basic-example">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Categoria</th>
+                                                <th>Quantidade</th>
+                                                <th>Valor</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for categoria in categoria_entrada %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ categoria.label }}</td>
+                                                    <td><a class="openDetails" href="#" data-toggle="modal" data-target="#modalDetalhes" data-categoria={{ categoria.categoria_id }} data-tipo={{ categoria.tipo }}><span class="label bg-green">{{ categoria.quantidade }}</span></a></td>
+                                                    <td>{{ categoria.value }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #END# Total Entradas -->
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-success">
+            <div class="panel-heading" role="tab" id="headingTwo_2">
+                <h4 class="panel-title bg-pink">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_2" href="#detalhes_saida" aria-expanded="false"
+                        aria-controls="collapseTwo_2">
+                        SAÍDA (DETALHES)
+                    </a>
+                </h4>
+            </div>
+            <div id="detalhes_saida" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo_2">
+                <div class="panel-body">
+                    <!-- Total Saídas -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2>SAÍDAS POR CATEGORIA (DETALHADO)</h2>
+                            </div>
+                            <div class="body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped datable js-basic-example">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Categoria</th>
+                                                <th>Quantidade</th>
+                                                <th>Valor</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for categoria in categoria_saida %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ categoria.label }}</td>
+                                                    <td><a class="openDetails" href="#" data-toggle="modal" data-target="#modalDetalhes" data-categoria={{ categoria.categoria_id }} data-tipo={{ categoria.tipo }}><span class="label bg-green">{{ categoria.quantidade }}</span></a></td>
+                                                    <td>{{ categoria.value }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #END# Total Saidas -->
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-success">
+            <div class="panel-heading" role="tab" id="headingThree_2">
+                <h4 class="panel-title bg-light-green">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_2" href="#detalhes_credito" aria-expanded="false"
+                        aria-controls="collapseThree_2">
+                        CARTÃO DE CRÉDITO (DETALHES)
+                    </a>
+                </h4>
+            </div>
+            <div id="detalhes_credito" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree_2">
+                <div class="panel-body">
+                    <!-- Total Entradas -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2>CARTÃO DE CRÉDITO POR CATEGORIA (DETALHADO)</h2>
+                            </div>
+                            <div class="body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped datable js-basic-example">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Categoria</th>
+                                                <th>Quantidade</th>
+                                                <th>Valor</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for categoria in categoria_credito %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ categoria.label }}</td>
+                                                    <td><a class="openDetails" href="#" data-toggle="modal" data-target="#modalDetalhes" data-categoria={{ categoria.categoria_id }} data-tipo={{ categoria.tipo }}><span class="label bg-green">{{ categoria.quantidade }}</span></a></td>
+                                                    <td>{{ categoria.value }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #END# Total Entradas -->
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-
-
-
-<!--/ Calendário -->
 {% endblock %}
 
