@@ -21,8 +21,6 @@ from django.shortcuts import get_object_or_404
 def metas(request):
 	if(request.method == 'POST'):
 		form = MetasForm(request.POST)
-		print(form)
-
 		if(form.is_valid()):
 			cadastroMeta=form.save(commit = False)
 			cadastroMeta.user=request.user
@@ -185,7 +183,6 @@ def delMeta(request):
 
 		#busca o lançamento
 		meta = Metas.objects.get(pk = idMeta)		
-		print(meta)
 		if(request.user == meta.user):
 			meta.delete()
 
@@ -200,7 +197,7 @@ def delMeta(request):
 def calcMetas(request):
 	user = request.user
 	saldoC = SaldoCaixa.objects.get(user = user)
-	agencias = ContaBanco.objects.filter(user = user)
+	agencias = ContaBanco.objects.filter(user = user).exclude(tipo = ContaBanco.CARTAO_DE_CREDITO)
 	metas = Metas.objects.filter(user = user).filter(concluida = False)
 
 	totalSaldoAgencias = 0

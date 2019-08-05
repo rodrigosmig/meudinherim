@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from contas_a_pagar.models import ContasAPagar
 from contas_a_receber.models import ContasAReceber
+from django.db.models import Count, Sum
 
 # Create your models here.
 class LancamentosCaixa(models.Model):
@@ -14,6 +15,28 @@ class LancamentosCaixa(models.Model):
 	conta_a_pagar = models.ForeignKey(ContasAPagar, on_delete = models.CASCADE, blank = True, null = True)
 	conta_a_receber = models.ForeignKey(ContasAReceber, on_delete = models.CASCADE, blank = True, null = True)
 
+	def getLancamentosGroupByCategoria(user, data, tipo_categoria):
+		if(tipo_categoria == 'entrada'):
+			categoria = 1
+		else:
+			categoria = 2
+
+		lancamentos = LancamentosCaixa.objects.values(
+		'categoria__pk', 'categoria__descricao'
+		).annotate(
+			valor = Sum('valor'), 
+			quantidade = Count('pk')
+		).filter(
+			user = user
+		).filter(
+			data__month = data.month
+		).filter(
+			data__year = data.year
+		).filter(
+			categoria__tipo = categoria
+		)
+		
+		return lancamentos
 
 	def __str__(self):
 		return self.descricao

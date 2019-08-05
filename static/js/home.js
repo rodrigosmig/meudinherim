@@ -74,4 +74,25 @@ $(function() {
     $('#modalDetalhes').on('hidden.bs.modal', function (e) {
         $('#table-body').html("")
     })
+    
+    $('#mes_anterior').on('click', function(evento) {
+        evento.preventDefault();
+        var tipo = $(this).attr('data-mes')
+        console.log(tipo)
+        $("#form_mes").append("<input type='hidden' name='mes' value=" + tipo + " />")
+        $("#mes_anterior").attr('disabled', true)
+        $("#mes_seguinte").attr('disabled', true)
+        $("#form_mes").submit()
+    })
+
+    $('#mes_seguinte').on('click', function(evento) {
+        evento.preventDefault();
+        var tipo = $(this).attr('data-mes')
+        $("#form_mes").append("<input type='hidden' name='mes' value=" + tipo + " />")
+        $("#mes_anterior").attr('disabled', true)
+        $("#mes_seguinte").attr('disabled', true)
+        $("#form_mes").submit()
+    })
+
+   
 })

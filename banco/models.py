@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 from contas_a_pagar.models import ContasAPagar
 from contas_a_receber.models import ContasAReceber
 from django.core import serializers
-from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Count, Sum
+from datetime import datetime
 import json
 
 class ContaBanco(models.Model):
@@ -31,6 +32,35 @@ class ContaBanco(models.Model):
 
 	def __str__(self):
 		return str(self.banco)
+
+	
+	def getLancamentosGroupByCategoria(user, data, tipo_categoria, tipo_conta):
+		if(tipo_categoria == 'entrada'):
+			categoria = 1
+		else:
+			categoria = 2
+
+		lancamentos = LancamentosBanco.objects.values(
+		'categoria__pk', 'categoria__descricao', 'banco__tipo'
+		).annotate(
+			valor = Sum('valor'), 
+			quantidade = Count('pk')
+		).filter(
+			user = user
+		).filter(
+			data__month = data.month
+		).filter(
+			data__year = data.year
+		).filter(
+			categoria__tipo = categoria
+		)
+		
+		if(tipo_conta == 'credito'):
+			lancamentos = lancamentos.filter(banco__tipo = ContaBanco.CARTAO_DE_CREDITO)
+		else:
+			lancamentos = lancamentos.exclude(banco__tipo = ContaBanco.CARTAO_DE_CREDITO)
+
+		return lancamentos
 
 
 class LancamentosBanco(models.Model):

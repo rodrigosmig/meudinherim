@@ -75,6 +75,7 @@
         <script src="{% static 'js/list_metas.js' %}"></script>
         <script src="{% static 'js/list_contas.js' %}"></script>
         <script src="{% static 'js/list_carteira.js' %}"></script>
+        <script src="{% static 'js/list_cartao_credito.js' %}"></script>
         
         {% block staticCaixa %}{% endblock %}
         {% block staticBanco %}{% endblock %}
@@ -174,36 +175,7 @@
                 
                 <!-- Itens que ficaram no DropDown ao diminiur a tela -->
                 <div class="collapse navbar-collapse" id="navbar-collapse">
-                    <!--Infobox -->
-                    <!-- {% for a in agencias %}
-                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-1">
-                            <div id="infoBoxBanco"  class="info-box-2 btn-xs">
-                                <div class="icon">
-                                    <i id="iconsInfoBox" class="material-icons" >account_balance</i>
-                                </div>
-                                <div class="content">
-                                    <div id="textInfoBox" class="text">{{ a.banco }}</div>
-                                    <div id="numberInfoBox" class="number">{{ a.saldo }}</div>
-                                </div>        
-                            </div>
-                        </div>
-                    {% endfor %}
-
-                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-                        <div id="infoBoxCaixa" class="info-box-2 btn-xs">
-                            <div class="icon">
-                                <i id="iconsInfoBox" class="material-icons" >work</i>
-                            </div>
-                            <div class="content">
-                                <div  id="textInfoBox" class="text">Caixa</div>
-                                <div  id="numberInfoBox" class="number">{{ saldoCaixa }}</div>
-                            </div>        
-                        </div>
-                    </div> -->
-                    <!--/Infobox -->
-
                     <ul class="nav navbar-nav navbar-right">
-
                         <!-- Carteira -->
                         <li class="dropdown">
                                 <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" title="Carteira">
@@ -243,6 +215,26 @@
                             </ul>
                         </li>
                         <!-- #END# Conta Bancária -->
+
+                        <!-- Cartão de Crédito -->
+                        <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" title="Cartão de Crédito">
+                                <i class="material-icons">credit_card</i>
+                                <span id="quantidade_credito" class="label-count"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">Cartão de Crédito</li>
+                                <li class="body">
+                                    <ul id="menu_credito" class="menu" style="list-style-type: none">
+                                        <!-- metas adicionadas via jquery -->
+                                    </ul>
+                                </li>
+                                <li id="footer_credito" class="footer">
+                                    <a href="javascript:void(0);"><b>Total</b>: <span id="total_credito"></span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- #END# Cartão de Crédito -->
 
                          <!-- Metas -->
                         <li class="dropdown">

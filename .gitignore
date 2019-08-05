@@ -26,3 +26,5 @@ mail/__pycache__/
 db.sqlite3
 sendgrid.env
 secrets.py
+.vscode/
+env/
