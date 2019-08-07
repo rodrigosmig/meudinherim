@@ -135,6 +135,7 @@ def home(request):
 
 	#calcula total de entradas
 	banco_entrada = ContaBanco.getLancamentosGroupByCategoria(user, data, 'entrada', 'banco')
+	print(banco_entrada)
 
 	for b in banco_entrada:
 		entradas_array.append(b)
@@ -206,7 +207,7 @@ def home(request):
 	context['categoria_entrada'] 		= sorted(categorias_entrada, key = lambda i: (i['value'], i['quantidade']), reverse = True)
 	categorias_entrada_json 			= json.dumps(categorias_entrada, ensure_ascii=False, use_decimal = True)
 	context['categoria_entrada_json'] 	= categorias_entrada_json
-	context['categorias_entrada_total'] = categorias_saidas_total
+	context['categorias_entrada_total'] = categorias_entradas_total
 	
 	context['categoria_credito'] 		= sorted(categorias_credito, key = lambda i: (i['value'], i['quantidade']), reverse = True)
 	categorias_credito_json 			= json.dumps(categorias_credito, ensure_ascii=False, use_decimal = True)
@@ -259,46 +260,25 @@ def detalhesLancamento(request):
 	if not categoria:
 		return HttpResponseNotFound()
 	
+	if 'data' in request.session:
+		data = datetime.strptime(request.session.get('data'), "%Y-%m-%d %H-%M-%S")
+	else:
+		data = datetime.today()
+	
 	if tipo_conta == ContaBanco.CARTAO_DE_CREDITO:
-		lancamentos = LancamentosBanco.objects.filter(
-			user = user
-			).filter(
-				categoria = categoria
-			).filter(
-				data__month = hoje.month
-			).filter(
-				data__year = hoje.year
-			).filter(
-				banco__tipo = ContaBanco.CARTAO_DE_CREDITO
-			)
-		lancamentos_json = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+		
+		lancamentos 		= ContaBanco.getLancamentoByCategoria(user, data, categoria, True)
+		lancamentos_json	= serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+		
 		return HttpResponse(lancamentos_json, content_type="application/json")
 	
 	else:
 		lancamentos_array = []
 		
-		lancamentos = LancamentosBanco.objects.filter(
-			user = user
-			).filter(
-				categoria = categoria
-			).filter(
-				data__month = hoje.month
-			).filter(
-				data__year = hoje.year
-			).exclude(
-				banco__tipo = ContaBanco.CARTAO_DE_CREDITO
-			)
+		lancamentos_banco	= ContaBanco.getLancamentoByCategoria(user, data, categoria)
+		lancamentos_caixa 	= LancamentosCaixa.getLancamentoByCategoria(user, data, categoria)
 
-		lancamentos_caixa = LancamentosCaixa.objects.filter(
-			user = user
-			).filter(
-				categoria = categoria
-			).filter(
-				data__month = hoje.month
-			).filter(
-				data__year = hoje.year
-			)
-		for l in lancamentos:
+		for l in lancamentos_banco:
 			lancamentos_array.append(l)
 		
 		for lc in lancamentos_caixa:

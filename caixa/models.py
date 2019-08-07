@@ -40,6 +40,21 @@ class LancamentosCaixa(models.Model):
 
 	def __str__(self):
 		return self.descricao
+	
+	
+	def getLancamentoByCategoria(user, data, categoria):
+    		
+		lancamentos = LancamentosCaixa.objects.filter(
+			user = user
+			).filter(
+				categoria = categoria
+			).filter(
+				data__month = data.month
+			).filter(
+				data__year = data.year
+			)
+
+		return lancamentos
 
 
 class Categoria(models.Model):

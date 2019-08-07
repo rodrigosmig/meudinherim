@@ -61,7 +61,25 @@ class ContaBanco(models.Model):
 			lancamentos = lancamentos.exclude(banco__tipo = ContaBanco.CARTAO_DE_CREDITO)
 
 		return lancamentos
+	
+	def getLancamentoByCategoria(user, data, categoria, credito = False):
+		
+		lancamentos = LancamentosBanco.objects.filter(
+			user = user
+			).filter(
+				categoria = categoria
+			).filter(
+				data__month = data.month
+			).filter(
+				data__year = data.year
+			)
+			
+		if(credito):
+			lancamentos = lancamentos.filter(banco__tipo = ContaBanco.CARTAO_DE_CREDITO)
+		else:
+			lancamentos = lancamentos.exclude(banco__tipo = ContaBanco.CARTAO_DE_CREDITO)
 
+		return lancamentos
 
 class LancamentosBanco(models.Model):
 	banco = models.ForeignKey('ContaBanco', on_delete = models.PROTECT)
