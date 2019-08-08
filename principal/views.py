@@ -135,7 +135,6 @@ def home(request):
 
 	#calcula total de entradas
 	banco_entrada = ContaBanco.getLancamentosGroupByCategoria(user, data, 'entrada', 'banco')
-	print(banco_entrada)
 
 	for b in banco_entrada:
 		entradas_array.append(b)
@@ -144,7 +143,15 @@ def home(request):
 	caixa_entrada = LancamentosCaixa.getLancamentosGroupByCategoria(user, data, 'entrada')
 
 	for c in caixa_entrada:
-		entradas_array.append(c)
+		descricao_categoria = ""
+		for b in entradas_array:
+			if(c['categoria__descricao'] == b['categoria__descricao']):
+				b['quantidade'] 	+= c['quantidade']
+				b['valor']			+= c['valor']
+				descricao_categoria	= c['categoria__descricao']
+				break
+		if(c['categoria__descricao'] != descricao_categoria):
+			entradas_array.append(c)
 		total_entradas += c['valor']
 
 	#calcula total de saidas
@@ -157,7 +164,15 @@ def home(request):
 	caixa_saida = LancamentosCaixa.getLancamentosGroupByCategoria(user, data, 'saida')
 	
 	for c in caixa_saida:
-		saidas_array.append(c)
+		descricao_categoria = ""
+		for b in saidas_array:
+			if(c['categoria__descricao'] == b['categoria__descricao']):
+				b['quantidade'] 	+= c['quantidade']
+				b['valor']			+= c['valor']
+				descricao_categoria	= c['categoria__descricao']
+				break
+		if(c['categoria__descricao'] != descricao_categoria):
+			saidas_array.append(c)
 		total_saidas += c['valor']
 	
 	#calcula total de lançamentos do cartão de crédito

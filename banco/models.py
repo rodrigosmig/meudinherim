@@ -8,13 +8,11 @@ from datetime import datetime
 import json
 
 class ContaBanco(models.Model):
-	CONTA_CORRENTE 		= "1"
-	CONTA_POUPANCA 		= "2"
-	CARTAO_DE_CREDITO 	= "3"
+	CONTA_BANCARIA 		= "1"
+	CARTAO_DE_CREDITO 	= "2"
 
 	TIPOS = (
-		(CONTA_CORRENTE, "Conta Corrente"),
-		(CONTA_POUPANCA, "Conta Poupança"),
+		(CONTA_BANCARIA, "Conta Bancária"),
 		(CARTAO_DE_CREDITO, "Cartão de Crédito"),
 	)
 	
