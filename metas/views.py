@@ -45,31 +45,35 @@ def metas(request):
 	#para saldo de cada agencia
 	agencias = ContaBanco.objects.filter(user = user)
 	contexto['agencias'] = agencias
+	
+	somaMetas 	= 0
+	totalMetas 	= 0
 
-	#soma o valor de saldo de todas as agencias
-	totalSaldoAgencias = 0
-	for a in agencias:
-		totalSaldoAgencias += a.saldo
+	if agencias:	
+		#soma o valor de saldo de todas as agencias
+		totalSaldoAgencias = 0
+		for a in agencias:
+			totalSaldoAgencias += a.saldo
 
-	saldoTotal = totalSaldoAgencias + saldoC.saldoAtual
-	somaMetas = 0
-	for m in metas:
-		if(saldoTotal >= m.valor):
-			m.progresso = 100.00
+		saldoTotal = totalSaldoAgencias + saldoC.saldoAtual
+		for m in metas:
+			if(saldoTotal >= m.valor):
+				m.progresso = 100.00
+			else:
+				progresso = (saldoTotal / m.valor) * 100
+				m.progresso = round(progresso, 2)
+			somaMetas += m.valor
+			m.save()
+
+		if(saldoTotal > somaMetas):
+			totalMetas = 100.00
 		else:
-			progresso = (saldoTotal / m.valor) * 100
-			m.progresso = round(progresso, 2)
-		somaMetas += m.valor
-		m.save()
-
-	if(saldoTotal > somaMetas):
-		totalMetas = 100.00
-	else:
-		progressoTotal = (saldoTotal / somaMetas) * 100
-		totalMetas = round(progressoTotal, 2)
+			progressoTotal = (saldoTotal / somaMetas) * 100
+			totalMetas = round(progressoTotal, 2)
 
 	contexto['totalMetas'] = totalMetas
 	contexto['somaMetas'] = somaMetas
+	
 	form = MetasForm() 	
 
 	contexto['formCad'] = form
