@@ -100,8 +100,8 @@ def banco(request):
 	contexto = {}
 
 	listAgencias = []
-	todasAgencias = ContaBanco.objects.filter(user = user)
-
+	todasAgencias = ContaBanco.objects.filter(user = user).exclude(tipo = ContaBanco.CARTAO_DE_CREDITO)
+	print(todasAgencias)
 	for a in todasAgencias:
 		id = a.id
 		nome = a.banco
@@ -112,6 +112,21 @@ def banco(request):
 	listAgencias = [{'id': id, 'agencia': agencia, 'saldo': saldo} for id, agencia, saldo in listAgencias]
 	listAgencias = json.dumps(listAgencias, ensure_ascii=False)
 	contexto['selectAgencias'] = listAgencias
+	print(listAgencias)
+	listCredito = []
+	todasCredito = ContaBanco.objects.filter(user = user).filter(tipo = ContaBanco.CARTAO_DE_CREDITO)
+
+	for c in todasCredito:
+		id = c.id
+		nome = c.banco
+		saldo = str(a.saldo)
+		listCredito.append((id, nome, saldo))
+
+
+	listCredito = [{'id': id, 'agencia': credito, 'saldo': saldo} for id, credito, saldo in listCredito]
+	listCredito = json.dumps(listCredito, ensure_ascii=False)
+	print(listCredito)
+	contexto['selectCredito'] = listCredito
 
 	formCaixa = LancamentosForm()
 	#seleciona apenas as categorias do usuario logado
