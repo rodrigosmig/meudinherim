@@ -23,7 +23,7 @@
                 <div class="header">
                     <h2>
                         Banco / Cartão de Crédito
-                        <small>Lançamentos na contas bancária e no cartão de crédito</small>
+                        <small>Lançamentos na conta bancária e no cartão de crédito</small>
                     </h2>
                     <ul class="header-dropdown m-r--5">
                         <li class="dropdown">
@@ -31,78 +31,151 @@
                                 <i class="material-icons">more_vert</i>
                             </a>
                             <ul class="dropdown-menu pull-right">
-                                <li><a class="nav-link" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar Meta">Efetuar lançamento</a></li>
-                                <li><a class="nav-link" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar Meta">Gerenciar Contas</a></li>
+                                <li><a class="nav-link" href="{% url 'banco:agencia' %}" title="Gerenciar Agência/Cartão">Gerenciar</a></li>
                             </ul>
                         </li>
                     </ul>
-                    <select id="select_agencia" class="form-control"></select>
-
-                    <br \>
-
-                    <div id="select_data">
-                        <form id="form_filtro_banco" class="form-inline">
-
-                            <select id="lanc_meses" class="form-control meses_change">
-                                <option value="nenhum">--Meses--</option>
-                                <option value="0">Janeiro</option>
-                                <option value="1">Fevereiro</option>
-                                <option value="2">Março</option>
-                                <option value="3">Abril</option>
-                                <option value="4">Maio</option>
-                                <option value="5">Junho</option>
-                                <option value="6">Julho</option>
-                                <option value="7">Agosto</option>
-                                <option value="8">Setembro</option>
-                                <option value="9">Outubro</option>
-                                <option value="10">Novembro</option>
-                                <option value="11">Dezembro</option>
-                            </select>
-                            <!-- Caixa para filtrar por mês -->
-                            <select id="lanc_anos" class="form-control anos_change">
-                                <option value="nenhum">--Ano--</option>
-                                <option value="2016">2016</option>
-                                <option value="2017">2017</option>
-                                <option value="2018">2018</option>
-                                <option value="2019">2019</option>
-                                <option value="2020">2020</option>
-                                <option value="2021">2021</option>
-                            </select>
-                            <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
-                        </form>
-                    </div>
                 </div>
                 
                 <div class="body">
-                    <div class="table-responsive">
-                        <table id="dataBanco" class="table table-bordered table-striped table-hover dataTable js-basic-example">
-                    
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Descrição</th>
-                                    <th>Tipo</th>
-                                    <th>Categoria</th>
-                                    <th>Valor</th>
-                                    <th>Editar</th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Descrição</th>
-                                    <th>Tipo</th>
-                                    <th>Categoria</th>
-                                    <th>Valor</th>
-                                    <th>Editar</th>
-                                </tr>
-                            </tfoot>
-                            
-                            <tbody id="table_lanc_banco">
+                    <ul class="nav nav-tabs tab-nav-right" role="tablist">
+                        <li role="presentation" class="active"><a href="#agencias" data-toggle="tab">Banco</a></li>
+                        <li role="presentation"><a href="#banco_cartao_credito" data-toggle="tab">Cartão</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade in active" id="agencias">
+                            <div class="row clearfix">
+                                <br />
+                                <div class="col-sm-6">
+                                    <select id="select_agencia" class="form-control show-tick"></select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div id="select_data" style="display: none">
+                                        <form id="form_filtro_banco" class="form-inline">
+                                            <select id="lanc_meses" class="form-control meses_change">
+                                                <option value="nenhum">--Meses--</option>
+                                                <option value="0">Janeiro</option>
+                                                <option value="1">Fevereiro</option>
+                                                <option value="2">Março</option>
+                                                <option value="3">Abril</option>
+                                                <option value="4">Maio</option>
+                                                <option value="5">Junho</option>
+                                                <option value="6">Julho</option>
+                                                <option value="7">Agosto</option>
+                                                <option value="8">Setembro</option>
+                                                <option value="9">Outubro</option>
+                                                <option value="10">Novembro</option>
+                                                <option value="11">Dezembro</option>
+                                            </select>
+                                            <!-- Caixa para filtrar por mês -->
+                                            <select id="lanc_anos" class="form-control anos_change">
+                                                <option value="nenhum">--Ano--</option>
+                                                <option value="2016">2016</option>
+                                                <option value="2017">2017</option>
+                                                <option value="2018">2018</option>
+                                                <option value="2019">2019</option>
+                                                <option value="2020">2020</option>
+                                                <option value="2021">2021</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <br \>
+                            <div class="table-responsive">
+                                <table id="dataBanco" class="table table-bordered table-striped table-hover dataTable js-basic-example">                    
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Descrição</th>
+                                            <th>Tipo</th>
+                                            <th>Categoria</th>
+                                            <th>Valor</th>
+                                            <th>Editar</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Descrição</th>
+                                            <th>Tipo</th>
+                                            <th>Categoria</th>
+                                            <th>Valor</th>
+                                            <th>Editar</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody id="table_lanc_banco"></tbody>
+                                </table>
+                            </div>
+                        </div>
 
-                            </tbody>
-                            
-                        </table>
+                        <div role="tabpanel" class="tab-pane fade in" id="banco_cartao_credito">
+                            <div class="row clearfix">
+                                <br />
+                                <div class="col-sm-6">
+                                    <select id="select_agencia_credito" class="form-control show-tick"></select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div id="select_data_credito" style="display: none">
+                                        <form id="form_filtro_credito" class="form-inline">                
+                                            <select id="lanc_meses_credito" class="form-control meses_change">
+                                                <option value="nenhum">--Meses--</option>
+                                                <option value="0">Janeiro</option>
+                                                <option value="1">Fevereiro</option>
+                                                <option value="2">Março</option>
+                                                <option value="3">Abril</option>
+                                                <option value="4">Maio</option>
+                                                <option value="5">Junho</option>
+                                                <option value="6">Julho</option>
+                                                <option value="7">Agosto</option>
+                                                <option value="8">Setembro</option>
+                                                <option value="9">Outubro</option>
+                                                <option value="10">Novembro</option>
+                                                <option value="11">Dezembro</option>
+                                            </select>
+                                            <!-- Caixa para filtrar por mês -->
+                                            <select id="lanc_anos_credito" class="form-control anos_change">
+                                                <option value="nenhum">--Ano--</option>
+                                                <option value="2016">2016</option>
+                                                <option value="2017">2017</option>
+                                                <option value="2018">2018</option>
+                                                <option value="2019">2019</option>
+                                                <option value="2020">2020</option>
+                                                <option value="2021">2021</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <br \>
+                            <div class="table-responsive">
+                                <table id="dataCredito" class="table table-bordered table-striped table-hover dataTable js-basic-example">                    
+                                    <thead>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Descrição</th>
+                                            <th>Tipo</th>
+                                            <th>Categoria</th>
+                                            <th>Valor</th>
+                                            <th>Editar</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Data</th>
+                                            <th>Descrição</th>
+                                            <th>Tipo</th>
+                                            <th>Categoria</th>
+                                            <th>Valor</th>
+                                            <th>Editar</th>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody id="table_lanc_credito"></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -138,10 +211,12 @@
     <!-- Modal Edição de Lançamento -->
 
 <script type="text/javascript">
-    var agencias = JSON.parse("{{ selectAgencias | safe | escapejs }}");    
+
+    var agencias = JSON.parse("{{ selectAgencias | safe | escapejs }}");
+    var credito = JSON.parse("{{ selectCredito | safe | escapejs }}");
 
     if (agencias.length !== 0) {
-        var conteudo = "<option value='nenhum'>-----------Selecione a agência-----------</option>";
+        var conteudo = "<option value='nenhum'>Selecione a agência</option>";
         for(var x = 0; x < agencias.length; x++) {
             conteudo += "<option value =" + agencias[x].id + ">" + agencias[x].agencia + "</option>";
         }
@@ -150,6 +225,18 @@
         var conteudo = "<option>Nenhuma agência cadastrada</option>";
     }
     $('#select_agencia').html(conteudo);
+
+    if (credito.length !== 0) {
+        var conteudo = "<option value='nenhum'>Selecione o cartão</option>";
+        for(var x = 0; x < credito.length; x++) {
+            conteudo += "<option value =" + credito[x].id + ">" + credito[x].agencia + "</option>";
+        }
+    }
+    else {
+        var conteudo = "<option>Nenhum cartão cadastrado</option>";
+    }
+    $('#select_agencia_credito').html(conteudo);
+
 </script>
 
 <script src="{% static 'js/banco.js' %}"></script>

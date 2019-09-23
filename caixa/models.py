@@ -75,6 +75,23 @@ class Categoria(models.Model):
 
 		return self.descricao
 
+	@staticmethod
+	def separarCategorias(request):
+		user = request.user
+		categorias = []
+		entrada = []
+		saida = []
+		for categoria in Categoria.objects.filter(tipo = '1').filter(user = user).order_by('descricao'):
+			entrada.append([categoria.id, categoria.descricao])
+
+		for categoria in Categoria.objects.filter(tipo = '2').filter(user = user).order_by('descricao'):
+			saida.append([categoria.id, categoria.descricao])
+
+		categorias.append(['Entradas', entrada])
+		categorias.append(['Saídas', saida])
+
+		return categorias
+
 class SaldoCaixa(models.Model):
 	saldoAnterior = models.DecimalField(max_digits = 8, decimal_places = 2)
 	saldoAtual = models.DecimalField(max_digits = 8, decimal_places = 2)

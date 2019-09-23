@@ -204,7 +204,8 @@ $(function() {
 
 			$('#lanc_meses').val(mesAtual).prop('selected', true);
 			$('#lanc_anos').val(anoAtual).prop('selected', true);
-			
+			var table = $('#dataBanco').DataTable();
+
 			$.ajax({
 				type: 'POST',
 				url: '/banco/',
@@ -218,10 +219,8 @@ $(function() {
 					
 					$('#select_data').show();
 
-					var table = $('#dataBanco').DataTable();
-
 					//limpa a tabela
-					var rows = table.clear().draw();
+					table.clear().draw();
 					
 					if(lancamentos.length !== 0) {
 						for(var x = 0; x < lancamentos.length; x++) {
@@ -273,6 +272,7 @@ $(function() {
 					}
 				},
 				error: function(msg) {
+					table.clear().draw();
 					$('#select_data').show();
 					$.alert(msg.responseText)
 				},
@@ -281,7 +281,80 @@ $(function() {
 		else {
 			$('#dataBanco').DataTable().clear().draw();
 			$('#select_data').hide();
-			$('.saldoBanco').hide();
+		}
+	});
+
+	$('#select_agencia_credito').on('change', function() {
+		if($(this).val() !== 'nenhum') {
+			var agencia = $(this).val();
+
+			var data = new Date();
+			var mesAtual = data.getMonth();
+			var anoAtual = data.getFullYear();
+
+			$('#lanc_meses_credito').val(mesAtual).prop('selected', true);
+			$('#lanc_anos_credito').val(anoAtual).prop('selected', true);
+			
+			$.ajax({
+				type: 'POST',
+				url: '/banco/',
+				data: {
+					'agencia': agencia,
+					'mes': mesAtual + 1,
+					'ano': anoAtual,
+					'csrfmiddlewaretoken': csrftokenPOST,
+				},
+				success: function(lancamentos) {
+					
+					$('#select_data_credito').show();
+
+					var table = $('#dataCredito').DataTable();
+
+					//limpa a tabela
+					var rows = table.clear().draw();
+					
+					if(lancamentos.length !== 0) {
+						for(var x = 0; x < lancamentos.length; x++) {
+							data = lancamentos[x].fields.data;
+							dia = data.substring(8);
+							mes = data.substring(5, 7);
+							ano = data.substring(0, 4);
+							newData = dia + "/" + mes + "/" + ano;
+
+							if(lancamentos[x].fields.tipo === "1") {
+								var valor = "<span style='color: blue' >" + lancamentos[x].fields.valor + "</span>";
+							}
+							else {
+								var valor = "<span style='color: red' >-" + lancamentos[x].fields.valor + "</span>";
+							}
+
+							var tipo = "";
+							if(lancamentos[x].fields.tipo === '1') {
+								tipo = 'Crédito';
+							}
+							else {
+								tipo = 'Débito'
+							}
+
+							table.row.add([newData,
+							lancamentos[x].fields.descricao,
+							tipo,
+							lancamentos[x].fields.categoria[2],
+							valor,
+							"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
+							]).draw(false);
+						}
+					}
+				},
+				error: function(msg) {
+					$('#select_data_credito').show();
+					$.alert(msg.responseText)
+				},
+			});
+		}
+		else {
+			$('#dataCredito').DataTable().clear().draw();
+			$('#select_data_credito').hide();
 		}
 	});
 
@@ -298,6 +371,8 @@ $(function() {
 		}
 		else {
 			mes = parseInt(mes) + 1
+			var table = $('#dataBanco').DataTable();
+
 			$.ajax({
 				type: 'POST',
 				url: '/banco/',
@@ -309,9 +384,7 @@ $(function() {
 				},
 				datatype: 'json',
 				success: function(lancamentos) {
-					var table = $('#dataBanco').DataTable();
-
-					var rows = table.clear().draw();					
+					table.clear().draw();
 
 					if(lancamentos.length !== 0) {
 
@@ -348,6 +421,7 @@ $(function() {
 					}					
 				},
 				error: function(msg) {
+					table.clear().draw();
 					//mensagem de retorno em caso de erro
 					$.alert(msg.responseText)
 					
@@ -358,10 +432,77 @@ $(function() {
 		
 	});
 
-	
-	//esconder saldo
-	$('.saldoBanco').hide();
+	$('#form_filtro_credito').on('submit', function(evento) {
+		evento.preventDefault();
 
-	//esconder combox da data
-	$('#select_data').hide();
+		var agencia = $('#select_agencia_credito').val();
+		var mes = $('#lanc_meses_credito').val();
+		var ano = $('#lanc_anos_credito').val();
+
+		if(mes === 'nenhum' || ano === 'nenhum') {
+			$.alert('Selecione o mês e o ano desejado.');
+		}
+		else {
+			mes = parseInt(mes) + 1
+			var table = $('#dataCredito').DataTable();
+
+			$.ajax({
+				type: 'POST',
+				url: '/banco/',
+				data: {
+					'agencia': agencia,
+					'mes': mes,
+					'ano': ano,
+					'csrfmiddlewaretoken': csrftokenPOST
+				},
+				datatype: 'json',
+				success: function(lancamentos) {
+					table.clear().draw();					
+
+					if(lancamentos.length !== 0) {
+
+						for(var x = 0; x < lancamentos.length; x++) {
+
+							data = lancamentos[x].fields.data;
+							dia = data.substring(8);
+							mes = data.substring(5, 7);
+							ano = data.substring(0, 4);
+							newData = dia + "/" + mes + "/" + ano;
+
+							if(lancamentos[x].fields.tipo === "1") {
+								var categoria = "<span style='color: blue' >" + lancamentos[x].fields.valor + "</span>";
+							}else{
+								var categoria = "<span style='color: red' >-" + lancamentos[x].fields.valor + "</span>";
+							}
+
+							var tipo = "";
+							if(lancamentos[x].fields.tipo === '1') {
+								tipo = 'Crédito';
+							}
+							else {
+								tipo = 'Débito'
+							}
+
+							table.row.add([newData,
+							lancamentos[x].fields.descricao,
+							tipo,
+							lancamentos[x].fields.categoria[2],
+							categoria,
+							"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
+							]).draw(false);
+						}
+					}					
+				},
+				error: function(msg) {
+					table.clear().draw();
+					//mensagem de retorno em caso de erro
+					$.alert(msg.responseText)
+					
+				},
+			});
+		}
+
+		
+	});
+
 });

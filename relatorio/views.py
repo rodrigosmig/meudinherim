@@ -54,24 +54,16 @@ def relatorioAPagar(request):
 
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()
-	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'].choices = separarCategorias(request)
+	formCaixa.getAddLancamentoForm(request)
+	contexto['formLancCaixa'] = formCaixa
 
 	formBanco = LancamentosBancoForm()
-	#Seleciona apenas o banco do usuario para o formulario
-	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user_id = request.user.id),
-		empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control'}
-        )
-	)
-	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'].choices = separarCategorias(request)
-
-	#para adicionar lancamento
-	contexto['formLancCaixa'] = formCaixa
+	formBanco.getAddLancamentoForm(request, 'banco')
 	contexto['formLancBanco'] = formBanco
+
+	formCredito = LancamentosBancoForm()
+	formCredito.getAddLancamentoForm(request, 'credito')
+	contexto['formLancCredito'] = formCredito
 
 	userProfile = UsuarioProfile.objects.get(user = request.user)
 	contexto['profile'] = userProfile
@@ -116,24 +108,16 @@ def relatorioAReceber(request):
 
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()
-	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'].choices = separarCategorias(request)
+	formCaixa.getAddLancamentoForm(request)
+	contexto['formLancCaixa'] = formCaixa
 
 	formBanco = LancamentosBancoForm()
-	#Seleciona apenas o banco do usuario para o formulario
-	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user_id = request.user.id),
-		empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control'}
-        )
-	)
-	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'].choices = separarCategorias(request)
-	
-	#para adicionar lancamento
-	contexto['formLancCaixa'] = formCaixa
+	formBanco.getAddLancamentoForm(request, 'banco')
 	contexto['formLancBanco'] = formBanco
+
+	formCredito = LancamentosBancoForm()
+	formCredito.getAddLancamentoForm(request, 'credito')
+	contexto['formLancCredito'] = formCredito
 
 	userProfile = UsuarioProfile.objects.get(user = request.user)
 	contexto['profile'] = userProfile

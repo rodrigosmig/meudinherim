@@ -53,7 +53,7 @@
                                 <i class="material-icons">more_vert</i>
                             </a>
                             <ul class="dropdown-menu pull-right">
-                                <li><a class="nav-link" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar Meta">Adicionar</a></li>
+                                <li><a class="nav-link" data-toggle="modal" href="#mAgencia" role="tab" title="Adicionar Agência/Cartão">Adicionar</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -73,6 +73,7 @@
                                         <th>Banco</th>
                                         <th>Agência</th>
                                         <th>Conta</th>
+                                        <th>Tipo</th>
                                         <th>Dia do Fechamento</th>
                                         <th>Limite</th>
                                         <th>Editar</th>
@@ -81,6 +82,7 @@
                                         <th>Banco</th>
                                         <th>Agência</th>
                                         <th>Conta</th>
+                                        <th>Tipo</th>
                                         <th>Dia do Fechamento</th>
                                         <th>Limite
                                         <th>Editar</th>
@@ -100,6 +102,15 @@
                                                 {% if ag.conta == None %}
                                                 {% else %}
                                                     {{ ag.conta }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if ag.tipo == '1' %}
+                                                    Corrente
+                                                {% elif ag.tipo == '2' %}
+                                                    Poupança
+                                                {% elif ag.tipo == '3' %}
+                                                    Cartão de Crédito
                                                 {% endif %}
                                             </td>
                                             {% if ag.dia_fechamento %}
@@ -131,6 +142,7 @@
                                         <th>Nome</th>
                                         <th>Agência</th>
                                         <th>Conta</th>
+                                        <th>Tipo</th>
                                         <th>Dia do Fechamento</th>
                                         <th>Limite</th>
                                         <th>Editar</th>
@@ -139,6 +151,7 @@
                                         <th>Nome</th>
                                         <th>Agência</th>
                                         <th>Conta</th>
+                                        <th>Tipo</th>
                                         <th>Dia do Fechamento</th>
                                         <th>Limite
                                         <th>Editar</th>
@@ -158,6 +171,11 @@
                                                 {% if c.conta == None %}
                                                 {% else %}
                                                     {{ c.conta }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if c.tipo == '3' %}
+                                                    Cartão de Crédito
                                                 {% endif %}
                                             </td>
                                             {% if c.dia_fechamento %}

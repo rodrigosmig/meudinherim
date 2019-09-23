@@ -49,25 +49,18 @@ def lancamentos(request):
 	agencias = ContaBanco.objects.filter(user = request.user)
 	contexto['agencias'] = agencias
 
-	formCaixa = LancamentosForm()
-	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'].choices = separarCategorias(request)
-	
-	formBanco = LancamentosBancoForm()
-	#Seleciona apenas o banco do usuario para o formulario
-	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user_id = request.user.id),
-		empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control'}
-        )
-	)
-	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'].choices = separarCategorias(request)
-
 	#para adicionar lancamento
+	formCaixa = LancamentosForm()
+	formCaixa.getAddLancamentoForm(request)
 	contexto['formLancCaixa'] = formCaixa
+
+	formBanco = LancamentosBancoForm()
+	formBanco.getAddLancamentoForm(request, 'banco')
 	contexto['formLancBanco'] = formBanco
+
+	formCredito = LancamentosBancoForm()
+	formCredito.getAddLancamentoForm(request, 'credito')
+	contexto['formLancCredito'] = formCredito
 
 	userProfile = UsuarioProfile.objects.get(user = request.user)
 	contexto['profile'] = userProfile
@@ -120,25 +113,18 @@ def categoria(request):
 	agencias = ContaBanco.objects.filter(user = user)
 	contexto['agencias'] = agencias
 
-	formCaixa = LancamentosForm()
-	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'].choices = separarCategorias(request)
-	
-	formBanco = LancamentosBancoForm()
-	#Seleciona apenas o banco do usuario para o formulario
-	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user = user),
-		empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control'}
-        )
-	)
-	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'].choices = separarCategorias(request)
-
 	#para adicionar lancamento
+	formCaixa = LancamentosForm()
+	formCaixa.getAddLancamentoForm(request)
 	contexto['formLancCaixa'] = formCaixa
+
+	formBanco = LancamentosBancoForm()
+	formBanco.getAddLancamentoForm(request, 'banco')
 	contexto['formLancBanco'] = formBanco
+
+	formCredito = LancamentosBancoForm()
+	formCredito.getAddLancamentoForm(request, 'credito')
+	contexto['formLancCredito'] = formCredito
 
 	userProfile = UsuarioProfile.objects.get(user = user)
 	contexto['profile'] = userProfile
@@ -166,22 +152,7 @@ def editCategoria(request):
 	lancamento = Categoria.objects.get(pk = idCategoria)
 
 	form = CategoriaForm(instance = lancamento)
-
-	form.fields['tipo'] = forms.ChoiceField(
-        widget = forms.Select(
-            attrs = {'class': 'form-control', 'id': 'id_tipo-alter_categoria'}
-        ),
-        choices = Categoria.TIPOS
-    )
-	
-	form.fields['descricao'] = forms.CharField(
-        label = 'Descrição',
-        max_length = 32,
-        required = True,
-        widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'id': 'id_descricao-alter_categoria', 'placeholder': 'Descreva a categoria'}
-        )
-    )
+	form.getEditCategoriaForm()	
 
 	#retorna o id da categoria junto com o formulario
 	divId = "<div id='id-alter_categoria'>" + idCategoria + "</div>"
@@ -277,36 +248,8 @@ def editLancamento(request):
 	idLancamento = request.GET.get('id')
 	lancamento = LancamentosCaixa.objects.get(pk = idLancamento)
 	form = LancamentosForm(instance = lancamento)
-
-	#seleciona apenas as categorias do usuario logado
-	form.fields['categoria'].choices = separarCategorias(request)
-
-	form.fields['descricao'] = forms.CharField(
-        label = 'Descrição',
-        max_length = 32,
-        required = True,
-        widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'placeholder': 'Descreva a transação', 'id': 'id_descricao-alter_caixa'}
-        )
-    )
-
-	form.fields['valor'] = forms.DecimalField(
-		label = 'Valor',
-		min_value = 0.01,
-		max_value = 9999.99,
-		required = True,
-		widget = forms.NumberInput(
-            attrs = {'class': 'form-control', 'id': 'id_valor-alter_caixa'}
-        )
-    )
-
-	form.fields['data'] = forms.DateField(
-        label = 'Data',
-        required = True,
-        widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'id': 'datepicker-alter_caixa'}
-        )
-    )
+	form.getEditLancamentoForm(request)
+	
 	if(lancamento.conta_a_pagar != None):
 		contaID = "<div id='status_conta'>Pago</div>"
 	elif(lancamento.conta_a_receber != None):
