@@ -91,24 +91,16 @@ def contasAPagar(request):
 	
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()
-	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'].choices = separarCategorias(request)
+	formCaixa.getAddLancamentoForm(request)
+	context['formLancCaixa'] = formCaixa
 
 	formBanco = LancamentosBancoForm()
-	#Seleciona apenas o banco do usuario para o formulario
-	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user = user),
-		empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control'}
-        )
-	)
-	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'].choices = separarCategorias(request)
-
-	#para adicionar lancamento
-	context['formLancCaixa'] = formCaixa
+	formBanco.getAddLancamentoForm(request, 'banco')
 	context['formLancBanco'] = formBanco
+
+	formCredito = LancamentosBancoForm()
+	formCredito.getAddLancamentoForm(request, 'credito')
+	context['formLancCredito'] = formCredito
 
 	userProfile = UsuarioProfile.objects.get(user = user)
 	context['profile'] = userProfile

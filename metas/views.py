@@ -14,7 +14,6 @@ from metas.models import Metas
 from usuario.models import UsuarioProfile
 from django.core import serializers
 import json
-from caixa.views import separarCategorias
 from django.shortcuts import get_object_or_404
 
 @login_required
@@ -81,28 +80,18 @@ def metas(request):
 	userProfile = UsuarioProfile.objects.get(user = request.user)
 	contexto['profile'] = userProfile
 
-
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()
-	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'].choices = separarCategorias(request)
-
-	#para adicionar lancamento
-	formBanco = LancamentosBancoForm()
-	#Seleciona apenas o banco do usuario para o formulario
-	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user_id = request.user.id),
-		empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control'}
-        )
-	)
-	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'].choices = separarCategorias(request)
-	
-	#para adicionar lancamento
+	formCaixa.getAddLancamentoForm(request)
 	contexto['formLancCaixa'] = formCaixa
+
+	formBanco = LancamentosBancoForm()
+	formBanco.getAddLancamentoForm(request, 'banco')
 	contexto['formLancBanco'] = formBanco
+
+	formCredito = LancamentosBancoForm()
+	formCredito.getAddLancamentoForm(request, 'credito')
+	contexto['formLancCredito'] = formCredito
 	
 
 	return render(request, template, contexto)

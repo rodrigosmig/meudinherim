@@ -10,7 +10,6 @@ from django import forms
 from usuario.models import UsuarioProfile
 from django.core import serializers
 import json
-from caixa.views import separarCategorias
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.urls import reverse
@@ -21,7 +20,7 @@ def cadastroBanco(request):
 	user = request.user
 	if (request.method == 'POST'):
 		form = ContaBancoForm(request.POST)
-		print(form)
+		
 		if(form.is_valid()):
 			if(form.cleaned_data['dia_fechamento'] < 0 or form.cleaned_data['dia_fechamento'] > 31):
 				messages.warning(request, "Dia inválido")
@@ -51,26 +50,16 @@ def cadastroBanco(request):
 
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()
-	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'].choices = separarCategorias(request)
-
-	#para adicionar lancamento
-	formBanco = LancamentosBancoForm()
-	#Seleciona apenas o banco do usuario para o formulario
-	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user = user),
-		empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control'}
-        )
-	)
-	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'].choices = separarCategorias(request)
-
-	#para adicionar lancamento
+	formCaixa.getAddLancamentoForm(request)
 	contexto['formLancCaixa'] = formCaixa
+
+	formBanco = LancamentosBancoForm()
+	formBanco.getAddLancamentoForm(request, 'banco')
 	contexto['formLancBanco'] = formBanco
-	
+
+	formCredito = LancamentosBancoForm()
+	formCredito.getAddLancamentoForm(request, 'credito')
+	contexto['formLancCredito'] = formCredito
 
 	return render(request, template, contexto)
 
@@ -101,7 +90,7 @@ def banco(request):
 
 	listAgencias = []
 	todasAgencias = ContaBanco.objects.filter(user = user).exclude(tipo = ContaBanco.CARTAO_DE_CREDITO)
-	print(todasAgencias)
+
 	for a in todasAgencias:
 		id = a.id
 		nome = a.banco
@@ -112,7 +101,7 @@ def banco(request):
 	listAgencias = [{'id': id, 'agencia': agencia, 'saldo': saldo} for id, agencia, saldo in listAgencias]
 	listAgencias = json.dumps(listAgencias, ensure_ascii=False)
 	contexto['selectAgencias'] = listAgencias
-	print(listAgencias)
+
 	listCredito = []
 	todasCredito = ContaBanco.objects.filter(user = user).filter(tipo = ContaBanco.CARTAO_DE_CREDITO)
 
@@ -125,28 +114,20 @@ def banco(request):
 
 	listCredito = [{'id': id, 'agencia': credito, 'saldo': saldo} for id, credito, saldo in listCredito]
 	listCredito = json.dumps(listCredito, ensure_ascii=False)
-	print(listCredito)
 	contexto['selectCredito'] = listCredito
 
-	formCaixa = LancamentosForm()
-	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'].choices = separarCategorias(request)
-	
-	formBanco = LancamentosBancoForm()
-	#Seleciona apenas o banco do usuario para o formulario
-	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user = user),
-		empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control'}
-        )
-	)
-	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'].choices = separarCategorias(request)
-
 	#para adicionar lancamento
+	formCaixa = LancamentosForm()
+	formCaixa.getAddLancamentoForm(request)
 	contexto['formLancCaixa'] = formCaixa
+
+	formBanco = LancamentosBancoForm()
+	formBanco.getAddLancamentoForm(request, 'banco')
 	contexto['formLancBanco'] = formBanco
+
+	formCredito = LancamentosBancoForm()
+	formCredito.getAddLancamentoForm(request, 'credito')
+	contexto['formLancCredito'] = formCredito
 
 	userProfile = UsuarioProfile.objects.get(user = user)
 	contexto['profile'] = userProfile	
@@ -224,49 +205,9 @@ def editLancamento(request):
 	#id do lancamento clicado
 	idLancamento = request.GET.get('id')
 	lancamento = LancamentosBanco.objects.get(pk = idLancamento)	
-	form = LancamentosBancoForm(instance = lancamento)
 
-	#seleciona apenas os banco do usuario logado
-	form.fields['banco'] = forms.ModelChoiceField(
-			queryset = ContaBanco.objects.filter(user_id = request.user.id),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'id_banco-alter_banco'}
-	        )
-		)
-	#seleciona apenas as categorias do usuario logado
-	form.fields['categoria'].choices = separarCategorias(request)
-	
-	form.fields['data'] = forms.DateField(
-		label = 'Data',
-		required = True,
-		widget = forms.TextInput(
-			attrs = {'class': 'form-control', 'id': 'datepicker-alter_banco'}
-		)
-    )
-	form.fields['tipo'] = forms.ChoiceField(
-		widget = forms.Select(
-            attrs = {'class': 'form-control', 'id': 'id_tipo-alter_banco'}
-        ),
-        choices = LancamentosBanco.TIPOS
-    )
-	form.fields['valor'] = forms.DecimalField(
-		label = 'Valor',
-        min_value = 0.01,
-        max_value = 9999.99,
-        required = True,
-        widget = forms.NumberInput(
-            attrs = {'class': 'form-control', 'id': 'id_valor-alter_banco'}
-        )
-    )
-	form.fields['descricao'] = forms.CharField(
-		label = 'Descrição',
-		max_length = 32,
-		required = True,
-		widget = forms.TextInput(
-		attrs = {'class': 'form-control', 'id': 'id_descricao-alter_banco'}
-        )
-    )
+	form = LancamentosBancoForm(instance = lancamento)
+	form.getEditLancamentoForm(request)	
 
 	if(lancamento.conta_a_pagar != None):
 		contaID = "<div id='status_conta'>Pago</div>"
@@ -410,8 +351,7 @@ def getAgencias(request):
 	user = request.user
 	agencias = ContaBanco.objects.filter(user = user).exclude(tipo = ContaBanco.CARTAO_DE_CREDITO)
 
-	if(len(agencias) != 0):
-		agenciasJson = serializers.serialize('json', agencias, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+	agenciasJson = serializers.serialize('json', agencias, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 	
 	return HttpResponse(agenciasJson, content_type="application/json")
 

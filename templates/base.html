@@ -130,6 +130,19 @@
             });
         });
 
+        $( function() {
+            $("#datePicker_credito").datepicker({
+                dateFormat: 'dd/mm/yy',
+                dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+                dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+                dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+                monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+                monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+                nextText: 'Próximo',
+                prevText: 'Anterior'
+            });
+        });
+
         {% block staticCalendario %}{% endblock %}
 
 </script>
@@ -442,6 +455,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#banco" role="tab">Banco</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#credito" role="tab">Crédito</a>
+                            </li>
                         </ul>
 
                         <div class="tab-content">
@@ -482,6 +498,25 @@
                                 </form>
                             </div>
                             <!-- Tab pane Banco -->
+
+                            <!-- Tab pane Credito -->
+                            <div class="tab-pane" id="credito" role="tabpanel">
+                                <form id="form_add_lancamento_credito" method="POST">
+                                    {% csrf_token %}
+                                    {% for campo in formLancCredito %}
+                                        {% if campo.label != "User" %}
+                                        {{ campo.label_tag }}
+                                        {% endif %}
+                                        {{ campo }}                                    
+                                    {% endfor %}
+                                    <!-- Salvar/Cancelar -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Salvar</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- Tab pane Credito -->
                         </div>                               
                   
                     </div>

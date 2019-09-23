@@ -285,7 +285,6 @@ $(function() {
 	});
 
 	$('#select_agencia_credito').on('change', function() {
-		
 		if($(this).val() !== 'nenhum') {
 			var agencia = $(this).val();
 
