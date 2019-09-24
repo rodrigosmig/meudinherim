@@ -15,7 +15,11 @@
     {% endfor %}
 {% endif %}
 
-<form method="POST" action="{% url 'principal:entrar' %}">
+{% if next %}
+    <form method="POST" action="{% url 'principal:entrar' %}?next={{ next }}">
+{% else %}
+    <form method="POST" action="{% url 'principal:entrar' %}">
+{% endif %}
     {% csrf_token %}
 
     <div class="logo align-center">

@@ -27,6 +27,9 @@ from dateutil.relativedelta import relativedelta
 from json import dumps
 
 def index(request):
+	if(request.user.is_authenticated):
+		return redirect(settings.LOGIN_REDIRECT_URL)
+
 	template = 'principal/index.html'
 	form = RegisterForm()
 
@@ -83,11 +86,17 @@ def index(request):
 
 
 def entrar(request):
+	next_page = request.GET.get('next')
+
 	if(request.method == 'POST'):
 		user = authenticate(username = request.POST['username'], password = request.POST['password'])
 				
 		if user is not None:
 			login(request, user)
+
+			if(next_page):
+				return redirect(next_page)
+
 			return redirect(settings.LOGIN_REDIRECT_URL)
 		else:
 			messages.error(request, 'Login ou senha inválidos. Tente novamente.')
@@ -97,6 +106,9 @@ def entrar(request):
 	formLogin = AuthenticationForm()
 	contexto = {'form': formLogin}
 
+	if(next_page):
+		contexto['next'] = next_page
+		
 	return render(request, template, contexto)
 
 @login_required
