@@ -229,22 +229,6 @@ def home(request):
 	context['categoria_credito_json'] 	= categorias_credito_json
 	context['categorias_credito_total']  = categorias_credito_total
 
-	formCaixa = LancamentosForm()
-	#seleciona apenas as categorias do usuario logado
-	formCaixa.fields['categoria'].choices = separarCategorias(request)
-	
-	formBanco = LancamentosBancoForm()
-	#Seleciona apenas o banco do usuario para o formulario
-	formBanco.fields['banco'] = forms.ModelChoiceField(
-		queryset = ContaBanco.objects.filter(user = user),
-		empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control'}
-        )
-	)
-	#seleciona apenas as categorias do usuario logado
-	formBanco.fields['categoria'].choices = separarCategorias(request)
-
 	#busca o saldo de Caixa do usuario e atribui ao contexto
 	saldoC 					= SaldoCaixa.objects.get(user = user)
 	context['saldoCaixa'] 	= saldoC.saldoAtual
@@ -253,9 +237,21 @@ def home(request):
 	agencias 			= ContaBanco.objects.filter(user = user)
 	context['agencias'] = agencias
 
-	context['formLancCaixa'] = formCaixa
-	context['formLancBanco'] = formBanco
 	context['data'] = data
+
+	#para adicionar lancamento
+	formCaixa = LancamentosForm()
+	formCaixa.getAddLancamentoForm(request)
+	context['formLancCaixa'] = formCaixa
+
+	formBanco = LancamentosBancoForm()
+	formBanco.getAddLancamentoForm(request, 'banco')
+	context['formLancBanco'] = formBanco
+
+	formCredito = LancamentosBancoForm()
+	formCredito.getAddLancamentoForm(request, 'credito')
+	context['formLancCredito'] = formCredito
+	
 	#soma o valor de saldo de todas as agencias
 	totalSaldoAgencias = 0
 	for a in agencias:

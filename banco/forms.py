@@ -57,6 +57,13 @@ class ContaBancoForm(ModelForm):
 		model = ContaBanco
 		fields = ['banco', 'agencia', 'conta', 'tipo', 'dia_fechamento', 'limite']
 
+	def getEditBancoForm(self):
+		self.fields['banco'].widget.attrs['id'] = "id_banco-alter_banco"
+		self.fields['agencia'].widget.attrs['id'] = "id_agencia-alter_agencia"
+		self.fields['conta'].widget.attrs['id'] = "id_conta-alter_conta"
+		self.fields['tipo'].widget.attrs['id'] = "id_tipo-alter_tipo"
+		self.fields['dia_fechamento'].widget.attrs['id'] = "id_conta-alter_dia_fechamento"
+		self.fields['limite'].widget.attrs['id'] = "id_tipo-alter_limite"
 
 
 class LancamentosBancoForm(ModelForm):

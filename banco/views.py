@@ -291,13 +291,7 @@ def editAgencia(request):
 		return HttpResponseNotFound()
 	
 	form = ContaBancoForm(instance = agencia)
-
-	form.fields['banco'].widget.attrs['id'] = "id_banco-alter_banco"
-	form.fields['agencia'].widget.attrs['id'] = "id_agencia-alter_agencia"
-	form.fields['conta'].widget.attrs['id'] = "id_conta-alter_conta"
-	form.fields['tipo'].widget.attrs['id'] = "id_tipo-alter_tipo"
-	form.fields['dia_fechamento'].widget.attrs['id'] = "id_conta-alter_dia_fechamento"
-	form.fields['limite'].widget.attrs['id'] = "id_tipo-alter_limite"
+	form.getEditBancoForm()	
 	
 	temp = 'id_agencia-alter_agencia'
 	#retorna o id do agencia junto com o formulario

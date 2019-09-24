@@ -123,41 +123,7 @@ def editMeta(request):
 	meta = Metas.objects.get(pk = idMeta)
 
 	form = MetasForm(instance = meta)
-
-	form.fields['dataInicio'] = forms.DateField(
-		label = 'Data Inicio',
-		required = True,
-		widget = forms.TextInput(
-			attrs = {'class': 'form-control', 'id': 'datepickerMI-alter_meta', 'placeholder': 'Insira a início da meta'}
-        )
-    )
-
-	form.fields['dataFim'] = forms.DateField(
-		label = 'Data Fim',
-        required = True,
-        widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'id': 'datepickerMF-alter_meta', 'placeholder': 'Insira a fim da meta'}
-            )
-        )
-
-	form.fields['titulo'] = forms.CharField(
-        label = 'Título da Meta',
-        max_length = 40,
-        required = True,
-        widget = forms.TextInput(
-        attrs = {'class': 'form-control', 'id': 'id_titulo-alter_meta', 'placeholder': 'Insira o título da meta'}
-        )
-    )
-
-	form.fields['valor'] = forms.DecimalField(
-        label = 'Valor da Meta',
-        min_value = 1,
-        max_value = 999999.99,
-        required = True,
-        widget = forms.NumberInput(
-        attrs = {'class': 'form-control', 'id': 'id_valor-alter_meta', 'placeholder': 'Insira o valor da meta'}
-        )
-    )
+	form.getEditMetaForm(request)
 
 	#retorna o id da meta junto com o formulario
 	divId = "<div id='id_meta'>" + idMeta + "</div>"
