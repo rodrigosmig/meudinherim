@@ -100,6 +100,9 @@ def config(request):
     formCredito.getAddLancamentoForm(request, 'credito')
     contexto['formLancCredito'] = formCredito
 
+    contexto['formConfig'] = formDados
+    contexto['formSenha'] = formSenha
+
     userProfile = UsuarioProfile.objects.get(user = request.user)
     contexto['profile'] = userProfile
 

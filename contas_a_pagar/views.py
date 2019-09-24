@@ -15,21 +15,7 @@ from django.core import serializers
 import json
 from caixa.views import separarCategorias
 
-parcela = (
-    ("0", "Não"),
-    ("1", "1"),
-    ("2", "2"),
-    ("3", "3"),
-    ("4", "4"),
-    ("5", "5"),
-    ("6", "6"),
-    ("7", "7"),
-    ("8", "8"),
-    ("9", "9"),
-    ("10", "10"),
-    ("11", "11"),
-    ("12", "12"),
-)
+
 
 @login_required
 def contasAPagar(request):
@@ -69,15 +55,8 @@ def contasAPagar(request):
 	contas = ContasAPagar.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
 
 	form = ContasAPagarForm()
-	#seleciona apenas as categorias do usuario logado e do tipo saida
-	form.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user).filter(tipo = 2).order_by('descricao'),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'id_categoriaCP'}
-	        )
-		)
-
+	form.getAddCPForm(request)
+	
 	context = {'contPagar': contas, 'contPagarForm': form}
 
 	#busca o saldo na carteira do usuario e atribui ao contexto
@@ -145,50 +124,7 @@ def editContasPagar(request):
 	idConta = request.GET.get('id')
 	conta = ContasAPagar.objects.get(pk = idConta)
 	form = ContasAPagarForm(instance = conta)
-
-	#seleciona apenas as categorias do usuario logado e do tipo saida
-	form.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user_id = request.user.id).filter(tipo = 2),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'id_categoria_edit'}
-	        )
-		)
-
-	#altera o id dos campos
-	form.fields['data'] = forms.DateField(
-		label = 'Data de vencimento',
-		required = True,
-		widget = forms.TextInput(
-			attrs = {'class': 'form-control', 'id': 'datepickerCP_edit'}
-
-        )
-	)
-	form.fields['descricao'] = forms.CharField(
-		label = 'Descrição',
-		max_length = 32,
-		required = True,
-		widget = forms.TextInput(
-			attrs = {'class': 'form-control', 'id': 'id_descricao_edit'}
-        )
-    )
-	form.fields['valor'] = forms.DecimalField(
-		label = 'Valor',
-		min_value = 0.01,
-    	max_value = 999999.99,
-    	required = True,
-    	widget = forms.NumberInput(
-    		attrs = {'class': 'form-control', 'id': 'id_valor_edit'}
-        )
-    )
-
-	form.fields['parcelas'] = forms.ChoiceField(
-        label = 'Outras Parcelas',
-        widget = forms.Select(
-        attrs = {'class': 'form-control', "id": "outras_parcelas_edit"}
-        ),
-        choices = parcela
-    )
+	form.getEditCPForm(request)	
 
 	#retorna o id da conta junto com o formulario
 	divId = "<div id='id_contaAPagar'>" + idConta + "</div>"

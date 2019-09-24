@@ -43,7 +43,7 @@ class LancamentosForm(ModelForm):
         self.fields['categoria'].choices = Categoria.separarCategorias(request)
     
     def getEditLancamentoForm(self, request):
-        
+
         self.fields['descricao'] = forms.CharField(
             label = 'Descrição',
             max_length = 32,
@@ -70,6 +70,7 @@ class LancamentosForm(ModelForm):
                 attrs = {'class': 'form-control', 'id': 'datepicker-alter_caixa'}
             )
         )
+        self.fields['categoria'].choices = Categoria.separarCategorias(request)
 
 
 class CategoriaForm(ModelForm):

@@ -61,3 +61,55 @@ class ContasAPagarForm(ModelForm):
     class Meta:
         model = ContasAPagar
         fields = ['data', 'categoria', 'descricao', 'valor']
+    
+    def getAddCPForm(self, request):
+        #seleciona apenas as categorias do usuario logado e do tipo saida
+        self.fields['categoria'] = forms.ModelChoiceField(
+                queryset = Categoria.objects.filter(user = request.user).filter(tipo = 2).order_by('descricao'),
+                empty_label = 'Nenhum',
+                widget = forms.Select(
+                    attrs = {'class': 'form-control', 'id': 'id_categoriaCP'}
+                )
+            )
+    
+    def getEditCPForm(self, request):
+        #seleciona apenas as categorias do usuario logado e do tipo saida
+        self.fields['categoria'] = forms.ModelChoiceField(
+                queryset = Categoria.objects.filter(user = request.user).filter(tipo = 2),
+                empty_label = 'Nenhum',
+                widget = forms.Select(
+                    attrs = {'class': 'form-control', 'id': 'id_categoria_edit'}
+                )
+            )
+        self.fields['data'] = forms.DateField(
+            label = 'Data de vencimento',
+            required = True,
+            widget = forms.TextInput(
+                attrs = {'class': 'form-control', 'id': 'datepickerCP_edit'}
+
+            )
+        )
+        self.fields['descricao'] = forms.CharField(
+            label = 'Descrição',
+            max_length = 32,
+            required = True,
+            widget = forms.TextInput(
+                attrs = {'class': 'form-control', 'id': 'id_descricao_edit'}
+            )
+        )
+        self.fields['valor'] = forms.DecimalField(
+            label = 'Valor',
+            min_value = 0.01,
+            max_value = 999999.99,
+            required = True,
+            widget = forms.NumberInput(
+                attrs = {'class': 'form-control', 'id': 'id_valor_edit'}
+            )
+        )
+        self.fields['parcelas'] = forms.ChoiceField(
+            label = 'Outras Parcelas',
+            widget = forms.Select(
+            attrs = {'class': 'form-control', "id": "outras_parcelas_edit"}
+            ),
+            choices = parcelas
+        )

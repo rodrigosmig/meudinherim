@@ -15,22 +15,6 @@ import json
 from usuario.models import UsuarioProfile
 from caixa.views import separarCategorias
 
-parcela = (
-    ("0", "Não"),
-    ("1", "1"),
-    ("2", "2"),
-    ("3", "3"),
-    ("4", "4"),
-    ("5", "5"),
-    ("6", "6"),
-    ("7", "7"),
-    ("8", "8"),
-    ("9", "9"),
-    ("10", "10"),
-    ("11", "11"),
-    ("12", "12"),
-)
-
 @login_required
 def contasAReceber(request):
 	user = request.user
@@ -69,14 +53,7 @@ def contasAReceber(request):
 	contas = ContasAReceber.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
 
 	form = ContasAReceberForm()
-
-	form.fields['categoria'] = forms.ModelChoiceField(
-        queryset = Categoria.objects.filter(user = user).filter(tipo = 1).order_by('descricao'),
-        empty_label = 'Nenhum',
-        widget = forms.Select(
-            attrs = {'class': 'form-control', 'id': 'id_categoriaCR'}
-        )
-    )
+	form.getAddCRForm(request)	
 
 	contexto = {'contReceber': contas, 'contReceberForm': form}
 
@@ -144,50 +121,7 @@ def editContasReceber(request):
 	idConta = request.GET.get('id')
 	conta = ContasAReceber.objects.get(pk = idConta)
 	form = ContasAReceberForm(instance = conta)
-
-	#seleciona apenas as categorias do usuario logado e do tipo entrada
-	form.fields['categoria'] = forms.ModelChoiceField(
-			queryset = Categoria.objects.filter(user = user).filter(tipo = 1),
-			empty_label = 'Nenhum',
-	        widget = forms.Select(
-	            attrs = {'class': 'form-control', 'id': 'id_categoria_edit'}
-	        )
-		)
-
-	#altera o id dos campos
-	form.fields['data'] = forms.DateField(
-		label = 'Data',
-		required = True,
-		widget = forms.TextInput(
-			attrs = {'class': 'form-control', 'id': 'datepickerCR_edit'}
-
-        )
-	)
-	form.fields['descricao'] = forms.CharField(
-		label = 'Descrição',
-		max_length = 32,
-		required = True,
-		widget = forms.TextInput(
-			attrs = {'class': 'form-control', 'id': 'id_descricao_edit'}
-        )
-    )
-	form.fields['valor'] = forms.DecimalField(
-		label = 'Valor',
-		min_value = 0.01,
-    	max_value = 999999.99,
-    	required = True,
-    	widget = forms.NumberInput(
-    		attrs = {'class': 'form-control', 'id': 'id_valor_edit'}
-        )
-    )
-
-	form.fields['parcelas'] = forms.ChoiceField(
-        label = 'Outras Parcelas',
-        widget = forms.Select(
-        attrs = {'class': 'form-control', "id": "outras_parcelas_edit"}
-        ),
-        choices = parcela
-    )
+	form.getEditCRForm(request)	
 
 	#retorna o id da conta junto com o formulario
 	divId = "<div id='id_contaAReceber'>" + idConta + "</div>"
