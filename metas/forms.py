@@ -23,24 +23,24 @@ class MetasForm(ModelForm):
         )
     )
 
+    prazo = forms.DateField(
+		label = 'Prazo',
+		required = True,
+		widget = forms.TextInput(
+			attrs = {'class': 'form-control datepicker', 'placeholder': 'Insira o prazo da meta'}
+		)
+    )
+
     class Meta:
         model = Metas
-        fields =['titulo', 'valor']
+        fields =['titulo', 'valor', 'prazo']
 
     def getEditMetaForm(self, request):
-        self.fields['dataInicio'] = forms.DateField(
-            label = 'Data Inicio',
+        self.fields['prazo'] = forms.DateField(
+            label = 'Prazo',
             required = True,
             widget = forms.TextInput(
-                attrs = {'class': 'form-control', 'id': 'datepickerMI-alter_meta', 'placeholder': 'Insira a início da meta'}
-            )
-        )
-
-        self.fields['dataFim'] = forms.DateField(
-            label = 'Data Fim',
-            required = True,
-            widget = forms.TextInput(
-                attrs = {'class': 'form-control', 'id': 'datepickerMF-alter_meta', 'placeholder': 'Insira a fim da meta'}
+                attrs = {'class': 'form-control datepicker', 'id': 'id_prazo-alter_meta', 'placeholder': 'Insira o prazo da meta'}
                 )
             )
 

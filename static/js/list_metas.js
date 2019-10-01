@@ -33,6 +33,15 @@ $(function() {
                 }
                 else {
                     metas.forEach(meta => {
+                        if(meta.fields.progresso < 30 ) {
+                            cor_progresso = "progress-bar-danger"
+                        }
+                        else if(meta.fields.progresso < 80) {
+                            cor_progresso = "bg-cyan"
+                        }
+                        else {
+                            cor_progresso = "progress-bar-success"
+                        }
                         var html = "<li> \
                                <a class='waves-effect waves-block' href='javascript:void(0);'> \
                                <h4> \
@@ -40,7 +49,7 @@ $(function() {
                                <small>" + meta.fields.progresso + "%</small> \
                                </h4> \
                                <div class='progress'> \
-                               <div class='progress-bar bg-cyan' role='progressbar' aria-valuenow='85' aria-valuemin='0' aria-valuemax='100' style='width:" + meta.fields.progresso + "%'> \
+                               <div class='progress-bar " + cor_progresso + " role='progressbar' aria-valuenow='85' aria-valuemin='0' aria-valuemax='100' style='width:" + meta.fields.progresso + "%'> \
                                </div> \
                                </div> \
                                </a> \

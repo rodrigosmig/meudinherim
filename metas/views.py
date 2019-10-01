@@ -1,13 +1,12 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from banco.models import ContaBanco, LancamentosBanco, SaldoBanco
 from caixa.models import Categoria, SaldoCaixa
 from banco.forms import ContaBancoForm, LancamentosBancoForm
 from caixa.forms import LancamentosForm
 from django import forms
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
 from metas.forms import MetasForm
 from metas.models import Metas
@@ -15,6 +14,8 @@ from usuario.models import UsuarioProfile
 from django.core import serializers
 import json
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from metas import util
 
 @login_required
 def metas(request):
@@ -26,9 +27,11 @@ def metas(request):
 			cadastroMeta.progresso = 0
 			cadastroMeta.concluida = False
 			cadastroMeta.save()
-			return HttpResponse('Meta cadastrada com sucesso.')
+			messages.success(request, 'Meta ' + cadastroMeta.titulo +  ' cadastrada com sucesso.')
+			return HttpResponseRedirect(reverse('metas:metas'))
 		else:
-			return HttpResponseServerError('Formulário inválido. Tente novamente.')
+			messages.success(request, 'Formulário inválido. Tente novamente.')
+			return HttpResponseRedirect(reverse('metas:metas'))
 
 	user = request.user
 	template='meta/metas.html'
@@ -42,7 +45,7 @@ def metas(request):
 	contexto['saldoCaixa'] = saldoC.saldoAtual
 
 	#para saldo de cada agencia
-	agencias = ContaBanco.objects.filter(user = user)
+	agencias = ContaBanco.objects.filter(user = user).exclude(tipo = ContaBanco.CARTAO_DE_CREDITO)
 	contexto['agencias'] = agencias
 	
 	somaMetas 	= 0
@@ -55,20 +58,14 @@ def metas(request):
 			totalSaldoAgencias += a.saldo
 
 		saldoTotal = totalSaldoAgencias + saldoC.saldoAtual
+
 		for m in metas:
-			if(saldoTotal >= m.valor):
-				m.progresso = 100.00
-			else:
-				progresso = (saldoTotal / m.valor) * 100
-				m.progresso = round(progresso, 2)
-			somaMetas += m.valor
+			progresso 	= util.getMetaPercent(m.valor, saldoTotal)
+			m.progresso = progresso
 			m.save()
 
-		if(saldoTotal > somaMetas):
-			totalMetas = 100.00
-		else:
-			progressoTotal = (saldoTotal / somaMetas) * 100
-			totalMetas = round(progressoTotal, 2)
+			saldoTotal 	-= m.valor
+			somaMetas	+= m.valor
 
 	contexto['totalMetas'] = totalMetas
 	contexto['somaMetas'] = somaMetas
@@ -98,29 +95,28 @@ def metas(request):
 
 @login_required
 def editMeta(request):
-	user = request.user
-
 	if(request.method == 'POST'):
 
 		#id da meta clicada
 		idMeta = request.POST.get('id')
-		#busca a meta a ser alterado
-		meta = Metas.objects.get(pk = idMeta)
-		
+		#busca a meta a ser alterada
+		meta = get_object_or_404(Metas, pk = idMeta)
+
 		#atribui a meta ao form	
 		form = MetasForm(request.POST, instance = meta)
 
 		if(form.is_valid()):
 			form.save()
-
-			return HttpResponse('Meta alterada com sucesso')
+			messages.success(request, 'Meta ' + meta.titulo +  ' alterada com sucesso.')
+			return HttpResponseRedirect(reverse('metas:metas'))
 		else:
-			return HttpResponseServerError('Dados inválidos. Tente novamente')
+			messages.error(request, 'Dados inválidos. Tente novamente.')
+			return HttpResponseRedirect(reverse('metas:metas'))
 
 	idMeta = request.GET.get('id')
 
 	#busca a meta no banco
-	meta = Metas.objects.get(pk = idMeta)
+	meta = get_object_or_404(Metas, pk = idMeta)
 
 	form = MetasForm(instance = meta)
 	form.getEditMetaForm(request)
@@ -135,22 +131,20 @@ def editMeta(request):
 @login_required
 def delMeta(request):
 	if(request.method == 'POST'):
-		#id do usuario
-		user = request.user
 		#id da meta a ser deletada
 		idMeta = request.POST.get('id')
 
 		#busca o lançamento
-		meta = Metas.objects.get(pk = idMeta)		
+		meta = get_object_or_404(Metas, pk = idMeta)
+
 		if(request.user == meta.user):
 			meta.delete()
 
-			return HttpResponse("Meta excluída com sucesso")
+			messages.success(request, 'Meta ' + meta.titulo +  ' excluída com sucesso.')
+			return HttpResponseRedirect(reverse('metas:metas'))
 		else:
-			return HttpResponseServerError("Meta não encontrada.")
-		
-
-	return HttpResponseServerError("Meta não encontrada.")
+			messages.error(request, 'Meta ' + meta.titulo +  ' não pertence ao usuário ' + request.user.username)
+			return HttpResponseRedirect(reverse('metas:metas'))
 
 @login_required
 def calcMetas(request):
@@ -166,13 +160,12 @@ def calcMetas(request):
 	saldoTotal = totalSaldoAgencias + saldoC.saldoAtual
 
 	for m in metas:
-		if(saldoTotal >= m.valor):
-			m.progresso = 100.00
-		else:
-			progresso = (saldoTotal / m.valor) * 100
-			m.progresso = round(progresso, 2)
+		progresso 	= util.getMetaPercent(m.valor, saldoTotal)
+		m.progresso = progresso
 		m.save()
 
+		saldoTotal 	-= m.valor
+	
 	metasJson = serializers.serialize('json', metas)
 			
 	return HttpResponse(metasJson, content_type="application/json")
