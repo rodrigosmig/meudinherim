@@ -14,104 +14,93 @@
 
 {% block content %}
 
-<section class="content2">
-    
-    <div class="container-fluid">     
-        <div class="block-header">
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+
+            <div class="header">
+                <span style="font-size: 26px; font-weight: bold">Metas</span>
+                <ul class="header-dropdown">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
+                            <i class="material-icons">more_vert</i>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li>
+                                <a class="nav-link" data-toggle="modal" href="" role="tab" title="Adicionar Meta" data-target="#adicionaMeta">
+                                   Adicionar
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                        
+                </ul>
+            </div>
             
-        </div>
-    </div>
-    
-    <div class="row clearfix">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="card">
-
-                <div class="header">
-                    <span style="font-size: 26px; font-weight: bold">Metas</span>
-                    <ul class="header-dropdown">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">
-                                <i class="material-icons">more_vert</i>
-                            </a>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a class="nav-link" data-toggle="modal" href="" role="tab" title="Adicionar Meta" data-target="#adicionaMeta">
-                                        <i class="material-icons">add</i>Adicionar
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                            
-                    </ul>
-                </div>
+            <div class="body">
+                <div class="table-responsive">
+                    <table id="mydata" class="table table-bordered table-striped table-hover dataTable js-basic-example">
                 
-                <div class="body">
-                    <div class="table-responsive">
-                        <table id="mydata" class="table table-bordered table-striped table-hover dataTable js-basic-example">
-                    
-                            <thead>
-                                <tr>
-                                    <th>Título</th>
-                                    <th>Progresso</th>
-                                    <th>Valor da Meta</th>
-                                    <th>Editar</th>
-                                    <th>Concluída</th>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for m in formMetas %}
-                                    <tr id="{{ m.id }}">                                      
-                                        <td>
-                                          {{ m.titulo }}                                      
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: {{ m.progresso | cut:',' }}%">
-                                                {{ m.progresso }}%
-                                                </div>
-                                            </div>
-                                        </td>
-                                         <td>
-                                            R$ {{ m.valor}}
-                                         </td>
-
-                                        <td>                                       
-                                        <i class="material-icons"><a  data-toggle="modal" data-target="#editMeta" href=""><span class="openEdit" data-meta="{{ m.id }}">edit</span></a></i>
-                                        </td>                                     
-                                        {% if m.concluida == False %}                                            
-                                            <td class='concluida'>
-                                                <i class="material-icons"><a href="javascript:void(0);" style="color: red" title="Clique para concluir a meta"><span class="conclui_meta" data-meta="{{ m.id }}" data-concluida="{{ m.concluida }}">close</span></a></i>
-                                            </td>
-                                        {% else %}
-                                            <td class='concluida'>
-                                                <i class="material-icons"><a href="javascript:void(0);" style="color: green" title="Meta concluída. Clique para desfazer."><span class="conclui_meta" data-meta="{{ m.id }}" data-concluida="{{ m.concluida }}">done</span></a></i>
-                                            </td>
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                            <tfoot>
-                                <tr class="bg-success">
-                                    <td><b>Total</b></td>
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Progresso</th>
+                                <th>Valor da Meta</th>
+                                <th>Prazo</th>
+                                <th>Editar</th>
+                                <th>Concluída</th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for m in formMetas %}
+                                <tr id="{{ m.id }}">                                      
+                                    <td>
+                                        {{ m.titulo }}                                      
                                     <td>
                                         <div class="progress">
-                                            <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: {{ totalMetas | cut:',' }}%">
-                                            {{ totalMetas }}%
+                                            <div class="progress-bar bg-cyan progress-bar-striped active" role="progressbar" aria-valuenow="75" aria-valuemin="1" aria-valuemax="100" style="width: {{ m.progresso | cut:',' }}%">
+                                            {{ m.progresso }}%
                                             </div>
                                         </div>
                                     </td>
+                                    <td>
+                                    R$ {{ m.valor}}
                                     </td>
-                                        <td><b>R$ {{ somaMetas }}</b></td>
-                                    <td></td>
+                                    <td>
+                                        {{ m.prazo | date:"d/m/Y" }}
+                                    </td>
+
+                                    <td>                                       
+                                    <i class="material-icons"><a  data-toggle="modal" data-target="#editMeta" href=""><span class="openEdit" data-meta="{{ m.id }}">edit</span></a></i>
+                                    </td>                                     
+                                    {% if m.concluida == False %}                                            
+                                        <td class='concluida'>
+                                            <i class="material-icons"><a href="javascript:void(0);" style="color: red" title="Clique para concluir a meta"><span class="conclui_meta" data-meta="{{ m.id }}" data-concluida="{{ m.concluida }}">close</span></a></i>
+                                        </td>
+                                    {% else %}
+                                        <td class='concluida'>
+                                            <i class="material-icons"><a href="javascript:void(0);" style="color: green" title="Meta concluída. Clique para desfazer."><span class="conclui_meta" data-meta="{{ m.id }}" data-concluida="{{ m.concluida }}">done</span></a></i>
+                                        </td>
+                                    {% endif %}
                                 </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="bg-success">
+                                <td><b>Total</b></td>
+                                <td></td>
+                                </td>
+                                    <td><b>R$ {{ somaMetas }}</b></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 
 
 <!-- Modal Cadastrar Meta -->
@@ -156,9 +145,10 @@
                     <h4 id="LabelMeta">Editar | <small>Meta</small></h4>
                 </div>
                 <!-- Campos -->
-                <form id="form_edit_cadastro" method="POST">
-                    {% csrf_token %}    
-                    <div id="editMetaForm" class="modal-body">        
+                <form id="form_edit_cadastro" method="POST" action="{% url 'metas:edit' %}">
+                    {% csrf_token %}
+                    <input id="id_prazo-alter_id_meta" type="hidden" name="id">
+                    <div id="editMetaForm" class="modal-body">
                         <!-- Django form será inserido aqui via Jquery -->
                     </div>
                     <!-- Salvar/Cancelar -->
