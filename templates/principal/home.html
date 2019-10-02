@@ -85,13 +85,13 @@ var categorias_credito_total    = "{{ categorias_credito_total }}";
         </div>
 
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box bg-light-green hover-expand-effect">
+            <div class="info-box bg-yellow hover-expand-effect">
                 <div class="icon">
-                    <i class="material-icons">forum</i>
+                    <i class="material-icons">monetization_on</i>
                 </div>
                 <div class="content">
-                    <div class="text">CRÉDITO</div>
-                    <div class="number" data-from="0" data-to="0" data-speed="0" data-fresh-interval="0">{{ total_credito }}</div>
+                    <div class="text">SALDO</div>
+                    <div class="number" data-from="0" data-to="" data-speed="0" data-fresh-interval="0">{{ saldo }}</div>
                 </div>
             </div>
         </div>
@@ -104,6 +104,42 @@ var categorias_credito_total    = "{{ categorias_credito_total }}";
                 <div class="content">
                     <div class="text">CONTAS ABERTAS</div>
                     <div class="number" data-from="0" data-to="" data-speed="0" data-fresh-interval="0">{{ quant_contas_abertas }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-teal hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">credit_card</i>
+                </div>
+                <div class="content">
+                    <div class="text">CRÉDITO NO CARTÃO</div>
+                    <div class="number" data-from="0" data-to="0" data-speed="0" data-fresh-interval="0">{{ total_credito_entradas }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-light-green hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">credit_card</i>
+                </div>
+                <div class="content">
+                    <div class="text">GASTOS NO CARTÃO</div>
+                    <div class="number" data-from="0" data-to="0" data-speed="0" data-fresh-interval="0">{{ total_credito_saidas }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box bg-deep-orange hover-expand-effect">
+                <div class="icon">
+                    <i class="material-icons">flag</i>
+                </div>
+                <div class="content">
+                    <div class="text">METAS</div>
+                    <div class="number" data-from="0" data-to="0" data-speed="0" data-fresh-interval="0">{{ total_metas }}</div>
                 </div>
             </div>
         </div>
@@ -143,7 +179,7 @@ var categorias_credito_total    = "{{ categorias_credito_total }}";
             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                 <div class="card">
                     <div class="header bg-light-green">
-                        <h2>CARTÃO DE CRÉDITO (%)</h2>
+                        <h2>GASTOS NO CARTÃO (%)</h2>
                     </div>
                     <div class="body">
                         <div id="cartao_credito_chart" class="dashboard-donut-chart"></div>
@@ -282,12 +318,13 @@ var categorias_credito_total    = "{{ categorias_credito_total }}";
                 </div>
             </div>
         </div>
+
         <div class="panel panel-success">
             <div class="panel-heading" role="tab" id="headingThree_2">
-                <h4 class="panel-title bg-light-green">
+                <h4 class="panel-title bg-teal">
                     <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_2" href="#detalhes_credito" aria-expanded="false"
                         aria-controls="collapseThree_2">
-                        CARTÃO DE CRÉDITO (DETALHES)
+                        CRÉDITOS NO CARTÃO (DETALHES)
                     </a>
                 </h4>
             </div>
@@ -297,7 +334,7 @@ var categorias_credito_total    = "{{ categorias_credito_total }}";
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                         <div class="card">
                             <div class="header">
-                                <h2>CARTÃO DE CRÉDITO POR CATEGORIA (DETALHADO)</h2>
+                                <h2>CRÉDITOS POR CATEGORIA (DETALHADO)</h2>
                             </div>
                             <div class="body">
                                 <div class="table-responsive">
@@ -311,7 +348,56 @@ var categorias_credito_total    = "{{ categorias_credito_total }}";
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for categoria in categoria_credito %}
+                                            {% for categoria in categoria_credito_entradas %}
+                                                <tr>
+                                                    <td>{{ forloop.counter }}</td>
+                                                    <td>{{ categoria.label }}</td>
+                                                    <td><a class="openDetails" href="#" data-toggle="modal" data-target="#modalDetalhes" data-categoria={{ categoria.categoria_id }} data-tipo={{ categoria.tipo }}><span class="label bg-green">{{ categoria.quantidade }}</span></a></td>
+                                                    <td>{{ categoria.value }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #END# Total Entradas -->
+                </div>
+            </div>
+        </div>
+
+
+        <div class="panel panel-success">
+            <div class="panel-heading" role="tab" id="headingThree_2">
+                <h4 class="panel-title bg-light-green">
+                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion_2" href="#detalhes_credito" aria-expanded="false"
+                        aria-controls="collapseThree_2">
+                        GASTOS NO CARTÃO (DETALHES)
+                    </a>
+                </h4>
+            </div>
+            <div id="detalhes_credito" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree_2">
+                <div class="panel-body">
+                    <!-- Total Entradas -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2>GASTOS POR CATEGORIA (DETALHADO)</h2>
+                            </div>
+                            <div class="body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped datable js-basic-example">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Categoria</th>
+                                                <th>Quantidade</th>
+                                                <th>Valor</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for categoria in categoria_credito_saidas %}
                                                 <tr>
                                                     <td>{{ forloop.counter }}</td>
                                                     <td>{{ categoria.label }}</td>
