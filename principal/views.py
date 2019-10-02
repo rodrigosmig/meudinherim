@@ -139,11 +139,13 @@ def home(request):
 
 		return redirect('principal:home')
 
-	total_credito 	= 0
-	total_entradas 	= 0
-	total_saidas 	= 0
-	entradas_array	= []
-	saidas_array	= []
+	total_credito_entradas	= 0
+	total_credito_saidas 	= 0
+	total_entradas 			= 0
+	total_saidas 			= 0
+	total_metas				= 0
+	entradas_array			= []
+	saidas_array			= []
 
 	#calcula total de entradas
 	banco_entrada = ContaBanco.getLancamentosGroupByCategoria(user, data, 'entrada', 'banco')
@@ -191,31 +193,38 @@ def home(request):
 	cartao_credito_saidas 	= ContaBanco.getLancamentosGroupByCategoria(user, data, 'saida', 'credito')
 	cartao_credito_entradas = ContaBanco.getLancamentosGroupByCategoria(user, data, 'entrada', 'credito')
 	
-	total_credito_entradas = 0
 	for cre in cartao_credito_entradas:
 		total_credito_entradas += cre['valor']
 
 	for cr in cartao_credito_saidas:
-		total_credito += cr['valor']
+		total_credito_saidas += cr['valor']
 	
-	context['total_entradas'] 		= locale.currency(total_entradas, grouping=True, symbol=None)
-	context['total_saidas'] 		= locale.currency(total_saidas, grouping=True, symbol=None)
-	context['total_credito'] 		= locale.currency(total_credito - total_credito_entradas, grouping=True, symbol=None)
+	context['total_entradas'] 			= locale.currency(total_entradas, grouping=True, symbol=None)
+	context['total_saidas'] 			= locale.currency(total_saidas, grouping=True, symbol=None)
+	context['total_credito_saidas']		= locale.currency(total_credito_saidas, grouping=True, symbol=None)
+	context['total_credito_entradas']	= locale.currency(total_credito_entradas, grouping=True, symbol=None)
+	context['saldo']					= locale.currency(total_entradas - total_saidas, grouping=True, symbol=None)
 	
 	contas_abertas 					= ContasAPagar.objects.filter(data__month__lte = data.month).filter(data__year__lte = data.year).filter(user = user).filter(paga = False)
 	context['contas_abertas'] 		= contas_abertas	
 	context['quant_contas_abertas'] = len(contas_abertas)
 
-	categorias_entrada 			= []
-	categorias_saida 			= []
-	categorias_credito 			= []
-	categorias_entradas_total 	= 0
-	categorias_saidas_total 	= 0
-	categorias_credito_total 	= 0
+	categorias_entrada 					= []
+	categorias_saida 					= []
+	categorias_credito_entradas			= []
+	categorias_credito_saidas 			= []
+	categorias_entradas_total 			= 0
+	categorias_saidas_total 			= 0
+	categorias_credito_total_saidas 	= 0
+	categorias_credito_total_entradas 	= 0
 
 	for cr in cartao_credito_saidas:
-		categorias_credito.append({'categoria_id': cr['categoria__pk'], 'label': cr['categoria__descricao'], 'tipo': cr['banco__tipo'], 'value': cr['valor'], 'quantidade': cr['quantidade']})
-		categorias_credito_total += cr['valor']
+		categorias_credito_saidas.append({'categoria_id': cr['categoria__pk'], 'label': cr['categoria__descricao'], 'tipo': cr['banco__tipo'], 'value': cr['valor'], 'quantidade': cr['quantidade']})
+		categorias_credito_total_saidas += cr['valor']
+	
+	for cre in cartao_credito_entradas:
+		categorias_credito_entradas.append({'categoria_id': cre['categoria__pk'], 'label': cre['categoria__descricao'], 'tipo': cre['banco__tipo'], 'value': cre['valor'], 'quantidade': cre['quantidade']})
+		categorias_credito_total_entradas += cre['valor']
 
 	for e in entradas_array:
 		tipo = 'caixa'
@@ -241,11 +250,12 @@ def home(request):
 	context['categoria_entrada_json'] 	= categorias_entrada_json
 	context['categorias_entrada_total'] = categorias_entradas_total
 	
-	context['categoria_credito'] 		= sorted(categorias_credito, key = lambda i: (i['value'], i['quantidade']), reverse = True)
-	categorias_credito_json 			= json.dumps(categorias_credito, ensure_ascii=False, use_decimal = True)
-	context['categoria_credito_json'] 	= categorias_credito_json
-	context['categorias_credito_total']  = categorias_credito_total
-
+	context['categoria_credito_entradas'] 			= sorted(categorias_credito_entradas, key = lambda i: (i['value'], i['quantidade']), reverse = True)
+	context['categoria_credito_saidas'] 			= sorted(categorias_credito_saidas, key = lambda i: (i['value'], i['quantidade']), reverse = True)
+	categorias_credito_json 						= json.dumps(categorias_credito_saidas, ensure_ascii=False, use_decimal = True)
+	context['categoria_credito_json'] 				= categorias_credito_json
+	context['categorias_credito_total_entradas']  	= categorias_credito_total_entradas
+	
 	#busca o saldo de Caixa do usuario e atribui ao contexto
 	saldoC 					= SaldoCaixa.objects.get(user = user)
 	context['saldoCaixa'] 	= saldoC.saldoAtual
@@ -274,6 +284,12 @@ def home(request):
 	for a in agencias:
 		totalSaldoAgencias += a.saldo
 	
+	metas = Metas.objects.filter(user = user).filter(concluida = False).filter(prazo__month = data.month).filter(prazo__year = data.year)
+	for meta in metas:
+		total_metas += meta.valor
+	
+	context['total_metas'] = locale.currency(total_metas, grouping=True, symbol=None)
+
 	return render(request, template, context)
 
 def detalhesLancamento(request):
