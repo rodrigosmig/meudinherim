@@ -331,7 +331,13 @@ def detalhesLancamento(request):
 
 		lancamentos_json = serializers.serialize('json', lancamentos_array, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 		return HttpResponse(lancamentos_json, content_type="application/json")
-		
-
 
 	return HttpResponse("OK")
+
+def error_404(request):
+        data = {}
+        return render(request,'principal/error_404.html', data)
+
+def error_500(request):
+        data = {}
+        return render(request,'principal/error_500.html', data)
