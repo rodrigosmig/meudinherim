@@ -28,7 +28,7 @@ def cadastroBanco(request):
 			bancos.user = user 
 			bancos.save()
 			messages.success(request, 'Agência cadastrada com sucesso.')
-			#return HttpResponseRedirect(reverse('banco:agencia'))
+			return HttpResponseRedirect(reverse('banco:agencia'))
 		else:
 			messages.warning(request, "Formulário inválido")
 
