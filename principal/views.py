@@ -255,7 +255,8 @@ def home(request):
 	categorias_credito_json 						= json.dumps(categorias_credito_saidas, ensure_ascii=False, use_decimal = True)
 	context['categoria_credito_json'] 				= categorias_credito_json
 	context['categorias_credito_total_entradas']  	= categorias_credito_total_entradas
-	
+	context['categorias_credito_total_saidas']  	= categorias_credito_total_saidas
+	print(categorias_credito_total_entradas, categorias_credito_total_saidas)
 	#busca o saldo de Caixa do usuario e atribui ao contexto
 	saldoC 					= SaldoCaixa.objects.get(user = user)
 	context['saldoCaixa'] 	= saldoC.saldoAtual

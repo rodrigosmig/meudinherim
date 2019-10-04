@@ -17,28 +17,24 @@ from django.db.models import ProtectedError
 
 @login_required
 def cadastroBanco(request):
-	user = request.user
-	if (request.method == 'POST'):
-		form = ContaBancoForm(request.POST)
-		
-		if(form.is_valid()):
-			if(form.cleaned_data['dia_fechamento'] < 0 or form.cleaned_data['dia_fechamento'] > 31):
-				messages.warning(request, "Dia inválido")
-				return HttpResponseRedirect(reverse("banco:agencia"))
+	user 			= request.user
+	form_agencia 	= ContaBancoForm()
 
-			bancos = form.save(commit = False)
+	if (request.method == 'POST'):
+		form_agencia = ContaBancoForm(request.POST)
+		
+		if(form_agencia.is_valid()):
+			bancos = form_agencia.save(commit = False)
 			bancos.user = user 
 			bancos.save()
 			messages.success(request, 'Agência cadastrada com sucesso.')
-			return HttpResponseRedirect(reverse('banco:agencia'))
+			#return HttpResponseRedirect(reverse('banco:agencia'))
 		else:
 			messages.warning(request, "Formulário inválido")
-			return HttpResponseRedirect(reverse("banco:agencia"))
 
 	template 		= 'banco/agencia.html'
 	agencias 		= ContaBanco.objects.filter(user = user).exclude(tipo = ContaBanco.CARTAO_DE_CREDITO)
 	credito			= ContaBanco.objects.filter(user = user).filter(tipo = ContaBanco.CARTAO_DE_CREDITO)
-	form_agencia 	= ContaBancoForm()
 	contexto 		= {'form': form_agencia, 'agencias': agencias, 'credito': credito}
 
 	#busca o saldo de Caixa do usuario e atribui ao contexto
@@ -264,8 +260,8 @@ def delLancamento(request):
 def editAgencia(request):
 	usuario = request.user 
 
-	if (request.method == 'POST'):
-		idAgencia = request.POST.get('id_agencia')
+	if(request.method == 'POST'):
+		idAgencia = request.POST.get('id')
 
 		try:
 			agencia = ContaBanco.objects.get(pk = idAgencia)
@@ -302,8 +298,8 @@ def editAgencia(request):
 @login_required
 def delAgencia(request):
 	if (request.method == 'POST'):		
-		user = request.user
-		idAgencia =  request.POST.get('id_agencia')
+		user 		= request.user
+		idAgencia 	=  request.POST.get('id')
 
 		try:
 			agencia = ContaBanco.objects.get(pk = idAgencia)
@@ -316,8 +312,7 @@ def delAgencia(request):
 				agencia.delete()
 			except ProtectedError as erro:
 				messages.error(request, "Não é possível excluir uma agencia/cartão que possua algum lançamento!")
-				return HttpResponseRedirect(reverse('banco:agencia'))
-			
+				return HttpResponseRedirect(reverse('banco:agencia'))			
 			
 			messages.success(request, "Agência excluída com sucesso")
 			return HttpResponseRedirect(reverse('banco:agencia'))

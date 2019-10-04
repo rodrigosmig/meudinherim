@@ -21,7 +21,7 @@ class ContaBanco(models.Model):
 	conta = models.CharField(max_length = 20, blank = True, null = True)
 	tipo = models.CharField(choices = TIPOS, max_length = 2)
 	dia_fechamento = models.CharField(max_length = 2, blank = True, null = True)
-	limite = models.DecimalField(max_digits = 7, decimal_places = 2, blank = True, null = True)
+	limite = models.DecimalField(max_digits = 7, decimal_places = 2, default = 0.0)
 	saldo = models.DecimalField(max_digits = 8, decimal_places = 2, default = 0.0)
 	user = models.ForeignKey(User, on_delete = models.CASCADE)
 

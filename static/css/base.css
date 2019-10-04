@@ -69,3 +69,7 @@
 #datePicker_credito {
 	width: 150px;
 }
+
+.errorlist li {
+	color: red;
+}
