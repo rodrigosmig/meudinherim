@@ -224,7 +224,8 @@
 
                                 {% for campo in form %}
                                     {{ campo.label_tag }}
-                                    {{ campo }}                                
+                                    {{ campo }}
+                                    {{ campo.errors }}                              
                                 {% endfor %}              
                     </div>
                     <!-- Salvar/Cancelar -->
@@ -250,16 +251,16 @@
                     <h6 class="loading"></h6>
                 </div>
                 <!-- Campos -->
-                <form id="form_edit_agencia" method="POST">    
-                                    
+                <form id="form_edit_agencia" method="POST" action="/banco/editag/">
                     {% csrf_token %}
+                    <input id="id_banco-id_alter_banco" type="hidden" name="id">
                     <div id="editAgencia" class="modal-body">        
                     <!-- Django form será inserido aqui via Jquery -->
                     </div>
                 
                     <!-- Salvar/Cancelar -->
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success waves-effect salvarAg">Salvar</button>
+                        <button type="submit" class="btn btn-success waves-effect">Salvar</button>
                         <button class="btn btn-danger excluirAg">Excluir</button>
                         <button type="button" class="btn btn-primary cancelarAg" data-dismiss="modal">Cancelar</button>
                     </div>

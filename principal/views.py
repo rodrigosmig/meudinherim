@@ -255,7 +255,8 @@ def home(request):
 	categorias_credito_json 						= json.dumps(categorias_credito_saidas, ensure_ascii=False, use_decimal = True)
 	context['categoria_credito_json'] 				= categorias_credito_json
 	context['categorias_credito_total_entradas']  	= categorias_credito_total_entradas
-	
+	context['categorias_credito_total_saidas']  	= categorias_credito_total_saidas
+	print(categorias_credito_total_entradas, categorias_credito_total_saidas)
 	#busca o saldo de Caixa do usuario e atribui ao contexto
 	saldoC 					= SaldoCaixa.objects.get(user = user)
 	context['saldoCaixa'] 	= saldoC.saldoAtual
@@ -330,7 +331,13 @@ def detalhesLancamento(request):
 
 		lancamentos_json = serializers.serialize('json', lancamentos_array, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 		return HttpResponse(lancamentos_json, content_type="application/json")
-		
-
 
 	return HttpResponse("OK")
+
+def error_404(request):
+        data = {}
+        return render(request,'principal/error_404.html', data)
+
+def error_500(request):
+        data = {}
+        return render(request,'principal/error_500.html', data)

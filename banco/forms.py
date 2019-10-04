@@ -38,18 +38,18 @@ class ContaBancoForm(ModelForm):
     	label = 'Dia do fechamento',
 		min_value = 1,
         max_value = 31,
-        required = False,
+        required = True,
         widget = forms.TextInput(
-            attrs = {'class': 'form-control', 'placeholder': 'Dia do Vencimento da Conta/Fatura'}
+            attrs = {'class': 'form-control', 'placeholder': 'Exemplo: 31'}
         )
     )
 	limite = forms.DecimalField(
         label = 'Limite',
-        min_value = 0.01,
+        min_value = 0.00,
         max_value = 99999.99,
-        required = False,
+        required = True,
         widget = forms.NumberInput(
-            attrs = {'class': 'form-control', 'placeholder': 'Insira o limite da conta'}
+            attrs = {'class': 'form-control', 'placeholder': '99999.99'}
         )
     )
 

@@ -1,15 +1,4 @@
 $(function() {
-	var spinner =  "<div class='preloader pl-size-xs' style: font-size 5px> \
-                  <div class='spinner-layer'> \
-                  <div class='circle-clipper left'> \
-                  <div class='circle'></div> \
-                  </div> \
-                  <div class='circle-clipper right'> \
-                  <div class='circle'></div> \
-                  </div> \
-                  </div> \
-                  </div>";	
-
 	var csrftokenGET = getCookie('csrftoken');
 	var csrftokenPOST = getCookie('csrftoken');
 	//funcao criada para gerar o csrftoken no envio da requisicao POST para o Django
@@ -43,7 +32,7 @@ $(function() {
 				// id quem vem da view id_agencia-alter_agencia
 				var id_agencia = $("#temp").html();
 
-				$('#id_banco-alter_banco').attr('data-ag', id_agencia);
+				$('#id_banco-id_alter_banco').val(id_agencia);
 				$('#temp').remove();
 
 				$("#id_conta-alter_dia_fechamento").datepicker({
@@ -70,36 +59,9 @@ $(function() {
 		});
 	});
 
-	$('.add_salvar').on('click', function(event) {
-		event.preventDefault()
-		$(".add_salvar").attr('disabled', 'true')
-		$(".add_cancelar").attr('disabled', 'true')
-		$(".loading").append(spinner)
-		
-		$('#form_cadastro_agencia').submit()
-	});
-
-	$('.salvarAg').on('click', function(evento) {
-		var id = $('#id_banco-alter_banco').attr('data-ag');
-		
-		if(id) {
-			$("#form_edit_agencia").append("<input type='hidden' name='id_agencia' value=" + id + " />")
-			$("#form_edit_agencia").append("<input type='hidden' name='alterar' value='alterar' />")
-			$(".salvarAg").attr('disabled', 'true')
-			$(".excluirAg").attr('disabled', 'true')
-			$(".cancelarAg").attr('disabled', 'true')
-			$(".loading").append(spinner)
-			$('#form_edit_agencia').attr('action', '/banco/editag/')
-
-			$('#form_edit_agencia').submit()
-		}		
-		
-	});
-
-
 	$('.excluirAg').click(function(evento) {
 		evento.preventDefault();
-		var id = $('#id_banco-alter_banco').attr('data-ag');
+		var id = $('#id_banco-id_alter_banco').val();
 
 		$.confirm({
 		    title: 'Excluir Conta!',
@@ -108,13 +70,7 @@ $(function() {
 		    theme: 'material',
 		    buttons: {
 		        Sim: function() {
-		        	$("#form_edit_agencia").append("<input type='hidden' name='id_agencia' value=" + id + " />")
-					$(".salvarAg").attr('disabled', 'true')
-					$(".excluirAg").attr('disabled', 'true')
-					$(".cancelarAg").attr('disabled', 'true')
-					$(".loading").append(spinner)
 					$('#form_edit_agencia').attr('action', '/banco/delag/')
-
 					$('#form_edit_agencia').submit()
 		        },
 		        Não: function() {},
@@ -123,23 +79,5 @@ $(function() {
 	});
 
 
-	function recuperaCampos() {
-
-		var id = $('#id_banco-alter_banco').attr('data-ag');
-		var banco = $('#id_banco-alter_banco').val();
-		var agencia = $('#id_agencia-alter_agencia').val();
-		var conta = $('#id_conta-alter_conta').val();
-		var tipo = $('#id_tipo-alter_tipo').val();
-
-		dados = {
-			'id': id,
-			'banco': banco,
-			'agencia': agencia,
-			'conta': conta,
-			'tipo': tipo,
-			'csrfmiddlewaretoken': csrftokenPOST
-		}
-		return dados;
-	}
 
 })
