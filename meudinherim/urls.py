@@ -19,6 +19,14 @@ from django.conf.urls import include
 from django.conf import settings
 from django.conf.urls.static import static
 from principal import views
+from rest_framework import routers
+from rest_framework_simplejwt import views as jwt_views
+from usuario.api.viewsets import UsuarioProfileViewSet
+from caixa.api.viewsets import CategoriaViewSet
+
+router = routers.DefaultRouter(trailing_slash=False)
+router.register(r'api/usuario', UsuarioProfileViewSet, base_name='Usuario')
+router.register(r'api/categorias', CategoriaViewSet, base_name='Usuario')
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -31,7 +39,10 @@ urlpatterns = [
     url(r'^metas/', include('metas.urls', namespace='metas')),
     url(r'^relatorios/', include('relatorio.urls', namespace='relatorios')),
     url(r'^config/', include('config.urls', namespace='config')),
-    url(r'^mail/', include('mail.urls', namespace='mail'))
+    url(r'^mail/', include('mail.urls', namespace='mail')),
+    url('', include(router.urls)),
+    url(r'^api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    url(r'^api/refresh_token/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
