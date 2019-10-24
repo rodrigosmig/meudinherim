@@ -17,9 +17,9 @@ class LancamentosCaixa(models.Model):
 
 	def getLancamentosGroupByCategoria(user, data, tipo_categoria):
 		if(tipo_categoria == 'entrada'):
-			categoria = 1
+			categoria = Categoria.ENTRADA
 		else:
-			categoria = 2
+			categoria = Categoria.SAIDA
 
 		lancamentos = LancamentosCaixa.objects.values(
 		'categoria__pk', 'categoria__descricao'
@@ -58,12 +58,15 @@ class LancamentosCaixa(models.Model):
 
 
 class Categoria(models.Model):
+	ENTRADA = "1"
+	SAIDA	= "2"
 
-	descricao = models.CharField(max_length = 64)
 	TIPOS = (
 		("1", "Entrada"),
 		("2", "Saida"),
 	)
+
+	descricao = models.CharField(max_length = 64)	
 	tipo = models.CharField(choices = TIPOS, max_length = 2)
 	user = models.ForeignKey(User, on_delete = models.CASCADE)
 
@@ -81,17 +84,17 @@ class Categoria(models.Model):
 		categorias = []
 		entrada = []
 		saida = []
-		for categoria in Categoria.objects.filter(tipo = '1').filter(user = user).order_by('descricao'):
+		for categoria in Categoria.objects.filter(tipo = Categoria.ENTRADA).filter(user = user).order_by('descricao'):
 			entrada.append([categoria.id, categoria.descricao])
 
-		for categoria in Categoria.objects.filter(tipo = '2').filter(user = user).order_by('descricao'):
+		for categoria in Categoria.objects.filter(tipo = Categoria.SAIDA).filter(user = user).order_by('descricao'):
 			saida.append([categoria.id, categoria.descricao])
 
 		categorias.append(['Entradas', entrada])
 		categorias.append(['Saídas', saida])
 
 		return categorias
-
+	
 class SaldoCaixa(models.Model):
 	saldoAnterior = models.DecimalField(max_digits = 8, decimal_places = 2)
 	saldoAtual = models.DecimalField(max_digits = 8, decimal_places = 2)

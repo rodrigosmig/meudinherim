@@ -13,6 +13,7 @@ import json
 from usuario.models import UsuarioProfile
 from django.contrib import messages
 from django.db.models import ProtectedError
+from django.urls import reverse
 
 @login_required
 def lancamentos(request):
@@ -72,32 +73,16 @@ def categoria(request):
 	form = CategoriaForm()
 
 	if(request.method == 'POST'):
-		if(request.POST.get('alterar')):
-			idCategoria = request.POST.get('id_categoria')
-			categoria = Categoria.objects.get(pk = idCategoria)
-			form = CategoriaForm(request.POST, instance = categoria)
-			if(form.is_valid()):
-				form.save()
-				messages.success(request, "Categoria " + categoria.descricao + " alterada com sucesso!")
-		elif(request.POST.get('excluir')):
-			idCategoria = request.POST.get('id_categoria')
-			categoria = Categoria.objects.get(pk = idCategoria)		
-			if(request.user == categoria.user):
-				try:
-					categoria.delete()
-					messages.success(request, "Categoria " + categoria.descricao + " excluída com sucesso!")
-				except ProtectedError as exception:
-					messages.error(request, "Não é possível excluir uma categoria relacionada a um laçamento!")
-					print(messages)
-				
+		form = CategoriaForm(request.POST)
+		if(form.is_valid()):
+			categoria = form.save(commit = False)
+			categoria.user = request.user
+			categoria.save()
+			messages.success(request, "Categoria " + categoria.descricao + " adicionada com sucesso!")
+			return HttpResponseRedirect(reverse('caixa:categoria'))
 		else:
-			form = CategoriaForm(request.POST)
-			if(form.is_valid()):
-				categoria = form.save(commit = False)
-				categoria.user = request.user
-				categoria.save()
-				messages.success(request, "Categoria " + categoria.descricao + " adicionada com sucesso!")
-
+			messages.warning(request, "Formulário inválido")
+			
 	user = request.user
 	template = 'caixa/categoria.html'
 	catEntrada = Categoria.objects.filter(tipo = 1).filter(user = user)
@@ -133,25 +118,36 @@ def categoria(request):
 
 @login_required
 def editCategoria(request):
-	user = request.user
-
 	if(request.method == 'POST'):
-		idCategoria = request.POST.get('id')
-		categoria = Categoria.objects.get(pk = idCategoria)
+		user 		= request.user
+		idCategoria = request.POST.get('id_categoria')
+		
+		try:
+			categoria = Categoria.objects.get(pk = idCategoria)
+		except Categoria.DoesNotExist as erro:
+			messages.warning(request, "Categoria não encontrada.")
+			return HttpResponseRedirect(reverse('caixa:categoria'))
+
+		if(categoria.user != user):
+			messages.warning(request, "Não é possível alterar categoria de outro usuário.")
+			return HttpResponseRedirect(reverse('caixa:categoria'))
+
 		form = CategoriaForm(request.POST, instance = categoria)
 
 		if(form.is_valid()):
 			form.save()
-			return HttpResponse('Categoria alterada com sucesso.')
+			messages.success(request, 'Categoria ' + categoria.descricao + ' alterada com sucesso.')
 		else:
-			return HttpResponseServerError("Dados inválidos.")
+			messages.warning(request, "Dados inválidos.")
 
-	#id do lancamento clicado
+		return HttpResponseRedirect(reverse('caixa:categoria'))
+
+	#id do categoria clicado
 	idCategoria = request.GET.get('id')
 
-	lancamento = Categoria.objects.get(pk = idCategoria)
+	categoria = Categoria.objects.get(pk = idCategoria)
 
-	form = CategoriaForm(instance = lancamento)
+	form = CategoriaForm(instance = categoria)
 	form.getEditCategoriaForm()	
 
 	#retorna o id da categoria junto com o formulario
@@ -163,22 +159,22 @@ def editCategoria(request):
 @login_required
 def delCategoria(request):
 	if(request.method == 'POST'):
-		#usuario logado
-		user = request.user
-		#id do lancamento a ser deletado
-		idCategoria = request.POST.get('id')
+		user 		= request.user
+		idCategoria = request.POST.get('id_categoria')
 
-		#busca a Categoria
-		categoria = Categoria.objects.get(pk = idCategoria)		
+		try:
+			categoria = Categoria.objects.get(pk = idCategoria)
+		except Categoria.DoesNotExist as erro:
+			messages.warning(request, "Categoria não encontrada")
+			return HttpResponseRedirect(reverse('caixa:categoria'))
+
+		if(categoria.user != user):
+			messages.warning(request, "Não é possível alterar categoria de outro usuário.")
+			return HttpResponseRedirect(reverse('caixa:categoria'))
 		
-		if(user == categoria.user):
-			categoria.delete()
-			
-			return HttpResponse("Categoria excluída com sucesso")
-		else:
-			return HttpResponseServerError("Categoria não encontrado.")		
-
-	return HttpResponseServerError("Conta não encontrado.")
+		categoria.delete()
+		messages.success(request, 'Categoria ' + categoria.descricao + ' excluída com sucesso.')
+		return HttpResponseRedirect(reverse('caixa:categoria'))
 
 @login_required
 def addLancamento(request):

@@ -1,15 +1,4 @@
 $(function() {
-	var spinner =  "<div class='preloader pl-size-xs' style: font-size 5px> \
-                  <div class='spinner-layer'> \
-                  <div class='circle-clipper left'> \
-                  <div class='circle'></div> \
-                  </div> \
-                  <div class='circle-clipper right'> \
-                  <div class='circle'></div> \
-                  </div> \
-                  </div> \
-                  </div>";	
-	
 	var csrftokenGET = getCookie('csrftoken');
 	var csrftokenPOST = getCookie('csrftoken');
 	//funcao criada para gerar o csrftoken no envio da requisicao POST para o Django
@@ -42,7 +31,7 @@ $(function() {
 
 				//Atribui o id da categoria a uma tag e remove a div vinda do Django
 				var id_categoria = $('#id-alter_categoria').html();
-				$('#id_descricao-alter_categoria').attr('data-cat', id_categoria);
+				$('#id_categoria-alter_categoria').val(id_categoria);
 				$('#id-alter_categoria').remove();
 				
 			},
@@ -54,46 +43,19 @@ $(function() {
 		});
 	});
 
-	$('#form_cadastro_categoria').on('submit', function(event) {
-		$(".cadastrar_categoria").attr('disabled', 'true')
-		$(".cancelar_categoria").attr('disabled', 'true')
-		$(".loading").append(spinner)
-	});
-
-	$('.editar_categora').on('click', function(event) {
-		var id = $('#id_descricao-alter_categoria').attr('data-cat');
-		if(id) {
-			$("#form_edit_categoria").append("<input type='hidden' name='id_categoria' value=" + id + " />")
-			$("#form_edit_categoria").append("<input type='hidden' name='alterar' value='alterar' />")
-			$(".editar_categora").attr('disabled', 'true')
-			$(".excluir").attr('disabled', 'true')
-			$(".cancelar_categoria").attr('disabled', 'true')
-			$(".loading").append(spinner)
-			$("#form_edit_categoria").submit()
-		}
-		
-	});
-
 	$('.excluir').click(function(evento) {
 		evento.preventDefault();
-		var id = $('#id_descricao-alter_categoria').attr('data-cat');
+		var id = $('#id_categoria-alter_categoria').val();
 
 		$.confirm({
-		    title: 'Excluir meta!',
+		    title: 'Excluir categoria!',
 		    content: 'Tem certeza que deseja excluir a categoria?',
 		    draggable: true,
 		    theme: 'material',
 		    buttons: {
 		        Sim: function() {
-					if(id) {
-						$("#form_edit_categoria").append("<input type='hidden' name='id_categoria' value=" + id + " />")
-						$("#form_edit_categoria").append("<input type='hidden' name='excluir' value='excluir' />")
-						$(".editar_categora").attr('disabled', 'true')
-						$(".excluir").attr('disabled', 'true')
-						$(".cancelar_categoria").attr('disabled', 'true')
-						$(".loading").append(spinner)
-						$("#form_edit_categoria").submit()
-					}					
+					$('#form_edit_categoria').attr('action', '/caixa/delete-categoria/')
+					$('#form_edit_categoria').submit()
 		        },
 		        Não: function() {
 					return
