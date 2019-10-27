@@ -104,7 +104,7 @@ def banco(request):
 	for c in todasCredito:
 		id = c.id
 		nome = c.banco
-		saldo = str(a.saldo)
+		saldo = str(c.saldo)
 		listCredito.append((id, nome, saldo))
 
 
