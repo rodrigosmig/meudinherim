@@ -44,23 +44,22 @@ $( function() {
 
 {% block content %}
 
-
-<section class="content2">
-    
-    <div class="container-fluid">     
-        <div class="block-header">
-            <h1>Contas a Pagar</h1>
-        </div>
-    </div>
-    
-    <div class="row clearfix">
+    <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
-                
                 <div class="header">
-                	<i class="material-icons addCP"><a data-toggle="modal" href="#contas_a_pagar" title="Adicionar">add</a></i>
+                    <h2>
+                        CONTAS A PAGAR
+                        <small>Gerencie suas contas a pagar</small>
+                    </h2>
+                    <ul class="header-dropdown m-r--5">
+                        <li class="dropdown">
+                            <a id="btn_add_categoria" type="button" class="btn bg-red waves-effect" data-toggle="modal" href="#mContasAPagar" title="Adicionar">
+                                <i class="material-icons">plus_one</i>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-
                 <div class="header">
                     <form id="form_filtro_cp" class="form-inline">
                     
@@ -168,10 +167,9 @@ $( function() {
             </div>
         </div>
     </div>
-</section>
 
 <!-- Modal Cadastro Contas a Pagar -->
-<div class="modal fade" id="contas_a_pagar">
+<div class="modal fade" id="mContasAPagar">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <!-- Título -->
@@ -192,8 +190,8 @@ $( function() {
                 </div>
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </form>
         </div>
@@ -210,18 +208,20 @@ $( function() {
                     <h4 id="LabelContasPagar">Editar | <small>Conta a Pagar</small></h4>
                 </div>
                 <!-- Campos -->
-                <form id="form_lancamento">
-                {% csrf_token %}    
+                <form id="form_edit_CP" method="POST" action="{% url 'contas_a_pagar:edit' %}">
+                {% csrf_token %}
+                    <input id="id_contas_a_pagar-alter_CP" name="id_contas_a_pagar" type="hidden"> 
                     <div id="editContPag" class="modal-body">        
                         <!-- Django form será inserido aqui via Jquery -->
                     </div>
-                </form>     
-                <!-- Salvar/Cancelar -->
-                <div class="modal-footer">
-                    <button class="btn btn-success waves-effect salvar" >Salvar</button>
-                    <button class="btn btn-danger excluir">Excluir</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                </div>
+                    
+                    <!-- Salvar/Cancelar -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary waves-effect">Salvar</button>
+                        <button type="button" class="btn btn-danger excluir">Excluir</button>
+                        <button type="button" class="btn" data-dismiss="modal">Cancelar</button>                    
+                    </div>
+                </form> 
             </div>
         </div>
     </div>
@@ -245,7 +245,7 @@ $( function() {
 
                         <div>
                             <input name="conta" type="radio" id="carteira" data-tipo="caixa" class="form-control conta_select" checked />
-                            <label for="carteira">Caixa</label>
+                            <label for="carteira">Carteira</label>
                             <input name="conta" type="radio" id="bancos" data-tipo="banco" class="form-control conta_select" />
                             <label for="bancos">Banco</label>
                         </div>
@@ -259,8 +259,8 @@ $( function() {
                 </div>
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary pagar">Pagar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </form>
         </div>

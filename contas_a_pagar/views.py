@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from contas_a_pagar.forms import ContasAPagarForm
 from contas_a_pagar.models import ContasAPagar
 from caixa.models import Categoria, SaldoCaixa, LancamentosCaixa
@@ -13,26 +13,38 @@ import datedelta
 from usuario.models import UsuarioProfile
 from django.core import serializers
 import json
-from caixa.views import separarCategorias
+from django.contrib import messages
+from django.urls import reverse
 
 
 
 @login_required
 def contasAPagar(request):
 	user = request.user
+	form = ContasAPagarForm()
 
 	if(request.method == 'POST'):
 		form = ContasAPagarForm(request.POST)
-		parcelas = int(request.POST.get('parcelas'))
+		
+		try:
+			parcelas = int(request.POST.get('parcelas'))
+		except ValueError as error:
+			messages.warning(request, 'A quantidade de parcelas é inválida.')
+			return HttpResponseRedirect(reverse('contas_a_pagar:index'))
+
+		if(parcelas < 1 or parcelas > form.PARCELAS):
+			messages.warning(request, 'A quantidade de parcelas é inválida.')
+			return HttpResponseRedirect(reverse('contas_a_pagar:index'))
 
 		if(form.is_valid()):
 			contaPagar = form.save(commit = False)
 			contaPagar.user = request.user
 			contaPagar.paga = False
-			contaPagar.save()
+			parcela1 = ""
 			
-			if(parcelas > 0):
-				parcelas += 1
+			if(parcelas > 1):
+				parcela1 = " 1/" + str(parcelas)
+
 				for x in range(1, parcelas):
 					novaParcela = ContasAPagar()
 					novaParcela.data = contaPagar.data + datedelta.datedelta(months = x)
@@ -42,19 +54,17 @@ def contasAPagar(request):
 					novaParcela.paga = False
 					novaParcela.user = request.user
 					novaParcela.save()
-
-			return HttpResponse('Conta a pagar adicionada com sucesso')
+					
+			contaPagar.descricao += parcela1 
+			contaPagar.save()
+			messages.success(request, "Conta " + contaPagar.descricao + " adicionada com sucesso!")
+			return HttpResponseRedirect(reverse('contas_a_pagar:index'))
 		else:
-			return HttpResponseServerError("Formulário inválido.")
+			messages.warning(request, "Formulário inválido")
 
-
-	template = 'contas_a_pagar/contas_a_pagar.html'
-
-	hoje = datetime.today()
-
-	contas = ContasAPagar.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
-
-	form = ContasAPagarForm()
+	hoje 		= datetime.today()
+	template 	= 'contas_a_pagar/contas_a_pagar.html'	
+	contas 		= ContasAPagar.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
 	form.getAddCPForm(request)
 	
 	context = {'contPagar': contas, 'contPagarForm': form}
@@ -66,7 +76,6 @@ def contasAPagar(request):
 	#para saldo de cada agencia
 	agencias = ContaBanco.objects.filter(user = user)
 	context['agencias'] = agencias
-
 	
 	#para adicionar lancamento
 	formCaixa = LancamentosForm()
@@ -88,41 +97,45 @@ def contasAPagar(request):
 
 @login_required
 def editContasPagar(request):
-	if(request.method == 'POST'):
-		#id do usuario
-		id_user = request.user.id
-		#id do lancamento clicado
-		idConta = request.POST.get('id')
+	user = request.user
 
-		#busca o lancamento a ser alterado
-		conta = ContasAPagar.objects.get(pk = idConta)
-		
-		#atribui o lancamento ao form	
+	if(request.method == 'POST'):		
+		idConta = request.POST.get('id_contas_a_pagar')
+
+		try:
+			conta = ContasAPagar.objects.get(pk = idConta)
+		except ContasAPagar.DoesNotExist as erro:
+			messages.warning(request, "Conta não encontrada.")
+			return HttpResponseRedirect(reverse('contas_a_pagar:index'))
+		except ValueError as erro:
+			messages.warning(request, "Conta não encontrada.")
+			return HttpResponseRedirect(reverse('contas_a_pagar:index'))
+
+		if(conta.user != user):
+			messages.warning(request, "Alteração não permitida.")
+			return HttpResponseRedirect(reverse('contas_a_pagar:index'))
+
 		form = ContasAPagarForm(request.POST, instance = conta)
-		parcelas = int(request.POST.get('parcelas'))
 		
 		if(form.is_valid()):
 			form.save()
-
-			if(parcelas > 0):
-				parcelas += 1
-				for x in range(1, parcelas):
-					novaParcela = ContasAPagar()
-					novaParcela.data = form.cleaned_data['data'] + datedelta.datedelta(months = x)
-					novaParcela.categoria = form.cleaned_data['categoria']
-					novaParcela.descricao = form.cleaned_data['descricao'] + " " + str(x + 1) + "/" + str(parcelas)
-					novaParcela.valor = form.cleaned_data['valor']
-					novaParcela.paga = False
-					novaParcela.user = request.user
-					novaParcela.save()
-
-			return HttpResponse("Conta alterada com sucesso")
+			messages.success(request, "Conta " + conta.descricao + " alterada com sucesso!")
+			return HttpResponseRedirect(reverse('contas_a_pagar:index'))
 		else:
-			return HttpResponseServerError("Formulário inválido.")
+			messages.warning(request, "Formulário inválido")
 
-	#id do lancamento clicado
-	idConta = request.GET.get('id')
-	conta = ContasAPagar.objects.get(pk = idConta)
+	
+	try:
+		idConta = request.GET.get('id_contas_a_pagar', 0)
+		conta 	= ContasAPagar.objects.get(pk = idConta)
+	except ContasAPagar.DoesNotExist as erro:
+		return HttpResponseNotFound("Conta não encontrada.")
+	except ValueError as erro:
+		return HttpResponseNotFound("Conta não encontrada.")
+
+	if(conta.user != user):
+		return HttpResponseForbidden("Alteração não permitida.")
+
 	form = ContasAPagarForm(instance = conta)
 	form.getEditCPForm(request)	
 
@@ -136,179 +149,193 @@ def editContasPagar(request):
 @login_required
 def delContasPagar(request):
 	if(request.method == 'POST'):
-		#id do usuario
-		id_user = request.user.id
-		#id do lancamento a ser deletado
-		idConta = request.POST.get('id')
+		user = request.user
 
-		#busca o lançamento
-		conta = ContasAPagar.objects.get(pk = idConta)		
+		try:
+			idConta = request.POST.get('id_contas_a_pagar', 0)
+			conta 	= ContasAPagar.objects.get(pk = idConta)
+		except ContasAPagar.DoesNotExist as erro:
+			messages.warning(request, "Conta não encontrada.")
+			return HttpResponseRedirect(reverse('contas_a_pagar:index'))
+		except ValueError as erro:
+			messages.warning(request, "Conta não encontrada.")
+			return HttpResponseRedirect(reverse('contas_a_pagar:index'))
+	
+		if(conta.user != user):
+			return HttpResponseForbidden("Alteração não permitida.")
 		
-		if(request.user.id == conta.user_id):
-			conta.delete()
-			
-			return HttpResponse("Conta a pagar excluída com sucesso")
-		else:
-			return HttpResponseServerError("Conta não encontrado.")
-		
-
-	return HttpResponseServerError("Conta não encontrado.")
+		conta.delete()
+		messages.success(request, "Conta " + conta.descricao + " excluída com sucesso!")
+		return HttpResponseRedirect(reverse('contas_a_pagar:index'))
+	
+	messages.warning(request, "Solicitação inválida.")	
+	return HttpResponseRedirect(reverse('contas_a_pagar:index'))
 
 #funcao que retorna as agencias do usuario solicitado no pagamento de contas
 @login_required
 def banco(request):
 	if(request.method == 'POST'):
-		#id do usuario
-		id_user = request.user.id
-		bancos = ContaBanco.objects.filter(user_id = id_user)
+		user = request.user
+		bancos = ContaBanco.objects.filter(user = user)
 		
-		bancosJson = serializers.serialize('json', bancos, use_natural_foreign_keys=False, use_natural_primary_keys=False)
+		bancosJson = serializers.serialize('json', bancos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 
 		return HttpResponse(bancosJson, content_type="application/json")
 
-	return HttpResponseServerError("Banco não encontrado")
+	return HttpResponseServerError("Erro ao requisitar as agências do usuário.")
 
 @login_required
 def pagamento(request):
 	if(request.method == 'POST'):
-		#id do usuario
-		user = request.user
+		user 			= request.user
+		dt_pagamento 	= request.POST.get('data_pagamento', datetime.today())
+		tipoPagamento 	= request.POST.get('id_banco', "")
 
-		dt_pagamento = request.POST.get('data_pagamento')
-		tipoPagamento = request.POST.get('banco')
+		try:
+			idConta = request.POST.get('id_contas_a_pagar', 0)
+			conta 	= ContasAPagar.objects.get(pk = idConta)
+		except ContasAPagar.DoesNotExist as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
+		except ValueError as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
 
-		#busca o saldo do carteira do usuario logado
-		saldoCaixa = SaldoCaixa.objects.get(user = user)
-		#atribui o valor do saldo anterior
-		saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
+		if(conta.user != user):
+			return HttpResponseForbidden("Alteração não permitida.")
 
-		#busca o saldo de Banco do usuario logado
-		saldoBanco = SaldoBanco.objects.get(user = user)
-		#atribui o valor do saldo anterior
-		saldoBanco.saldoAnterior = saldoBanco.saldoAtual
+		conta 					= ContasAPagar.objects.get(pk = idConta)
+		conta.data_pagamento 	= dt_pagamento
 		
-		idConta = request.POST.get('id')
-
-		#busca a conta a pagar
-		conta = ContasAPagar.objects.get(pk = idConta)
-		conta.data_pagamento = dt_pagamento
-		conta.save()
-		
-		#verifica se o pagamento é na carteira ou no banco
 		if(tipoPagamento == ""):
-			#para pagamento feito na carteira
+			saldoCaixa 					= SaldoCaixa.objects.get(user = user)
+			saldoCaixa.saldoAnterior 	= saldoCaixa.saldoAtual
+			
 			conta.tipo_conta = "c"
 
-			#cadastra o lancamento na carteira de acordo com os dados da conta
-			caixa = LancamentosCaixa()
-
-			caixa.data = conta.data_pagamento
-			caixa.categoria = conta.categoria
-			caixa.descricao = conta.descricao
-			caixa. valor = conta.valor
-			caixa.user = request.user
+			caixa 				= LancamentosCaixa()
+			caixa.data 			= conta.data_pagamento
+			caixa.categoria 	= conta.categoria
+			caixa.descricao 	= conta.descricao
+			caixa.valor 		= conta.valor
+			caixa.user 			= user
 			caixa.conta_a_pagar = conta
 
-			#diminui o saldo do usuário
 			saldoCaixa.saldoAtual -= caixa.valor
-			
+
 			caixa.save()
 			saldoCaixa.save()
-	
+
 		else:
-			#para pagamento feito no banco
+			saldoBanco 					= SaldoBanco.objects.get(user = user)
+			saldoBanco.saldoAnterior 	= saldoBanco.saldoAtual
+
 			conta.tipo_conta = "b"
 
-			agencias = ContaBanco.objects.filter(user = user)
+			try:
+				agencia = ContaBanco.objects.get(pk = tipoPagamento)
+			except ContaBanco.DoesNotExist as erro:
+				return HttpResponseNotFound("Conta não encontrada.")
+			except ValueError as erro:
+				return HttpResponseNotFound("Conta não encontrada.")
 
-			for agencia in agencias:
-				if(agencia.banco == tipoPagamento):
-					banco = LancamentosBanco()
+			if(agencia.user != user):
+				return HttpResponseForbidden("Pagamento não permitido.")
 
-					banco.banco = agencia
-					banco.data = conta.data_pagamento
-					banco.tipo = '2'
-					banco.categoria = conta.categoria
-					banco.descricao = conta.descricao
-					banco. valor = conta.valor
-					banco.user = request.user
-					banco.conta_a_pagar = conta
-					
-					#altera o saldo da conta
-					agencia.saldo -= banco.valor
+			lancamento 		 			= LancamentosBanco()
+			lancamento.banco 			= agencia
+			lancamento.data 			= conta.data_pagamento
+			lancamento.tipo 			= '2'
+			lancamento.categoria 		= conta.categoria
+			lancamento.descricao 		= conta.descricao
+			lancamento. valor 			= conta.valor
+			lancamento.user 			= user
+			lancamento.conta_a_pagar 	= conta
+			
+			#altera o saldo da conta
+			agencia.saldo -= conta.valor
 
-					agencia.save()
-					banco.save()
+			agencia.save()
+			lancamento.save()
 
 		conta.paga = True
 		conta.save()
 		
 		return HttpResponse("Pagamento efetuado com sucesso")
+	return HttpResponseForbidden("Não foi possível efeturar o pagamento.")
 
 @login_required
 def cancelaPagamento(request):
 	if(request.method == 'POST'):
-		user = request.user
-		idPagamento = request.POST.get('id')
+		user 		= request.user
+		idPagamento = request.POST.get('id_contas_a_pagar', 0)
 
-		conta = ContasAPagar.objects.get(pk = idPagamento)
+		try:
+			conta = ContasAPagar.objects.get(pk = idPagamento)
+		except ContasAPagar.DoesNotExist as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
+		except ValueError as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
 
-		if(conta.user == user):
-			if(conta.tipo_conta == "c"):
-				#busca o lançamento gerado pelo pagamento
-				lancamentoCaixa = LancamentosCaixa.objects.get(conta_a_pagar = conta)
-				#deleta o lançamento gerado pelo pagamento
-				lancamentoCaixa.delete()
-				#muda o status do pagamento
-				conta.paga = False
-				#deixa em branco o tipo da conta de pagamento
-				conta.tipo_conta = None
-				#deixa a data de pagamento em branco
-				conta.data_pagamento = None
+		if(conta.user != user):
+			return HttpResponseForbidden("Alteração não permitida.")
 
-				#busca o saldo na carteira do usuario logado e faz o ajuste
-				saldoCaixa = SaldoCaixa.objects.get(user = user)
-				saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
-				saldoCaixa.saldoAtual += conta.valor
-				saldoCaixa.save()
-				conta.save()
+		if(conta.tipo_conta == "c"):
+			lancamentoCaixa = LancamentosCaixa.objects.get(conta_a_pagar = conta)
+			lancamentoCaixa.delete()
+			conta.paga = False
+			conta.tipo_conta = None
+			conta.data_pagamento = None
+
+			saldoCaixa = SaldoCaixa.objects.get(user = user)
+			saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
+			saldoCaixa.saldoAtual += conta.valor
+			saldoCaixa.save()
+			conta.save()		
+		else:
+			#busca o lançamento gerado pelo pagamento
+			lancamentoBanco = LancamentosBanco.objects.get(conta_a_pagar = conta)
+
+			try:
+				agencia = ContaBanco.objects.get(pk = lancamentoBanco.banco.id)
+			except ContaBanco.DoesNotExist as erro:
+				return HttpResponseNotFound("Conta não encontrada.")
+			except ValueError as erro:
+				return HttpResponseNotFound("Conta não encontrada.")
+
+			if(agencia.user != user):
+				return HttpResponseForbidden("Pagamento não permitido.")
+						
+			conta.paga 			= False
+			conta.tipo_conta 	= None
+			agencia.saldo 		+= conta.valor
 			
-			else:
-				#busca o lançamento gerado pelo pagamento
-				lancamentoBanco = LancamentosBanco.objects.get(conta_a_pagar = conta)
-				
-				agencias = ContaBanco.objects.filter(user = user)
+			agencia.save()
+			lancamentoBanco.delete()
+			conta.save()
 
-				for a in agencias:
-					if(a == lancamentoBanco.banco):				
-						#muda o status do pagamento
-						conta.paga = False
-						#deixa em branco o tipo da conta de pagamento
-						conta.tipo_conta = None
-						#devolve o valor do pagamento
-						a.saldo += conta.valor
-						a.save()
+		return HttpResponse('Pagamento cancelado com sucesso.')
 
-				#deleta o lançamento gerado pelo pagamento
-				lancamentoBanco.delete()
-				conta.save()
-
-			return HttpResponse('Pagamento cancelado com sucesso.')
-
-
-	return HttpResponseServerError("Pagamento não encontrado. Tente novamente.")
+	return HttpResponseServerError("Não foi possível efeturar o pagamento.")
 
 @login_required
 def verificarPagamento(request):
 	if(request.method == 'POST'):
-		idPagamento = request.POST.get('id')
-		conta = ContasAPagar.objects.get(pk = idPagamento)
+		try:
+			idPagamento = request.POST.get('id_contas_a_pagar', 0)
+			conta 		= ContasAPagar.objects.get(pk = idPagamento)
+		except ContasAPagar.DoesNotExist as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
+		except ValueError as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
+
+		if(conta.user != request.user):
+			return HttpResponseForbidden("Alteração não permitida.")
+
 		if(conta.paga):
-			return HttpResponseServerError('Conta está paga. Cancele o pagamento antes de excluir.')
+			return HttpResponseForbidden('Conta está paga. Cancele o pagamento antes de excluir.')
 		else:
 			return HttpResponse(idPagamento)
 	else:
-		HttpResponseServerError("Conta inexistente")
+		HttpResponseNotFound("Conta não encontrada.")
 
 @login_required
 def filtrarContas(request):
