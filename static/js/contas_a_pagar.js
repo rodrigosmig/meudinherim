@@ -26,7 +26,7 @@ $(function() {
 		$.ajax({
 			type: 'GET',
 			url: '/contas_a_pagar/edit/',
-			data: {'id': id, 'csrfmiddlewaretoken': csrftokenGET},
+			data: {'id_contas_a_pagar': id, 'csrfmiddlewaretoken': csrftokenGET},
 			success: function(contaAPagar) {
 
 				//insere o form vindo do django na div editContPag
@@ -34,7 +34,7 @@ $(function() {
 
 				//Atribui o id do lancamento a uma tag e remove a div vinda do Django
 				var id_contaAPagar = $('#id_contaAPagar').html();
-				$('#datepickerCP_edit').attr('data-cp', id_contaAPagar);
+				$('#id_contas_a_pagar-alter_CP').val(id_contaAPagar);
 				$('#id_contaAPagar').remove();
 
 				var data = $("#datepickerCP_edit").val();
@@ -59,94 +59,28 @@ $(function() {
 				$('#editContasPagar').modal('show');
 			},
 			error: function(erro) {
-				$.alert("Lançamento não encontrado. Tente novamente.");
+				$.alert({
+					title: false,
+					content: erro.responseText,
+					theme: 'material',
+					onClose: function() {
+						$("#editContasPagar").modal('hide')
+					}
+				});			
 			},
 
 		});
 	});
 
-	$('#form_cadastro_pagar').on('submit', function(evento) {
-		evento.preventDefault();
-		
-		var data = $('#datepickerCP').val();
-		var categoria = $('#id_categoriaCP').val();
-		var descricao = $('#id_descricaoCP').val();
-		var valor = $('#id_valorCP').val();
-		var parcelas = $('#outras_parcelas').val();
-
-		$.ajax({
-			type: 'POST',
-			url: '/contas_a_pagar/',
-			data: {
-				'data': data,
-				'categoria': categoria,
-				'descricao': descricao,
-				'valor': valor,
-				'parcelas': parcelas,
-				'csrfmiddlewaretoken': csrftokenPOST,
-			},
-			success: function(msg) {
-				$('#contas_a_pagar').modal('hide');
-				//mensagem de confirmação
-				$.alert({
-					title: false,
-					content: msg,
-					theme: 'material',
-					onClose: function() {
-						//recarrega a página
-						location.reload();
-					}
-				});	
-				$('#datepickerCP').val("");
-				$('#id_categoriaCP').val("");
-				$('#id_descricaoCP').val("");
-				$('#id_valorCP').val("");
-
-			},
-			error: function(msg) {
-				$.alert(msg.responseText);
-			},
-		});		
-	});
-
-	$('.salvar').click(function(evento) {
-		evento.preventDefault();
-		
-		//recupera os valores dos campos e converte para o formato Json
-		var dados = recuperCampos();
-
-		$.ajax({
-			type: 'POST',
-			url: '/contas_a_pagar/edit/',
-			data: dados,
-			success: function(msg) {
-				$('#editContasPagar').modal('hide');
-				//mensagem de confirmação
-				$.alert({
-					title: false,
-					content: msg,
-					theme: 'material',
-					onClose: function() {
-						//recarrega a página
-						location.reload();
-					}
-				});	
-			},
-			error: function(msg) {
-				$.alert(msg.responseText);
-			},
-		});		
-	});
-
 	$('.excluir').click(function(evento) {
 		evento.preventDefault();
+		var id = $("#id_contas_a_pagar-alter_CP").val()
 
-		var dados = recuperCampos();
 		$.ajax({
     		type: 'POST',
 			url: 'verificar/',
 			data: {
-				'id': dados.id,
+				'id_contas_a_pagar': id,
 				'csrfmiddlewaretoken': csrftokenPOST,
 			},
 			success: function(id_pagamento) {
@@ -157,62 +91,18 @@ $(function() {
 				    theme: 'material',
 				    buttons: {
 				        Sim: function() {
-				        	$.ajax({
-				        		type: 'POST',
-								url: 'delete/',
-								data: {
-									'id': id_pagamento,
-									'csrfmiddlewaretoken': csrftokenPOST,
-								},
-								success: function(msg) {
-									$('#editContasPagar').modal('hide');
-									//mensagem de confirmação
-									$.alert({
-										title: false,
-										content: msg,
-										theme: 'material',
-										onClose: function() {
-											//recarrega a página
-											location.reload();
-										}
-									});					
-								},
-								error: function(msg) {
-									//mensagem de retorno em caso de erro
-									$.alert(msg.responseText);
-								},
-				        	})
+							$('#form_edit_CP').attr('action', '/contas_a_pagar/delete/')
+							$('#form_edit_CP').submit()
 				        },
 				        Não: function() {},
 				    }
 				});
 			},
 			error: function(msg) {
-				//mensagem de retorno em caso de erro
 				$.alert(msg.responseText)
 			},
     	})
 	});
-
-	function recuperCampos() {
-		var id = $('#datepickerCP_edit').attr('data-cp');
-		var data = $('#datepickerCP_edit').val();
-		var categoria = $('#id_categoria_edit').val();
-		var descricao = $('#id_descricao_edit').val();
-		var valor = $('#id_valor_edit').val();
-		var parcelas =$('#outras_parcelas_edit').val();
-
-		dados = {
-			'id': id,
-			'data': data,
-			'categoria': categoria,
-			'descricao': descricao,
-			'valor': valor,
-			'parcelas': parcelas,
-			'csrfmiddlewaretoken': csrftokenPOST
-		}
-		return dados;
-	}
 
 	$('#pagamentoConta').on('hidden.bs.modal', function () {
     	$('#campos_conta').empty();
@@ -280,7 +170,7 @@ $(function() {
 		        		type: 'POST',
 						url: '/contas_a_pagar/cancelar/',
 						data: {
-							'id': id_pagamento,
+							'id_contas_a_pagar': id_pagamento,
 							'csrfmiddlewaretoken': csrftokenPOST,
 						},
 						success: function(msg) {
@@ -322,19 +212,17 @@ $(function() {
 				data: {'csrfmiddlewaretoken': csrftokenPOST},
 				datatype: 'json',
 				success: function(bancos) {
-
 					$.each(bancos, function (i, banco) {
 					    $('#select_bancos').append($('<option>', { 
-					        value: banco.fields.banco,
+					        value: banco.pk,
 					        text : banco.fields.banco
-					    }).attr('value', banco.fields.banco));
+					    }).attr('value', banco.pk));
 					});
 
-					//mostra o select-box
 					$('#select_bancos').show();
 				},
 				error: function(bancos) {
-					console.log(banco);
+
 				},
 			});	
 		}
@@ -356,31 +244,25 @@ $(function() {
 				banco = "";
 			}
 
-			var id = $(this).attr('data-cp');
-			var pagamento = $("#data_pagamento").val()
-			/* var vencimento_array = $("#data_vencimento").val().split("/")
-			var pagamento_array = $("#data_pagamento").val().split("/")
-			var vencimento = new Date(vencimento_array[2], vencimento_array[1], vencimento_array[0])
-			var pagamento = new Date(pagamento_array[2], pagamento_array[1], pagamento_array[0]) */
-
+			var id 			= $(this).attr('data-cp');
+			var pagamento 	= $("#data_pagamento").val()
+			
 			$.ajax({
 				type: 'POST',
 				url: '/contas_a_pagar/pagar/',
 				data: {
-					'id': id, 
-					'banco': banco,
+					'id_contas_a_pagar': id, 
+					'id_banco': banco,
 					'data_pagamento': dataConvert(pagamento),
 					'csrfmiddlewaretoken': csrftokenPOST
 				},
 				success: function(msg) {
 					$('#pagamentoConta').modal('hide');
-					//mensagem de confirmação
 					$.alert({
 						title: false,
 						theme: 'material',
 						content: msg,
 						onClose: function() {
-							//recarrega a página
 							location.reload();
 						}
 					});	
@@ -397,13 +279,6 @@ $(function() {
 		new_data = data_array[2] + "-" + data_array[1] + "-" + data_array[0]
 		return new_data
 	}
-
-	/* function validaDatas(vencimento, pagamento) {
-		if(vencimento <= pagamento) {
-			return true
-		}
-		return false
-	} */
 
 	$('#form_filtro_cp').on('submit', function(evento) {
 		evento.preventDefault();

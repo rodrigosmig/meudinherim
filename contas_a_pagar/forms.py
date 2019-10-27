@@ -4,7 +4,6 @@ from contas_a_pagar.models import ContasAPagar
 from caixa.models import Categoria
 
 parcelas = (
-    ("0", "Não"),
     ("1", "1"),
     ("2", "2"),
     ("3", "3"),
@@ -17,9 +16,14 @@ parcelas = (
     ("10", "10"),
     ("11", "11"),
     ("12", "12"),
+    ("13", "13"),
+    ("14", "14"),
+    ("15", "15"),
 )
 
 class ContasAPagarForm(ModelForm):
+    PARCELAS = 15
+    
     data = forms.DateField(
         label = 'Data de vencimento',
         required = True,
@@ -52,7 +56,7 @@ class ContasAPagarForm(ModelForm):
         )
     )
     parcelas = forms.ChoiceField(
-        label = 'Outras Parcelas',
+        label = 'Parcelas',
         widget = forms.Select(
             attrs = {'class': 'form-control', "id": "outras_parcelas"}
         ),
@@ -105,11 +109,4 @@ class ContasAPagarForm(ModelForm):
             widget = forms.NumberInput(
                 attrs = {'class': 'form-control', 'id': 'id_valor_edit'}
             )
-        )
-        self.fields['parcelas'] = forms.ChoiceField(
-            label = 'Outras Parcelas',
-            widget = forms.Select(
-            attrs = {'class': 'form-control', "id": "outras_parcelas_edit"}
-            ),
-            choices = parcelas
         )
