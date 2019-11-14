@@ -39,28 +39,22 @@ $( function() {
 </script>
 {% endblock %}
 
-{% block content %}
-
-<section class="content2">
+{% block content %}    
     
-    <div class="container-fluid">     
-        <div class="block-header">
-            <h1>Contas a Receber</h1>
-        </div>
-    </div>
-    
-    <div class="row clearfix">
+    <h2>
+        Contas a Receber
+        <button data-toggle="modal" href="#mod_add_contas_a_receber" title="Adicionar" class="btn bg-green btn-sm">
+            <i class="material-icons">add</i>
+            <span>Adicionar</span>
+        </button>
+    </h2>
+    <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="card">
-                
-                <div class="header">
-                	<i class="material-icons addCR"><a data-toggle="modal" href="#contas_a_receber" title="Adicionar">add</a></i>
-                </div>
-
+            <div id="card_principal" class="card">
                 <div class="header">
                     <form id="form_filtro_cr" class="form-inline">
                     
-                        <select id="filter_mes_cr" class="form-control">
+                        <select id="filter_mes_cr" class="form-control select_filter">
                             <option value="nenhum">--Meses--</option>
                             <option value="0">Janeiro</option>
                             <option value="1">Fevereiro</option>
@@ -76,17 +70,11 @@ $( function() {
                             <option value="11">Dezembro</option>
                         </select>
 
-                        <select id="filter_ano_cr" class="form-control">
+                        <select id="filter_ano_cr" class="form-control select_filter">
                             <option value="nenhum">--Ano--</option>
-                            <option value="2015">2015</option>
-                            <option value="2016">2016</option>
-                            <option value="2017">2017</option>
-                            <option value="2018">2018</option>
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
                         </select>
 
-                        <select id="filter_status_cr" class="form-control">
+                        <select id="filter_status_cr" class="form-control select_filter">
                             <option value="nenhum">--Status--</option>
                             <option value="todas">Todas</option>
                             <option value="recebidas">Recebidas</option>
@@ -94,8 +82,9 @@ $( function() {
                         </select>
 
                         <button type="submit" class="btn btn-primary waves-effect">
-                            Filtrar
-                        </button>    
+                            <i class="material-icons">filter_list</i>
+                            <span>Filtrar</span>
+                        </button>
 
                     </form>              
                 </div>
@@ -166,10 +155,8 @@ $( function() {
 		</div>
 	</div>
 
-</section>
-
 <!-- Modal Cadastro Contas a Receber -->
-<div class="modal fade" id="contas_a_receber">
+<div class="modal fade" id="mod_add_contas_a_receber">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <!-- Título -->
@@ -190,8 +177,8 @@ $( function() {
                 </div>
                 <!-- Salvar/Cancelar -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="submit" class="btn btn-primary salvar_contas_a_receber">Salvar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>                    
                 </div>
             </form>
         </div>
@@ -208,8 +195,9 @@ $( function() {
                     <h4 id="LabelContasReceber">Editar | <small>Conta a Receber</small></h4>
                 </div>
                 <!-- Campos -->
-                <form id="form_edit_receber">
-                {% csrf_token %}    
+                <form id="form_edit_receber" method="POST" action="{% url 'contas_a_receber:edit' %}">
+                {% csrf_token %}
+                    <input id="id_contas_a_receber-alter_CR" name="id_contas_a_receber" type="hidden">
                     <div id="editContRec" class="modal-body">        
                         <!-- Django form será inserido aqui via Jquery -->
                     </div>
@@ -218,7 +206,7 @@ $( function() {
 	                <div class="modal-footer">
 	                    <button type="submit" class="btn btn-success waves-effect">Salvar</button>
 	                    <button class="btn btn-danger excluir">Excluir</button>
-	                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+	                    <button type="button" class="btn" data-dismiss="modal">Cancelar</button>
 	                </div>
 	        	</form>
             </div>

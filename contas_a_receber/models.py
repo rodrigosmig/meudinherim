@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 class ContasAReceber(models.Model):
 
@@ -14,5 +15,25 @@ class ContasAReceber(models.Model):
 
 
 	def __str__(self):
-
 		return self.descricao
+	
+	class Meta:
+		ordering = ['data']
+	
+	@staticmethod
+	def getCurrentMmonthAccounts(user):
+		hoje = datetime.today()
+		contas = ContasAReceber.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
+
+		return contas
+	
+	@staticmethod
+	def getAccountsByStatusAndRangeOfDate(user, status, mes, ano):
+		contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano)
+		
+		if(status == 'recebidas'):
+			contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(recebido = True)
+		elif(status == 'abertas'):
+			contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(recebido = False)
+
+		return contas

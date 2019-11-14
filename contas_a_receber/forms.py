@@ -4,7 +4,6 @@ from contas_a_receber.models import ContasAReceber
 from caixa.models import Categoria
 
 parcelas = (
-    ("0", "Não"),
     ("1", "1"),
     ("2", "2"),
     ("3", "3"),
@@ -17,45 +16,51 @@ parcelas = (
     ("10", "10"),
     ("11", "11"),
     ("12", "12"),
+    ("13", "13"),
+    ("14", "14"),
+    ("15", "15"),
 )
 
 class ContasAReceberForm(ModelForm):
+    PARCELAS = 15
+    
     data = forms.DateField(
-        label = 'Data',
-        required = True,
-        widget = forms.TextInput(
-        attrs = {'class': 'form-control', 'id': 'datepickerCR', 'placeholder': 'Vencimento'}
+        label       = 'Data',
+        required    = True,
+        widget      = forms.TextInput(
+        attrs       = {'class': 'form-control', 'id': 'datepickerCR', 'placeholder': 'Vencimento'}
         )
     )
     descricao = forms.CharField(
-        label = 'Descrição',
-        max_length = 64,
-        required = True,
-        widget = forms.TextInput(
-        attrs = {'class': 'form-control', 'id': 'id_descricaoCR', 'placeholder': 'Descreva a transação'}
+        label        = 'Descrição',
+        max_length  = 64,
+        required    = True,
+        widget      = forms.TextInput(
+        attrs       = {'class': 'form-control', 'id': 'id_descricaoCR', 'placeholder': 'Descreva a transação'}
         )
     )
     valor = forms.DecimalField(
-        label = 'Valor',
-        min_value = 0.01,
-        max_value = 999999.99,
-        required = True,
-        widget = forms.NumberInput(
-        attrs = {'class': 'form-control', 'id': 'id_valorCR', 'placeholder': 'Insira o valor'}
+        label       = 'Valor',
+        min_value   = 0.01,
+        max_value   = 999999.99,
+        required    = True,
+        widget      = forms.NumberInput(
+            attrs   = {'class': 'form-control', 'id': 'id_valorCR', 'placeholder': 'Insira o valor'}
         )
     )
 
     parcelas = forms.ChoiceField(
-        label = 'Outras Parcelas',
-        widget = forms.Select(
-        attrs = {'class': 'form-control', "id": "outras_parcelas"}
-        ),
-        choices = parcelas
+        label       = 'Outras Parcelas',
+        required    = False,
+        widget      = forms.Select(
+            attrs   = {'class': 'form-control', "id": "outras_parcelas"}
+            ),
+        choices     = parcelas
     )
 
     class Meta:
-        model = ContasAReceber
-        fields = ['data', 'categoria', 'descricao', 'valor']
+        model   = ContasAReceber
+        fields  = ['data', 'categoria', 'descricao', 'valor']
 
     def getAddCRForm(self, request):
         self.fields['categoria'] = forms.ModelChoiceField(
@@ -66,47 +71,49 @@ class ContasAReceberForm(ModelForm):
             )
         )
     
-    def getEditCRForm(self, request):
+    def getEditCRForm(self, user):
         #seleciona apenas as categorias do usuario logado e do tipo entrada
         self.fields['categoria'] = forms.ModelChoiceField(
-                queryset = Categoria.objects.filter(user = request.user).filter(tipo = 1),
+                queryset    = Categoria.objects.filter(user = user).filter(tipo = 1),
                 empty_label = 'Nenhum',
-                widget = forms.Select(
-                    attrs = {'class': 'form-control', 'id': 'id_categoria_edit'}
+                widget      = forms.Select(
+                    attrs   = {'class': 'form-control', 'id': 'id_categoria_edit'}
                 )
             )
 
         #altera o id dos campos
         self.fields['data'] = forms.DateField(
-            label = 'Data',
-            required = True,
-            widget = forms.TextInput(
-                attrs = {'class': 'form-control', 'id': 'datepickerCR_edit'}
-
+            label           = 'Data',
+            required        = True,
+            widget          = forms.TextInput(
+                attrs       = {'class': 'form-control', 'id': 'datepickerCR_edit'}
             )
         )
         self.fields['descricao'] = forms.CharField(
-            label = 'Descrição',
-            max_length = 32,
-            required = True,
-            widget = forms.TextInput(
-                attrs = {'class': 'form-control', 'id': 'id_descricao_edit'}
+            label       = 'Descrição',
+            max_length  = 32,
+            required    = True,
+            widget      = forms.TextInput(
+                attrs   = {'class': 'form-control', 'id': 'id_descricao_edit'}
             )
         )
         self.fields['valor'] = forms.DecimalField(
-            label = 'Valor',
-            min_value = 0.01,
-            max_value = 999999.99,
-            required = True,
-            widget = forms.NumberInput(
-                attrs = {'class': 'form-control', 'id': 'id_valor_edit'}
+            label       = 'Valor',
+            min_value   = 0.01,
+            max_value   = 999999.99,
+            required    = True,
+            widget      = forms.NumberInput(
+                attrs   = {'class': 'form-control', 'id': 'id_valor_edit'}
             )
         )
 
         self.fields['parcelas'] = forms.ChoiceField(
-            label = 'Outras Parcelas',
-            widget = forms.Select(
-            attrs = {'class': 'form-control', "id": "outras_parcelas_edit"}
+            label       = 'Outras Parcelas',
+            required    = False,
+            widget      = forms.Select(
+                attrs   = {'class': 'form-control', "id": "outras_parcelas_edit"}
             ),
-            choices = parcelas
+            choices     = parcelas
         )
+
+        del self.fields["parcelas"]
