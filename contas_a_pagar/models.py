@@ -15,5 +15,22 @@ class ContasAPagar(models.Model):
 
 
 	def __str__(self):
-
 		return self.descricao
+
+	@staticmethod
+	def getCurrentMmonthAccounts(user):
+		hoje = datetime.today()
+		contas = ContasAPagar.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
+
+		return contas
+
+	@staticmethod
+	def getAccountsByStatusAndRangeOfDate(user, status, mes, ano):
+		contas = ContasAPagar.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano)
+		
+		if(status == 'pagas'):
+			contas = contas.filter(paga = True)
+		elif(status == 'abertas'):
+			contas = contas.filter(paga = False)
+
+		return contas

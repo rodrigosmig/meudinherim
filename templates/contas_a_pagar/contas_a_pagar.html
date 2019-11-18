@@ -43,27 +43,21 @@ $( function() {
 {% endblock %}
 
 {% block content %}
+    <h2>
+        Contas a Pagar
+        <button data-toggle="modal" data-toggle="modal" href="#mContasAPagar" title="Adicionar" class="btn bg-green btn-sm">
+            <i class="material-icons">add</i>
+            <span>Adicionar</span>
+        </button>
+    </h2>
 
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="card">
-                <div class="header">
-                    <h2>
-                        CONTAS A PAGAR
-                        <small>Gerencie suas contas a pagar</small>
-                    </h2>
-                    <ul class="header-dropdown m-r--5">
-                        <li class="dropdown">
-                            <a id="btn_add_categoria" type="button" class="btn bg-red waves-effect" data-toggle="modal" href="#mContasAPagar" title="Adicionar">
-                                <i class="material-icons">plus_one</i>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+            <div id="card_principal" class="card">
                 <div class="header">
                     <form id="form_filtro_cp" class="form-inline">
                     
-                        <select id="filter_mes_cp" class="form-control">
+                        <select id="filter_mes_cp" class="form-control select_filter">
                             <option value="nenhum">--Meses--</option>
                             <option value="0">Janeiro</option>
                             <option value="1">Fevereiro</option>
@@ -79,17 +73,11 @@ $( function() {
                             <option value="11">Dezembro</option>
                         </select>
 
-                        <select id="filter_ano_cp" class="form-control">
+                        <select id="filter_ano_cp" class="form-control select_filter">
                             <option value="nenhum">--Ano--</option>
-                            <option value="2015">2015</option>
-                            <option value="2016">2016</option>
-                            <option value="2017">2017</option>
-                            <option value="2018">2018</option>
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
                         </select>
 
-                        <select id="filter_status_cp" class="form-control">
+                        <select id="filter_status_cp" class="form-control select_filter">
                             <option value="nenhum">--Status--</option>
                             <option value="todas">Todas</option>
                             <option value="pagas">Pagas</option>
@@ -97,7 +85,8 @@ $( function() {
                         </select>
 
                         <button type="submit" class="btn btn-primary waves-effect">
-                            Filtrar
+                            <i class="material-icons">filter_list</i>
+                            <span>Filtrar</span>
                         </button>    
 
                     </form>

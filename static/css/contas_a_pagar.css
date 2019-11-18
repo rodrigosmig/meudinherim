@@ -19,3 +19,7 @@
 .addCP a:hover {
 	color: #4169E1;
 }
+
+.select_filter {
+	border-radius: 0px;
+}
