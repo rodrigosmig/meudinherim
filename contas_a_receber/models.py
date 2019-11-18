@@ -32,8 +32,8 @@ class ContasAReceber(models.Model):
 		contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano)
 		
 		if(status == 'recebidas'):
-			contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(recebido = True)
+			contas = contas.filter(recebido = True)
 		elif(status == 'abertas'):
-			contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(recebido = False)
+			contas = contas.filter(recebido = False)
 
 		return contas

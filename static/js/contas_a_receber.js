@@ -20,7 +20,7 @@ $(function() {
 	setDateinSelect()
 
 	function setYear(year) {
-		for (let ano = 2017; ano <= year; ano++) {
+		for (let ano = 2017; ano <= year + 1; ano++) {
 			$("#filter_ano_cr").append("<option value=" + ano + ">" + ano + "</option>")			
 		}
 	}
@@ -387,7 +387,7 @@ $(function() {
 				hideWaitMe("card_principal")
 			},
 			error: function(msg) {
-				//mensagem de retorno em caso de erro
+				hideWaitMe("card_principal")
 				$.alert(msg.responseText)
 			},
 		})	
