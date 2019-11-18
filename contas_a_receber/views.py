@@ -332,7 +332,7 @@ def filtrarContas(request):
 			mes = int(request.POST.get('mes'))
 			ano = int(request.POST.get('ano'))
 		except ValueError as erro:
-			pass
+			return HttpResponseForbidden("A data informada é inválida")
 		status = request.POST.get('status', "")
 
 		if(status not in ('abertas', 'recebidas', 'todas')):
