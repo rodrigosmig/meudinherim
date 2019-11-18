@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseServerError
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from caixa.models import Categoria, SaldoCaixa, LancamentosCaixa
 from banco.models import SaldoBanco, ContaBanco, LancamentosBanco
 from banco.forms import LancamentosBancoForm
@@ -8,29 +8,44 @@ from caixa.forms import LancamentosForm
 from contas_a_receber.models import ContasAReceber
 from contas_a_receber.forms import ContasAReceberForm
 from django import forms
-from datetime import datetime
 import datedelta
 from django.core import serializers
 import json
 from usuario.models import UsuarioProfile
 from caixa.views import separarCategorias
+from django.contrib import messages
+from django.urls import reverse
+import datetime
 
 @login_required
 def contasAReceber(request):
 	user = request.user
+	form = ContasAReceberForm()
 
 	if(request.method == 'POST'):
 		form = ContasAReceberForm(request.POST)
-		parcelas = int(request.POST.get('parcelas'))
+		
+		try:
+			parcelas = int(request.POST.get('parcelas'))
+		except ValueError as error:
+			messages.warning(request, 'A quantidade de parcelas é inválida.')
+			return HttpResponseRedirect(reverse('contas_a_receber:index'))
+		
+		if(parcelas < 1 or parcelas > form.PARCELAS):
+			messages.warning(request, 'A quantidade de parcelas é inválida.')
+			return HttpResponseRedirect(reverse('contas_a_receber:index'))
+
 
 		if(form.is_valid()):
-			contReceber = form.save(commit = False)
-			contReceber.user = user
-			contReceber.recebido = False
-			contReceber.save()
+			contReceber 			= form.save(commit = False)
+			contReceber.user 		= request.user
+			contReceber.recebido 	= False
+			parcela1 				= ""
+			mensagem 				= contReceber.descricao
+			
+			if(parcelas > 1):
+				parcela1 = " 1/" + str(parcelas)
 
-			if(parcelas > 0):
-				parcelas += 1
 				for x in range(1, parcelas):
 					novaParcela = ContasAReceber()
 					novaParcela.data = contReceber.data + datedelta.datedelta(months = x)
@@ -38,21 +53,20 @@ def contasAReceber(request):
 					novaParcela.descricao = contReceber.descricao + " " + str(x + 1) + "/" + str(parcelas)
 					novaParcela.valor = contReceber.valor
 					novaParcela.recebido = False
-					novaParcela.user = request.user
-					novaParcela.save()			
-
-			return HttpResponse("Conta a receber adicionada com sucesso.")
+					novaParcela.user = user
+					novaParcela.save()
+			
+			contReceber.descricao += parcela1 
+			contReceber.save()
+			messages.success(request, "Conta " + mensagem + " adicionada com sucesso!")
+			return HttpResponseRedirect(reverse('contas_a_receber:index'))
 		else:
-			return HttpResponseServerError("Formulário inválido.")
+			messages.warning(request, "Formulário inválido")
 
 
-	template = 'contas_a_receber/contas_a_receber.html'
-
-	hoje = datetime.today()
-
-	contas = ContasAReceber.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
-
-	form = ContasAReceberForm()
+	template 	= 'contas_a_receber/contas_a_receber.html'	
+	contas 		= ContasAReceber.getCurrentMmonthAccounts(user)
+	form 		= ContasAReceberForm()
 	form.getAddCRForm(request)	
 
 	contexto = {'contReceber': contas, 'contReceberForm': form}
@@ -88,40 +102,45 @@ def editContasReceber(request):
 	user = request.user
 
 	if(request.method == 'POST'):
+		idConta = request.POST.get('id_contas_a_receber')
 
-		#id da conta clicado
-		idConta = request.POST.get('id')
-		#busca o lancamento a ser alterado
-		conta = ContasAReceber.objects.get(pk = idConta)
-		
-		#atribui o lancamento ao form	
+		try:
+			conta = ContasAReceber.objects.get(pk = idConta)
+			print(conta)
+		except ContasAReceber.DoesNotExist as erro:
+			messages.warning(request, "Conta não encontrada.")
+			return HttpResponseRedirect(reverse('contas_a_receber:index'))
+		except ValueError as erro:
+			messages.warning(request, "Conta não encontrada.")
+			return HttpResponseRedirect(reverse('contas_a_receber:index'))
+
+		if(conta.user != user):
+			messages.warning(request, "Alteração não permitida.")
+			return HttpResponseRedirect(reverse('contas_a_receber:index'))
+
 		form = ContasAReceberForm(request.POST, instance = conta)
-		parcelas = int(request.POST.get('parcelas'))
-		
+		print(form.is_valid())
 		if(form.is_valid()):
 			form.save()
-
-			if(parcelas > 0):
-				parcelas += 1
-				for x in range(1, parcelas):
-					novaParcela = ContasAReceber()
-					novaParcela.data = form.cleaned_data['data'] + datedelta.datedelta(months = x)
-					novaParcela.categoria = form.cleaned_data['categoria']
-					novaParcela.descricao = form.cleaned_data['descricao'] + " " + str(x + 1) + "/" + str(parcelas)
-					novaParcela.valor = form.cleaned_data['valor']
-					novaParcela.recebido = False
-					novaParcela.user = request.user
-					novaParcela.save()
-
-			return HttpResponse("Conta alterada com sucesso")
+			messages.success(request, "Conta " + conta.descricao + " alterada com sucesso!")
+			return HttpResponseRedirect(reverse('contas_a_receber:index'))
 		else:
-			return HttpResponseServerError("Formulário inválido.")
+			messages.warning(request, "Formulário inválido")
+			print(form)
+	
+	try:
+		idConta = request.GET.get('id_contas_a_receber', 0)
+		conta 	= ContasAReceber.objects.get(pk = idConta)
+	except ContasAReceber.DoesNotExist as erro:
+		return HttpResponseNotFound("Conta não encontrada.")
+	except ValueError as erro:
+		return HttpResponseNotFound("Conta não encontrada.")
 
-	#id do lancamento clicado
-	idConta = request.GET.get('id')
-	conta = ContasAReceber.objects.get(pk = idConta)
+	if(conta.user != user):
+		return HttpResponseForbidden("Alteração não permitida.")
+
 	form = ContasAReceberForm(instance = conta)
-	form.getEditCRForm(request)	
+	form.getEditCRForm(user)	
 
 	#retorna o id da conta junto com o formulario
 	divId = "<div id='id_contaAReceber'>" + idConta + "</div>"
@@ -131,92 +150,121 @@ def editContasReceber(request):
 	return HttpResponse(form_html)
 
 @login_required
+def verificarRecebimento(request):
+	if(request.method == 'POST'):
+		try:
+			idRecebimento 	= request.POST.get('id_contas_a_receber', 0)
+			conta 			= ContasAReceber.objects.get(pk = idRecebimento)
+		except ContasAReceber.DoesNotExist as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
+		except ValueError as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
+
+		if(conta.user != request.user):
+			return HttpResponseForbidden("Alteração não permitida.")
+
+		if(conta.recebido):
+			return HttpResponseForbidden('Conta foi recebida. Cancele o recebimento antes de excluir.')
+
+		return HttpResponse(idRecebimento)
+
+@login_required
 def delContasReceber(request):
 	if(request.method == 'POST'):
-		#usuario
 		user = request.user
 
-		#id da conta a ser deletada
-		idConta = request.POST.get('id')
+		try:
+			idRecebimento 	= request.POST.get('id_contas_a_receber', 0)
+			conta 			= ContasAReceber.objects.get(pk = idRecebimento)
+		except ContasAReceber.DoesNotExist as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
+		except ValueError as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
 
-		#busca a conta
-		conta = ContasAReceber.objects.get(pk = idConta)		
-		
-		if(user == conta.user):
-			conta.delete()
+		if(conta.user != user):
+			return HttpResponseForbidden("Alteração não permitida.")
+
+		conta.delete()
 			
-			return HttpResponse("Conta a receber excluída com sucesso")
-		else:
-			return HttpResponseServerError("Conta não encontrado.")
-		
-
-	return HttpResponseServerError("Conta não encontrado.")
+		messages.success(request, "Conta " + conta.descricao + " excluída com sucesso!")
+		return HttpResponseRedirect(reverse('contas_a_receber:index'))
+	
+	messages.warning(request, "Solicitação inválida.")
+	return HttpResponseRedirect(reverse('contas_a_receber:index'))
 
 @login_required
 def recebimento(request):
 	if(request.method == 'POST'):
-		#usuario
-		user = request.user
-
-		dt_recebimento = request.POST.get('data_recebimento')
+		user 			= request.user
 		tipoRecebimento = request.POST.get('banco')
 
-		#busca o saldo na carteira do usuario logado
-		saldoCaixa = SaldoCaixa.objects.get(user = request.user)
-		#atribui o valor do saldo anterior
-		saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
+		try:
+			idConta 			= request.POST.get('id_contas_a_receber', 0)
+			conta 				= ContasAReceber.objects.get(pk = idConta)
+		except ContasAReceber.DoesNotExist as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
+		except ValueError as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
 
-		idConta = request.POST.get('id')
+		try:
+			dt_recebimento = datetime.datetime.strptime(request.POST.get('data_recebimento'), "%Y-%m-%d")
+		except ValueError as erro:
+			return HttpResponseForbidden("Formato de data inválido.")
 
-		#busca a conta a pagar
-		conta = ContasAReceber.objects.get(pk = idConta)
+		if(conta.user != user):
+			return HttpResponseForbidden("Recebimento não permitido.")
+		
 		conta.data_recebimento = dt_recebimento
-		conta.save()
 
-		#verifica se o pagamento é na carteira ou no banco
 		if(tipoRecebimento == ""):
-			#para pagamento feito na carteira
+			saldoCaixa 					= SaldoCaixa.objects.get(user = user)
+			saldoCaixa.saldoAnterior 	= saldoCaixa.saldoAtual
+
 			conta.tipo_conta = "c"
-			#cadastra o lancamento na carteira de acordo com os dados da conta
-			caixa = LancamentosCaixa()
 
-			caixa.data = conta.data_recebimento
-			caixa.categoria = conta.categoria
-			caixa.descricao = conta.descricao
-			caixa. valor = conta.valor
-			caixa.user = request.user
-			caixa.conta_a_receber = conta
+			caixa 					= LancamentosCaixa()
+			caixa.data 				= conta.data_recebimento
+			caixa.categoria 		= conta.categoria
+			caixa.descricao 		= conta.descricao
+			caixa. valor 			= conta.valor
+			caixa.user 				= request.user
+			caixa.conta_a_receber 	= conta
 
-			#diminui o saldo do usuário
 			saldoCaixa.saldoAtual += caixa.valor
 			
 			caixa.save()
 			saldoCaixa.save()
 	
 		else:
-			#para pagamento feito no banco
+			saldoBanco 					= SaldoBanco.objects.get(user = user)
+			saldoBanco.saldoAnterior 	= saldoBanco.saldoAtual
+
 			conta.tipo_conta = "b"
 
-			agencias = ContaBanco.objects.filter(user = user)
+			try:
+				agencia = ContaBanco.objects.get(pk = tipoRecebimento)
+			except ContaBanco.DoesNotExist as erro:
+				return HttpResponseNotFound("Agência não encontrada.")
+			except ValueError as erro:
+				return HttpResponseNotFound("Agência não encontrada.")
 
-			for agencia in agencias:
-				if(agencia.banco == tipoRecebimento):
-					banco = LancamentosBanco()
+			if(agencia.user != user):
+				return HttpResponseForbidden("Pagamento não permitido.")
+				
+			lancamento 					= LancamentosBanco()
+			lancamento.banco 			= agencia
+			lancamento.data 			= conta.data_recebimento
+			lancamento.tipo 			= '1'
+			lancamento.categoria 		= conta.categoria
+			lancamento.descricao 		= conta.descricao
+			lancamento. valor 			= conta.valor
+			lancamento.user 			= request.user
+			lancamento.conta_a_receber 	= conta
+			
+			agencia.saldo += lancamento.valor
 
-					banco.banco = agencia
-					banco.data = conta.data_recebimento
-					banco.tipo = '1'
-					banco.categoria = conta.categoria
-					banco.descricao = conta.descricao
-					banco. valor = conta.valor
-					banco.user = request.user
-					banco.conta_a_receber = conta
-					
-					#altera o saldo da conta
-					agencia.saldo += banco.valor
-
-					banco.save()
-					agencia.save()
+			lancamento.save()
+			agencia.save()
 
 		conta.recebido = True
 		conta.save()
@@ -227,87 +275,70 @@ def recebimento(request):
 def cancelaRecebimento(request):
 	if(request.method == 'POST'):
 		user = request.user
-		idRecebimento = request.POST.get('id')
+		idRecebimento = request.POST.get('id_contas_a_receber', 0)
 
-		conta = ContasAReceber.objects.get(pk = idRecebimento)
+		try:
+			conta = ContasAReceber.objects.get(pk = idRecebimento)
+		except ContasAReceber.DoesNotExist as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
+		except ValueError as erro:
+			return HttpResponseNotFound("Conta não encontrada.")
 
-		if(conta.user == user):
-			if(conta.tipo_conta == "c"):
-				#busca o lançamento gerado pelo recebimento
-				lancamentoCaixa = LancamentosCaixa.objects.get(conta_a_receber = conta)
-				#deleta o lançamento gerado pelo recebimento
-				lancamentoCaixa.delete()
-				#muda o status do recebimento
-				conta.recebido = False
-				#deixa em branco o tipo da conta de recebimento
-				conta.tipo_conta = None
-				#deixa a data de recebimento em branco
-				conta.data_recebimento = None
+		if(conta.user != user):
+			return HttpResponseForbidden("Alteração não permitida.")
 
-				#busca o saldo do caixa do usuario logado e faz o ajuste
-				saldoCaixa = SaldoCaixa.objects.get(user = user)
-				saldoCaixa.saldoAnterior = saldoCaixa.saldoAtual
-				saldoCaixa.saldoAtual -= conta.valor
-				saldoCaixa.save()
-				conta.save()
+		if(conta.tipo_conta == "c"):
+			lancamentoCaixa = LancamentosCaixa.objects.get(conta_a_receber = conta)
+			lancamentoCaixa.delete()
 			
-			else:
-				#busca o lançamento gerado pelo recebimento
-				lancamentoBanco = LancamentosBanco.objects.get(conta_a_receber = conta)
-				
-				agencias = ContaBanco.objects.filter(user = user)
+			conta.recebido 			= False
+			conta.tipo_conta 		= None
+			conta.data_recebimento 	= None
 
-				for a in agencias:
-					if(a == lancamentoBanco.banco):						
-						#muda o status do recebimento
-						conta.recebido = False
-						#deixa em branco o tipo da conta de recebimento
-						conta.tipo_conta = None
-						#subtrai o valor do recebimento
-						a.saldo -= conta.valor
-						a.save()
-
-				
-				#deleta o lançamento gerado pelo recebimento
-				lancamentoBanco.delete()
-				conta.save()
-
-			return HttpResponse('Recebimento cancelado com sucesso.')
-
-
-	return HttpResponseServerError("Pagamento não encontrado. Tente novamente.")
-
-
-@login_required
-def verificarRecebimento(request):
-	if(request.method == 'POST'):
-		idRecebimento = request.POST.get('id')
-		conta = ContasAReceber.objects.get(pk = idRecebimento)
-		if(conta.recebido):
-			return HttpResponseServerError('Conta foi recebida. Cancele o recebimento antes de excluir.')
+			saldoCaixa 					= SaldoCaixa.objects.get(user = user)
+			saldoCaixa.saldoAnterior 	= saldoCaixa.saldoAtual
+			saldoCaixa.saldoAtual 		-= conta.valor
+			saldoCaixa.save()
+			conta.save()		
 		else:
-			return HttpResponse(idRecebimento)
-	else:
-		HttpResponseServerError("Conta inexistente")
+			lancamentoBanco = LancamentosBanco.objects.get(conta_a_receber = conta)
+
+			try:
+				agencia = ContaBanco.objects.get(pk = lancamentoBanco.banco.id)
+			except ContaBanco.DoesNotExist as erro:
+				return HttpResponseNotFound("Conta não encontrada.")
+			except ValueError as erro:
+				return HttpResponseNotFound("Conta não encontrada.")
+
+			if(agencia.user != user):
+				return HttpResponseForbidden("Pagamento não permitido.")
+
+			conta.recebido 		= False
+			conta.tipo_conta	= None
+			agencia.saldo 		-= conta.valor
+			
+			agencia.save()
+			lancamentoBanco.delete()
+			conta.save()
+
+		return HttpResponse('Recebimento cancelado com sucesso.')
 
 @login_required
 def filtrarContas(request):
 	if(request.method == 'POST'):
 		user = request.user
-		mes = request.POST.get('mes')
-		ano = request.POST.get('ano')
-		status = request.POST.get('status')
 
-		if(status == 'todas'):
-			contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano)
-		elif(status == 'recebidas'):
-			contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(recebido = True)
-		elif(status == 'abertas'):
-			contas = ContasAReceber.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(recebido = False)
+		try:
+			mes = int(request.POST.get('mes'))
+			ano = int(request.POST.get('ano'))
+		except ValueError as erro:
+			pass
+		status = request.POST.get('status', "")
 
-		if(len(contas) != 0):
-			contasJson = serializers.serialize('json', contas, use_natural_foreign_keys=True, use_natural_primary_keys=True)
-			return HttpResponse(contasJson, content_type="application/json")
+		if(status not in ('abertas', 'recebidas', 'todas')):
+			return HttpResponseForbidden("Status de conta é inválido.")		
+		
+		contas = ContasAReceber.getAccountsByStatusAndRangeOfDate(user, status, mes, ano)
 
-		else:
-			return HttpResponseServerError("Nenhum conta foi encontrada.")
+		contasJson = serializers.serialize('json', contas, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+		return HttpResponse(contasJson, content_type="application/json")
