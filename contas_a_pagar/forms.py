@@ -57,6 +57,7 @@ class ContasAPagarForm(ModelForm):
     )
     parcelas = forms.ChoiceField(
         label = 'Parcelas',
+        required    = False,
         widget = forms.Select(
             attrs = {'class': 'form-control', "id": "outras_parcelas"}
         ),
@@ -110,3 +111,5 @@ class ContasAPagarForm(ModelForm):
                 attrs = {'class': 'form-control', 'id': 'id_valor_edit'}
             )
         )
+
+        del self.fields["parcelas"]

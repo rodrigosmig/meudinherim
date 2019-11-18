@@ -18,21 +18,38 @@ $(function() {
 	    return cookieValue;
 	}
 
+	setDateinSelect()
+
+	function setYear(year) {
+		for (let ano = 2017; ano <= year + 1; ano++) {
+			$("#filter_ano_cp").append("<option value=" + ano + ">" + ano + "</option>")			
+		}
+	}
+
+	function setDateinSelect() {
+		var data = new Date();
+		var mesAtual = data.getMonth();
+		var anoAtual = data.getFullYear();
+
+		setYear(anoAtual)
+
+		$('#filter_mes_cp').val(mesAtual).prop('selected', true);
+		$('#filter_ano_cp').val(anoAtual).prop('selected', true);
+
+	}
 
 	$(document).on('click', '.openEdit', function() {
-		//atribui o id do lancamento a variavel
+		setWaitMe("editContasPagar")
 		var id = $(this).attr('data-cp');
-		//envia a solicitacao do formulario com o id da conta via ajax
 		$.ajax({
 			type: 'GET',
 			url: '/contas_a_pagar/edit/',
 			data: {'id_contas_a_pagar': id, 'csrfmiddlewaretoken': csrftokenGET},
 			success: function(contaAPagar) {
-
-				//insere o form vindo do django na div editContPag
 				$('#editContPag').html(contaAPagar);
 
-				//Atribui o id do lancamento a uma tag e remove a div vinda do Django
+				hideWaitMe('editContasPagar')
+
 				var id_contaAPagar = $('#id_contaAPagar').html();
 				$('#id_contas_a_pagar-alter_CP').val(id_contaAPagar);
 				$('#id_contaAPagar').remove();
@@ -70,6 +87,18 @@ $(function() {
 			},
 
 		});
+	});
+
+	$('#form_cadastro_pagar').on('submit', function(evento) {
+		evento.preventDefault();
+		setWaitMe("mContasAPagar")
+		evento.currentTarget.submit()
+	});
+
+	$('#form_edit_CP').on('submit', function(evento) {
+		evento.preventDefault();
+		setWaitMe("editContasPagar")
+		evento.currentTarget.submit()
 	});
 
 	$('.excluir').click(function(evento) {
@@ -282,87 +311,97 @@ $(function() {
 
 	$('#form_filtro_cp').on('submit', function(evento) {
 		evento.preventDefault();
+		setWaitMe("card_principal")
 
-		var mes = $('#filter_mes_cp').val();
+		var mes = parseInt($('#filter_mes_cp').val()) + 1;
 		var ano = $('#filter_ano_cp').val();
 		var status = $('#filter_status_cp').val();
 
-		if(mes === 'nenhum' || status ==='nenhum' || ano === 'nenhum') {
-			$.alert('Selecione o mês, o ano e o status desejado.');
-		}
-		else {
-			mes = parseInt(mes) + 1
-			$.ajax({
-	    		type: 'POST',
-				url: '/contas_a_pagar/filtrar/',
-				data: {
-					'mes': mes,
-					'ano': ano,
-					'status': status,
-					'csrfmiddlewaretoken': csrftokenGET,
-				},
-				success: function(contas) {
-					var table = $('#dataBanco').DataTable();
+		$.ajax({
+			type: 'POST',
+			url: '/contas_a_pagar/filtrar/',
+			data: {
+				'mes': mes,
+				'ano': ano,
+				'status': status,
+				'csrfmiddlewaretoken': csrftokenGET,
+			},
+			success: function(contas) {
+				var table = $('#dataBanco').DataTable();
 
-					var rows = table.clear().draw();
+				var rows = table.clear().draw();
 
-					for(var x = 0; x < contas.length; x++) {
-						var paga;
-						var edit
-						
-						if(contas[x].fields.paga === false) {
-							paga = "<i class='material-icons'><a data-toggle='modal' href='#pagamentoConta' style='color: red' title='Clique para pagar'><span class='openPay' data-cp=" + contas[x].pk + ">close</span></a></i>"
-							edit = "<i class='material-icons'><a data-toggle='modal' href='#editContasPagar' title='Clique para editar'><span class='openEdit' data-cp=" + contas[x].pk + ">edit</span></a></i>"
-						}
-						else {
-							paga = "<i class='material-icons pago'><span class='cancelPay' data-cp=" + contas[x].pk + "><a data-toggle='modal' href='' title='Clique para cancelar o pagamento'>done</span></i>"
-							edit = "<i class='material-icons'><a title='Cancele o pagamento para editar'><span data-cp=" + contas[x].pk + ">edit</span></a></i>"
-						}
-
-						var data_vencimento = convertData(contas[x].fields.data);
-						var data_pagamento
-						if(contas[x].fields.data_pagamento == null) {
-							if(contas[x].fields.paga == true) {
-								data_pagamento = convertData(contas[x].fields.data)
-							}
-							else {
-								data_pagamento = ""
-							}
-							
-						}
-						else {
-							data_pagamento = convertData(contas[x].fields.data_pagamento)
-						}
-	
-						var row = table.row.add([
-							data_vencimento,
-							data_pagamento,
-							contas[x].fields.descricao,
-							contas[x].fields.categoria[2],
-							contas[x].fields.valor.replace('.', ','),
-							edit,
-							paga,
-						]);
-						//adiciona o id do pagamento na linha
-						table.row(row).node().id = contas[x].pk;
-						//adiciona as classes da tag html
-						table.row(row).column(0).nodes().to$().addClass('conta_data');
-						table.row(row).column(1).nodes().to$().addClass('conta_desc');
-						table.row(row).column(2).nodes().to$().addClass('conta_cat');
-						table.row(row).column(3).nodes().to$().addClass('conta_val');
-						table.row(row).draw(false);
+				for(var x = 0; x < contas.length; x++) {
+					var paga;
+					var edit
+					
+					if(contas[x].fields.paga === false) {
+						paga = "<i class='material-icons'><a data-toggle='modal' href='#pagamentoConta' style='color: red' title='Clique para pagar'><span class='openPay' data-cp=" + contas[x].pk + ">close</span></a></i>"
+						edit = "<i class='material-icons'><a data-toggle='modal' href='#editContasPagar' title='Clique para editar'><span class='openEdit' data-cp=" + contas[x].pk + ">edit</span></a></i>"
 					}
-											
-				},
-				error: function(msg) {
-					//mensagem de retorno em caso de erro
-					$.alert(msg.responseText)
-				},
-	    	})
-		}
+					else {
+						paga = "<i class='material-icons pago'><span class='cancelPay' data-cp=" + contas[x].pk + "><a data-toggle='modal' href='' title='Clique para cancelar o pagamento'>done</span></i>"
+						edit = "<i class='material-icons'><a title='Cancele o pagamento para editar'><span data-cp=" + contas[x].pk + ">edit</span></a></i>"
+					}
+
+					var data_vencimento = convertData(contas[x].fields.data);
+					var data_pagamento
+					if(contas[x].fields.data_pagamento == null) {
+						if(contas[x].fields.paga == true) {
+							data_pagamento = convertData(contas[x].fields.data)
+						}
+						else {
+							data_pagamento = ""
+						}
+						
+					}
+					else {
+						data_pagamento = convertData(contas[x].fields.data_pagamento)
+					}
+
+					var row = table.row.add([
+						data_vencimento,
+						data_pagamento,
+						contas[x].fields.descricao,
+						contas[x].fields.categoria[2],
+						contas[x].fields.valor.replace('.', ','),
+						edit,
+						paga,
+					]);
+					//adiciona o id do pagamento na linha
+					table.row(row).node().id = contas[x].pk;
+					//adiciona as classes da tag html
+					table.row(row).column(0).nodes().to$().addClass('conta_data');
+					table.row(row).column(1).nodes().to$().addClass('conta_desc');
+					table.row(row).column(2).nodes().to$().addClass('conta_cat');
+					table.row(row).column(3).nodes().to$().addClass('conta_val');
+					table.row(row).draw(false);
+				}
+				hideWaitMe("card_principal")						
+			},
+			error: function(msg) {
+				hideWaitMe("card_principal")
+				$.alert(msg.responseText)
+			},
+		})
 
 		
 	});
+
+	function hideWaitMe(id) {
+		$("#" + id).waitMe("hide");
+	}
+
+	function setWaitMe(id) {
+		$("#" + id).waitMe({
+			effect : 'bounce',
+			text : 'Aguarde...',
+			bg : "rgba(255,255,255,0.7)",
+			color : "#000",
+			waitTime : "-1",
+			textPos : 'vertical',
+		})
+	}
 
 	function convertData(data) {
 		dia = data.substring(8);

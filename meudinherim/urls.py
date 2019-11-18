@@ -21,11 +21,9 @@ from django.conf.urls.static import static
 from principal import views
 from rest_framework import routers
 from rest_framework_simplejwt import views as jwt_views
-from usuario.api.viewsets import UsuarioProfileViewSet
 from caixa.api.viewsets import CategoriaViewSet
 
 router = routers.DefaultRouter(trailing_slash=False)
-router.register(r'api/usuario', UsuarioProfileViewSet, base_name='Usuario')
 router.register(r'api/categorias', CategoriaViewSet, base_name='Usuario')
 
 urlpatterns = [

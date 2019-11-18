@@ -37,34 +37,34 @@ def contasAPagar(request):
 			return HttpResponseRedirect(reverse('contas_a_pagar:index'))
 
 		if(form.is_valid()):
-			contaPagar = form.save(commit = False)
+			contaPagar 		= form.save(commit = False)
 			contaPagar.user = request.user
 			contaPagar.paga = False
-			parcela1 = ""
+			parcela1 		= ""
+			mensagem 		= contaPagar.descricao
 			
 			if(parcelas > 1):
 				parcela1 = " 1/" + str(parcelas)
 
 				for x in range(1, parcelas):
-					novaParcela = ContasAPagar()
-					novaParcela.data = contaPagar.data + datedelta.datedelta(months = x)
-					novaParcela.categoria = contaPagar.categoria
-					novaParcela.descricao = contaPagar.descricao + " " + str(x + 1) + "/" + str(parcelas)
-					novaParcela.valor = contaPagar.valor
-					novaParcela.paga = False
-					novaParcela.user = request.user
+					novaParcela 			= ContasAPagar()
+					novaParcela.data 		= contaPagar.data + datedelta.datedelta(months = x)
+					novaParcela.categoria 	= contaPagar.categoria
+					novaParcela.descricao 	= contaPagar.descricao + " " + str(x + 1) + "/" + str(parcelas)
+					novaParcela.valor 		= contaPagar.valor
+					novaParcela.paga 		= False
+					novaParcela.user 		= request.user
 					novaParcela.save()
 					
 			contaPagar.descricao += parcela1 
 			contaPagar.save()
-			messages.success(request, "Conta " + contaPagar.descricao + " adicionada com sucesso!")
+			messages.success(request, "Conta " + mensagem + " adicionada com sucesso!")
 			return HttpResponseRedirect(reverse('contas_a_pagar:index'))
 		else:
 			messages.warning(request, "Formulário inválido")
 
-	hoje 		= datetime.today()
 	template 	= 'contas_a_pagar/contas_a_pagar.html'	
-	contas 		= ContasAPagar.objects.filter(user = user).filter(data__month = hoje.month).filter(data__year = hoje.year)
+	contas 		= ContasAPagar.getCurrentMmonthAccounts(user)
 	form.getAddCPForm(request)
 	
 	context = {'contPagar': contas, 'contPagarForm': form}
@@ -341,20 +341,19 @@ def verificarPagamento(request):
 def filtrarContas(request):
 	if(request.method == 'POST'):
 		user = request.user
-		mes = request.POST.get('mes')
-		ano = request.POST.get('ano')
-		status = request.POST.get('status')
+		
+		try:
+			mes = int(request.POST.get('mes'))
+			ano = int(request.POST.get('ano'))
+		except ValueError as erro:
+			return HttpResponseForbidden("A data informada é inválida")
 
-		if(status == 'todas'):
-			contas = ContasAPagar.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano)
-		elif(status == 'pagas'):
-			contas = ContasAPagar.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(paga = True)
-		elif(status == 'abertas'):
-			contas = ContasAPagar.objects.filter(user = user).filter(data__month = mes).filter(data__year = ano).filter(paga = False)
+		status = request.POST.get('status', "")
 
-		if(len(contas) != 0):
-			contasJson = serializers.serialize('json', contas, use_natural_foreign_keys=True, use_natural_primary_keys=True)
-			return HttpResponse(contasJson, content_type="application/json")
+		if(status not in ('abertas', 'pagas', 'todas')):
+			return HttpResponseForbidden("Status da conta inválido.")
 
-		else:
-			return HttpResponseServerError("Nenhum conta foi encontrada.")
+		contas = ContasAPagar.getAccountsByStatusAndRangeOfDate(user, status, mes, ano)
+
+		contasJson = serializers.serialize('json', contas, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+		return HttpResponse(contasJson, content_type="application/json")
