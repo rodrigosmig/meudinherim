@@ -75,6 +75,17 @@ class ContaBanco(models.Model):
 			lancamentos = lancamentos.exclude(banco__tipo = ContaBanco.CARTAO_DE_CREDITO)
 
 		return lancamentos
+	
+	def bancoIsValid(user, id):    
+		try:
+			banco = ContaBanco.objects.get(pk=id)
+		except ContaBanco.DoesNotExist as identifier:
+			return False
+        
+		if banco.user != user:
+			return False
+
+		return True
 
 class LancamentosBanco(models.Model):
 	banco = models.ForeignKey('ContaBanco', on_delete = models.PROTECT)

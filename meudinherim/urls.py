@@ -24,11 +24,14 @@ from rest_framework_simplejwt import views as jwt_views
 from caixa.api.viewsets import CategoriaViewSet
 from banco.api.viewsets import ContaBancoViewSet
 from caixa.api.viewsets import LancamentosCaixaViewSet
+from banco.api.viewsets import LancamentosBancoViewSet
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'api/categorias', CategoriaViewSet, base_name='categorias')
-router.register(r'api/agencias', ContaBancoViewSet, base_name='Agencias')
-router.register(r'api/carteira', LancamentosCaixaViewSet, base_name='Carteira')
+router.register(r'api/agencias', ContaBancoViewSet, base_name='agencias')
+router.register(r'api/carteira', LancamentosCaixaViewSet, base_name='carteira')
+router.register(r'api/lancamentos_bancario', LancamentosBancoViewSet, base_name='lancamentos')
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
