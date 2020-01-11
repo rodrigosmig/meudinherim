@@ -2,9 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from contas_a_pagar.models import ContasAPagar
 from contas_a_receber.models import ContasAReceber
+from caixa.models import Categoria
 from django.core import serializers
 from django.db.models import Count, Sum
 from datetime import datetime
+from decimal import Decimal
 import json
 
 class ContaBanco(models.Model):
@@ -87,7 +89,37 @@ class ContaBanco(models.Model):
 
 		return True
 
+	@staticmethod
+	def getAgencias(user):
+		return ContaBanco.objects.filter(user = user).exclude(tipo = ContaBanco.CARTAO_DE_CREDITO)
+	
+	def adicionaLancamento(self, descricao, categoria, data, valor):
+		valor = Decimal(valor)
+		
+		if(categoria.tipo == Categoria.ENTRADA):
+			tipo = LancamentosBanco.CREDITO
+			self.saldo += valor
+		else:
+			tipo = LancamentosBanco.DEBITO
+			self.saldo -= valor
+
+		lancamento = LancamentosBanco()
+		lancamento.banco = self
+		lancamento.data = data
+		lancamento.categoria = categoria
+		lancamento.descricao = descricao
+		lancamento.tipo = tipo
+		lancamento.valor = valor
+		lancamento.user = self.user
+		
+		lancamento.save()
+		self.save()
+
+
 class LancamentosBanco(models.Model):
+	CREDITO = "1"
+	DEBITO = "2"
+
 	banco = models.ForeignKey('ContaBanco', on_delete = models.PROTECT)
 	data = models.DateField()
 	categoria = models.ForeignKey('caixa.Categoria', on_delete = models.PROTECT)

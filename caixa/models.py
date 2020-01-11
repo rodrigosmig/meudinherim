@@ -79,6 +79,10 @@ class Categoria(models.Model):
 		return self.descricao
 
 	@staticmethod
+	def getCategorias(user, tipo):
+		return Categoria.objects.filter(user = user).filter(tipo = tipo).order_by("descricao")
+
+	@staticmethod
 	def separarCategorias(request):
 		user = request.user
 		categorias = []

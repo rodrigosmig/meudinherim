@@ -193,25 +193,41 @@
                 <!-- Itens que ficaram no DropDown ao diminiur a tela -->
                 <div class="collapse navbar-collapse" id="navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
+                         <!-- TRANSFERENCIA -->
+                         <li class="dropdown">
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" title="Sacar">
+                                <i class="material-icons">arrow_downward</i>
+                            </a>
+                        </li>
+                        <!-- TRANSFERENCIA -->
+
+                        <!-- TRANSFERENCIA -->
+                        <li class="dropdown">
+                            <a href="#transferencia_bancaria" class="dropdown-toggle" data-toggle="modal" role="button" title="Transferência entre contas bancárias">
+                                <i class="material-icons">import_export</i>
+                            </a>
+                        </li>
+                        <!-- TRANSFERENCIA -->
+
                         <!-- Carteira -->
                         <li class="dropdown">
-                                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" title="Carteira">
-                                    <i class="material-icons">attach_money</i>
-                                    <span id="quantidade_carteira" class="label-count"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li class="header">Carteira</li>
-                                    <li class="body">
-                                        <ul id="menu_carteira" class="menu" style="list-style-type: none">
-                                            <!-- metas adicionadas via jquery -->
-                                        </ul>
-                                    </li>
-                                    <li id="footer_carteira" class="footer">
-                                        <a href="javascript:void(0);"><span class='i-circle'>$</span><span id="total_carteira"></span></a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <!-- #END# Carteira -->
+                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" title="Carteira">
+                                <i class="material-icons">attach_money</i>
+                                <span id="quantidade_carteira" class="label-count"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">Carteira</li>
+                                <li class="body">
+                                    <ul id="menu_carteira" class="menu" style="list-style-type: none">
+                                        <!-- metas adicionadas via jquery -->
+                                    </ul>
+                                </li>
+                                <li id="footer_carteira" class="footer">
+                                    <a href="javascript:void(0);"><span class='i-circle'>$</span><span id="total_carteira"></span></a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- #END# Carteira -->
 
                         <!-- Conta Bancária -->
                         <li class="dropdown">
@@ -528,6 +544,94 @@
             </div>
         </div>    
         <!--/ Modal Gastos -->
+
+
+        <!-- Modal Transferência -->
+        <div class="modal fade" id="transferencia_bancaria" tabindex="-1" role="dialog" aria-labelledby="LabelBanco" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <!-- Título -->
+                    <div class="modal-header">
+                        <div class="header">
+                            <h4 >Transferência | <small>Agências</small></h4>
+                        </div>
+                    </div>
+                    <!-- Campos -->
+                    <div class="modal-body">
+                        <form action="{% url 'banco:transferencia' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <fieldset>
+                                    <legend>Origem</legend>
+                                    <select id="list_agencias_origem" name="agencia_origem" class="form-control" required>
+                                        <option value="">Escolha uma agência</option>
+                                        {% for agencia in agencias_transferencias %}
+                                            <option value={{ agencia.id }}>{{ agencia.banco }}</option>
+                                        {% endfor %}
+                                    </select>
+
+                                    <select id="list_categoria_origem" name="categoria_origem" class="form-control" required>
+                                        <optgroup label="Saída">
+                                            <option disabled selected value="">Selecione uma categoria</option>
+                                            {% for saida in categoria_saida_transferencia %}
+                                                <option value={{ saida.id }}>{{ saida.descricao }}</option>
+                                            {% endfor %}
+                                        </optgroup>
+                                        
+                                    </select>
+
+                                </fieldset>
+                               
+                            </div>
+
+                            <div class="form-group">
+                                <fieldset>
+                                    <legend>Destino</legend>
+                                    <select id="list_agencias_destino" name="agencia_destino" class="form-control" required>
+                                        <option value="">Escolha uma agência</option>
+                                        {% for agencia in agencias_transferencias %}
+                                            <option value={{ agencia.id }}>{{ agencia.banco }}</option>
+                                        {% endfor %}
+                                    </select>
+
+                                    <select id="list_categoria_destino" name="categoria_destino" class="form-control" required>
+                                        <optgroup label="Entrada">
+                                            <option disabled selected  value="">Selecione uma categoria</option>
+                                            {% for entrada in categoria_entrada_transferencia %}
+                                                <option value={{ entrada.id }}>{{ entrada.descricao }}</option>
+                                            {% endfor %}
+                                        </optgroup>
+                                        
+                                    </select>
+
+                                </fieldset>
+                            </div>
+
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="descricao" placeholder="Informe uma descrição" required>
+                            </div>
+
+                            <div class="form-group">
+                                <input class="form-control datepicker" type="text" name="data" placeholder="Informe a data" required>
+                            </div>
+
+                            <div class="form-group">
+                                <input class="form-control" type="number" name="valor" placeholder="Valor a ser transferido" min="1.00" max="9999.99" step="any" required>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Transferir</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            </div>
+
+                            <input type="hidden" name="url" value={{ request.path }}>
+
+                        </form>
+                    </div>                               
+                </div>
+            </div>
+        </div>    
+        <!--/ Modal Transferência -->
 
         <section class="content">
             <div clas="container-fluid"> 
