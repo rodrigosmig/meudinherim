@@ -73,13 +73,10 @@ def banco(request):
 		agencia = ContaBanco.objects.get(pk = agencia)
 
 		lancamentos = LancamentosBanco.objects.filter(data__month = mes).filter(data__year = ano).filter(user = user).filter(banco = agencia)
+		
+		lancJson = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 
-		if(len(lancamentos) != 0):
-			lancJson = serializers.serialize('json', lancamentos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
-			
-			return HttpResponse(lancJson, content_type="application/json")
-		else:
-			return HttpResponseServerError("Nenhum lançamento foi encontrado.")
+		return HttpResponse(lancJson, content_type="application/json")
 
 	template = 'banco/banco.html'
 	contexto = {}
