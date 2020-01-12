@@ -13,4 +13,6 @@ urlpatterns = [
    	url(r'^verificar/', views.verificarContas, name='verificar'),
     url(r'^getAgencias/', views.getAgencias, name='getAgencias'),
     url(r'^getCredito/', views.getCartao_Credito, name='getCredito'),
+    url(r'^transferencia/', views.transferenciaEntreContas, name='transferencia'),
+    url(r'^saque/', views.saqueBancario, name='saque'),
 ]

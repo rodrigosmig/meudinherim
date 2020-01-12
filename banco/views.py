@@ -5,15 +5,15 @@ from banco.models import ContaBanco, LancamentosBanco, SaldoBanco
 from caixa.models import Categoria, SaldoCaixa
 from banco.forms import ContaBancoForm, LancamentosBancoForm
 from caixa.forms import LancamentosForm
-import caixa.views
 from django import forms
 from usuario.models import UsuarioProfile
 from django.core import serializers
-import json
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.urls import reverse
 from django.db.models import ProtectedError
+import json
+import datetime
 
 @login_required
 def cadastroBanco(request):
@@ -352,3 +352,123 @@ def getCartao_Credito(request):
 	agenciasJson = serializers.serialize('json', agencias, use_natural_foreign_keys=True, use_natural_primary_keys=True)
 	
 	return HttpResponse(agenciasJson, content_type="application/json")
+
+
+@login_required
+def transferenciaEntreContas(request):
+	if(request.method == 'POST'):
+		user = request.user
+		id_agencia_origem = request.POST.get('agencia_origem')
+		id_agencia_destino = request.POST.get('agencia_destino')
+		id_categoria_origem = request.POST.get('categoria_origem')
+		id_categoria_destino = request.POST.get('categoria_destino')
+		descricao = request.POST.get("descricao")
+		data = request.POST.get('data')
+
+		valor = float(request.POST.get('valor'))
+		url = request.POST.get('url')
+
+		if(descricao == ""):
+			messages.warning(request, "A transferência deve ter uma descrição.")		
+			return HttpResponseRedirect(url)
+
+		try:
+			data_lancamento = datetime.datetime.strptime(data, '%d/%m/%Y')
+		except ValueError as error:
+			messages.warning(request, "Data inválida. A data deve estar no formato DD/MM/AAAA")		
+			return HttpResponseRedirect(url)
+
+		if(not (id_agencia_origem.isnumeric() and id_agencia_destino.isnumeric())):
+			messages.warning(request, "Agência inválida!")		
+			return HttpResponseRedirect(url)
+
+		if(not (id_categoria_origem.isnumeric() and id_categoria_destino.isnumeric())):
+			messages.warning(request, "Categoria inválida!")		
+			return HttpResponseRedirect(url)
+
+		categoria_origem = Categoria.objects.get(pk = id_categoria_origem)
+		categoria_destino = Categoria.objects.get(pk = id_categoria_destino)
+
+		agencia_origem = ContaBanco.objects.get(pk = id_agencia_origem)
+		agencia_destino = ContaBanco.objects.get(pk = id_agencia_destino)
+
+		if(categoria_origem.user != user):
+			messages.warning(request, "A categoria de origem é inválida.")
+			return HttpResponseRedirect(url)
+		
+		if(categoria_destino.user != user):
+			messages.warning(request, "A categoria de destino é inválida.")
+			return HttpResponseRedirect(url)
+
+		if(agencia_origem.user != user):
+			messages.warning(request, "A agência origem é inválida.")
+			return HttpResponseRedirect(url)
+		
+		if(agencia_destino.user != user):
+			messages.warning(request, "A agência destino é inválida.")
+			return HttpResponseRedirect(url)
+		
+		if(agencia_origem == agencia_destino):
+			messages.warning(request, "As agências não podem ser iguais.")
+			return HttpResponseRedirect(url)
+
+		agencia_origem.adicionaLancamento(descricao, categoria_origem, data_lancamento, valor)
+		agencia_destino.adicionaLancamento(descricao, categoria_destino, data_lancamento, valor)
+
+		messages.success(request, "Transferência realizada com sucesso")
+	
+		return HttpResponseRedirect(url)
+
+@login_required
+def saqueBancario(request):
+	if(request.method == 'POST'):
+		user = request.user
+		id_agencia = request.POST.get('agencia_saque')
+		id_categoria_entrada = request.POST.get('categoria_entrada')
+		id_categoria_saida = request.POST.get('categoria_saida')
+		descricao = request.POST.get("descricao")
+		data = request.POST.get('data')
+		valor = float(request.POST.get('valor'))
+		url = request.POST.get('url')
+
+		if(descricao == ""):
+			messages.warning(request, "A transferência deve ter uma descrição.")		
+			return HttpResponseRedirect(url)
+
+		try:
+			data_lancamento = datetime.datetime.strptime(data, '%d/%m/%Y')
+		except ValueError as error:
+			messages.warning(request, "Data inválida. A data deve estar no formato DD/MM/AAAA")		
+			return HttpResponseRedirect(url)
+
+		if(not (id_agencia.isnumeric())):
+			messages.warning(request, "Agência inválida!")		
+			return HttpResponseRedirect(url)
+
+		if(not (id_categoria_entrada.isnumeric() and id_categoria_saida.isnumeric())):
+			messages.warning(request, "Categoria inválida!")		
+			return HttpResponseRedirect(url)
+
+		categoria_entrada = Categoria.objects.get(pk = id_categoria_entrada)
+		categoria_saida = Categoria.objects.get(pk = id_categoria_saida)
+
+		agencia = ContaBanco.objects.get(pk = id_agencia)
+
+		if(categoria_entrada.user != user):
+			messages.warning(request, "A categoria de entrada é inválida.")
+			return HttpResponseRedirect(url)
+		
+		if(categoria_saida.user != user):
+			messages.warning(request, "A categoria de saida é inválida.")
+			return HttpResponseRedirect(url)
+
+		if(agencia.user != user):
+			messages.warning(request, "A agência origem é inválida.")
+			return HttpResponseRedirect(url)
+
+		agencia.saqueBancario(descricao, categoria_entrada, categoria_saida, data_lancamento, valor)
+		
+		messages.success(request, "Saque realizado com sucesso")
+	
+		return HttpResponseRedirect(url)
+	
