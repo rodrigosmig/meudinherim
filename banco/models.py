@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from contas_a_pagar.models import ContasAPagar
 from contas_a_receber.models import ContasAReceber
-from caixa.models import Categoria
+from caixa.models import Categoria, LancamentosCaixa, SaldoCaixa
 from django.core import serializers
 from django.db.models import Count, Sum
 from datetime import datetime
@@ -115,6 +115,17 @@ class ContaBanco(models.Model):
 		lancamento.save()
 		self.save()
 
+		return lancamento
+
+	def saqueBancario(self, descricao, categoria_entrada, categoria_saida, data, valor):
+		valor = Decimal(valor)
+
+		self.adicionaLancamento(descricao, categoria_saida, data, valor)
+		LancamentosCaixa.adicionaLancamento(self.user, descricao, categoria_entrada, data, valor)
+
+		saldo = SaldoCaixa.getSaldo(self.user)
+		saldo.ajusteSaldo(categoria_entrada, valor)
+		saldo.save()
 
 class LancamentosBanco(models.Model):
 	CREDITO = "1"

@@ -195,7 +195,7 @@
                     <ul class="nav navbar-nav navbar-right">
                          <!-- TRANSFERENCIA -->
                          <li class="dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" title="Sacar">
+                            <a href="#saque_bancario" class="dropdown-toggle" data-toggle="modal" role="button" title="Sacar">
                                 <i class="material-icons">arrow_downward</i>
                             </a>
                         </li>
@@ -564,8 +564,8 @@
                                 <fieldset>
                                     <legend>Origem</legend>
                                     <select id="list_agencias_origem" name="agencia_origem" class="form-control" required>
-                                        <option value="">Escolha uma agência</option>
-                                        {% for agencia in agencias_transferencias %}
+                                        <option disabled selected value="">Escolha uma agência</option>
+                                        {% for agencia in lista_agencias %}
                                             <option value={{ agencia.id }}>{{ agencia.banco }}</option>
                                         {% endfor %}
                                     </select>
@@ -573,13 +573,11 @@
                                     <select id="list_categoria_origem" name="categoria_origem" class="form-control" required>
                                         <optgroup label="Saída">
                                             <option disabled selected value="">Selecione uma categoria</option>
-                                            {% for saida in categoria_saida_transferencia %}
+                                            {% for saida in lista_categoria_saida %}
                                                 <option value={{ saida.id }}>{{ saida.descricao }}</option>
                                             {% endfor %}
                                         </optgroup>
-                                        
                                     </select>
-
                                 </fieldset>
                                
                             </div>
@@ -588,22 +586,20 @@
                                 <fieldset>
                                     <legend>Destino</legend>
                                     <select id="list_agencias_destino" name="agencia_destino" class="form-control" required>
-                                        <option value="">Escolha uma agência</option>
-                                        {% for agencia in agencias_transferencias %}
+                                        <option disabled selected value="">Escolha uma agência</option>
+                                        {% for agencia in lista_agencias %}
                                             <option value={{ agencia.id }}>{{ agencia.banco }}</option>
                                         {% endfor %}
                                     </select>
 
                                     <select id="list_categoria_destino" name="categoria_destino" class="form-control" required>
                                         <optgroup label="Entrada">
-                                            <option disabled selected  value="">Selecione uma categoria</option>
-                                            {% for entrada in categoria_entrada_transferencia %}
+                                            <option disabled selected value="">Selecione uma categoria</option>
+                                            {% for entrada in lista_categoria_entrada %}
                                                 <option value={{ entrada.id }}>{{ entrada.descricao }}</option>
                                             {% endfor %}
                                         </optgroup>
-                                        
                                     </select>
-
                                 </fieldset>
                             </div>
 
@@ -632,6 +628,77 @@
             </div>
         </div>    
         <!--/ Modal Transferência -->
+
+        <!-- Modal Saque -->
+        <div class="modal fade" id="saque_bancario" tabindex="-1" role="dialog" aria-labelledby="LabelBanco" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <!-- Título -->
+                    <div class="modal-header">
+                        <div class="header">
+                            <h4 >Saque | <small>Conta bancária</small></h4>
+                        </div>
+                    </div>
+                    <!-- Campos -->
+                    <div class="modal-body">
+                        <form action="{% url 'banco:saque' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <select id="lista_agencias_saque" name="agencia_saque" class="form-control" required>
+                                    <option disabled selected value="">Escolha uma agência</option>
+                                    {% for agencia in lista_agencias %}
+                                        <option value={{ agencia.id }}>{{ agencia.banco }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <select id="list_categoria_entrada" name="categoria_entrada" class="form-control" required>
+                                    <optgroup label="Entrada">
+                                        <option disabled selected value="">Selecione uma categoria de entrada</option>
+                                        {% for entrada in lista_categoria_entrada %}
+                                            <option value={{ entrada.id }}>{{ entrada.descricao }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <select id="list_categoria_saida" name="categoria_saida" class="form-control" required>
+                                    <optgroup label="Saída">
+                                        <option disabled selected value="">Selecione uma categoria de saída</option>
+                                        {% for saida in lista_categoria_saida %}
+                                            <option value={{ saida.id }}>{{ saida.descricao }}</option>
+                                        {% endfor %}
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <input class="form-control" type="hidden" name="descricao" value="Saque">
+                            </div>
+
+                            <div class="form-group">
+                                <input class="form-control datepicker" type="text" name="data" placeholder="Informe a data" required>
+                            </div>
+
+                            <div class="form-group">
+                                <input class="form-control" type="number" name="valor" placeholder="Valor a ser transferido" min="1.00" max="9999.99" step="any" required>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Transferir</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            </div>
+
+                            <input type="hidden" name="url" value={{ request.path }}>
+
+                        </form>
+                    </div>                               
+                </div>
+            </div>
+        </div>    
+        <!--/ Modal Saque -->
 
         <section class="content">
             <div clas="container-fluid"> 
