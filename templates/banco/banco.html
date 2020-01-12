@@ -95,17 +95,23 @@
                                             <th>Editar</th>
                                         </tr>
                                     </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <th>Data</th>
-                                            <th>Descrição</th>
-                                            <th>Tipo</th>
-                                            <th>Categoria</th>
-                                            <th>Valor</th>
-                                            <th>Editar</th>
+                                    
+                                    <tbody id="table_lanc_banco"></tbody>
+
+                                    <tfoot id="saldo_conta" style="display: none;">
+                                        <tr class="bg-success">
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td><b>Saldo atual</b></td>
+                                            <!-- {% if saldoCaixa < 0  %} -->
+                                                <!-- <td class="valor_total" id="saldo_caixa1" style="color: red">100</td> -->
+                                            <!-- {% else %} -->
+                                                <td class="valor_saldo">200</td>
+                                            <!-- {% endif %} -->
+                                            <td></td>
                                         </tr>
                                     </tfoot>
-                                    <tbody id="table_lanc_banco"></tbody>
                                 </table>
                             </div>
                         </div>

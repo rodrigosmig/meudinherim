@@ -216,13 +216,13 @@ $(function() {
 					'csrfmiddlewaretoken': csrftokenPOST,
 				},
 				success: function(lancamentos) {
-					
 					$('#select_data').show();
-
+					console.log(lancamentos)
 					//limpa a tabela
 					table.clear().draw();
 					
 					if(lancamentos.length !== 0) {
+						
 						for(var x = 0; x < lancamentos.length; x++) {
 
 							//mostrar o saldo da conta
@@ -257,18 +257,19 @@ $(function() {
 							lancamentos[x].fields.descricao,
 							tipo,
 							lancamentos[x].fields.categoria[2],
-							valor,
+							valor.replace('.', ','),
 							"<i class='material-icons'><a data-toggle='modal' href=''><span class='openEdit' data-lanc=" + lancamentos[x].pk + ">edit</span></a></i>"
 							]).draw(false);
 						}
+
+						var cor = lancamentos[0].fields.banco[2] < 0 ? "red" : "blue"
+						$("#saldo_conta .valor_saldo").html(lancamentos[0].fields.banco[2].replace('.', ','))
+						$("#saldo_conta .valor_saldo").css('color', cor)
+
+						$("#saldo_conta").show()
 					}
 					else {
-						//mostrar o saldo da conta
-						$('.saldoBanco').each(function() {
-							if($(this).attr('data-saldo') === $('#select_agencia').val()) {
-								$(this).show();	
-							}
-						});						
+						$("#saldo_conta").hide()					
 					}
 				},
 				error: function(msg) {

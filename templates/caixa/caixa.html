@@ -14,117 +14,108 @@
 {% endblock %}
 
 {% block content %}
-
-<section class="content2">
     
-    <div class="container-fluid">     
-        <div class="block-header">
-            <h1>Carteira</h1>
-        </div>
-    </div>
+    <h2>Carteira</h2>
     
-    <div class="row clearfix">
-        <div id="card_atual" class="card">
-            <div id="saldo_caixa" class="header">
-                <!-- <ul class="header-dropdown"> -->
-                    {% if saldoCaixa < 0  %}
-                        <span class="saldoCaixa" style="color: red"> Saldo: {{ saldoCaixa }}</span>
-                    {% else %}
-                        <span class="saldoCaixa" style="color: blue"> Saldo: {{ saldoCaixa }}</span>
-                    {% endif %}
-                <!-- </ul> -->
-            </div>
-            <div id="filtro_data" class="header">
-                <form id="form_filtro_caixa" class="form-inline">
-
-                    <select id="lanc_meses" class="form-control meses_change">
-                        <option value="nenhum">--Meses--</option>
-                        <option value="0">Janeiro</option>
-                        <option value="1">Fevereiro</option>
-                        <option value="2">Março</option>
-                        <option value="3">Abril</option>
-                        <option value="4">Maio</option>
-                        <option value="5">Junho</option>
-                        <option value="6">Julho</option>
-                        <option value="7">Agosto</option>
-                        <option value="8">Setembro</option>
-                        <option value="9">Outubro</option>
-                        <option value="10">Novembro</option>
-                        <option value="11">Dezembro</option>
-                    </select>
-
-                    <select id="lanc_anos" class="form-control anos_change">
-                        <option value="nenhum">--Ano--</option>
-                        <option value="2016">2016</option>
-                        <option value="2017">2017</option>
-                        <option value="2018">2018</option>
-                        <option value="2019">2019</option>
-                        <option value="2020">2020</option>
-                        <option value="2021">2021</option>
-                    </select>
-                    <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
-                </form>
-
-                
-                
-            </div>
-            <div class="body">
-                <div class="table-responsive">
-                    <table id="dataCaixa" class="table table-bordered table-striped table-hover dataTable js-basic-example">
-                
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Descrição</th>
-                                <th>Categoria</th>
-                                <th>Valor</th>
-                                <th>Editar</th>
-                            </tr>
-                        </thead>
-                        
-                        <tfoot>
-                            <tr>
-                                <th>Data</th>
-                                <th>Descrição</th>
-                                <th>Categoria</th>
-                                <th>Valor</th>
-                                <th>Editar</th>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div id="card_atual" class="card">
+                <div id="filtro_data" class="header">
+                    <form id="form_filtro_caixa" class="form-inline">
+    
+                        <select id="lanc_meses" class="form-control meses_change">
+                            <option value="nenhum">--Meses--</option>
+                            <option value="0">Janeiro</option>
+                            <option value="1">Fevereiro</option>
+                            <option value="2">Março</option>
+                            <option value="3">Abril</option>
+                            <option value="4">Maio</option>
+                            <option value="5">Junho</option>
+                            <option value="6">Julho</option>
+                            <option value="7">Agosto</option>
+                            <option value="8">Setembro</option>
+                            <option value="9">Outubro</option>
+                            <option value="10">Novembro</option>
+                            <option value="11">Dezembro</option>
+                        </select>
+    
+                        <select id="lanc_anos" class="form-control anos_change">
+                            <option value="nenhum">--Ano--</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                    </form>
+    
+                    
+                    
+                </div>
+                <div class="body">
+                    <div class="table-responsive">
+                        <table id="dataCaixa" class="table table-bordered table-striped table-hover dataTable js-basic-example">
+                    
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Valor</th>
+                                    <th>Editar</th>
+                                </tr>
+                            </thead>
                                
-                            </tr>
-                        </tfoot>
-
-                        <tbody>
-                        {% for l in lancamentos %}
-                            <tr>
-                                <td>
-                                    {{ l.data | date:"d/m/Y" }}
-                                </td>
-                                <td>
-                                    {{ l.descricao }}
-                                </td>
-                                <td>
-                                    {{ l.categoria }}
-                                </td>
-                                
-                                {% if l.categoria.tipo == '1' %}
-                                    <td style="color: blue">{{ l.valor }}</td>
-  
-                                {% else %}
-                                    <td style="color: red">-{{ l.valor }}</td>
+                            <tbody>
+                            {% for l in lancamentos %}
+                                <tr>
+                                    <td>
+                                        {{ l.data | date:"d/m/Y" }}
+                                    </td>
+                                    <td>
+                                        {{ l.descricao }}
+                                    </td>
+                                    <td>
+                                        {{ l.categoria }}
+                                    </td>
                                     
-                                {% endif %}
-                                <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
-                            </tr>
+                                    {% if l.categoria.tipo == '1' %}
+                                        <td style="color: blue">{{ l.valor }}</td>
+      
+                                    {% else %}
+                                        <td style="color: red">-{{ l.valor }}</td>
+                                        
+                                    {% endif %}
+                                    <td><i class="material-icons"><a data-toggle="modal" href=""><span class="openEdit" data-lanc="{{ l.id }}">edit</span></a></i></td>
+                                </tr>
+    
+                            {% endfor %}
+                            </tbody>
 
-                        {% endfor %}
-                        </tbody>
-                        
-                    </table>
+                            <tfoot>
+                            	<tr class="bg-success">
+	                            	<td></td>
+                                    <td></td>
+	                            	<td class="valor_total"><b>Saldo</b></td>
+                                    {% if saldoCaixa < 0  %}
+                                        <td class="valor_total" id="saldo_caixa1" style="color: red">{{ saldoCaixa }}</td>
+                                    {% else %}
+                                        <td class="valor_total" id="saldo_caixa1" style="color: blue">{{ saldoCaixa }}</td>
+                                    {% endif %}
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                            
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+        
     </div>
-</section>
+
 <!--  -->
 <!-- Modal Edição de Lançamento -->
 <div class="modal fade" id="editLancamento" tabindex="-1" role="dialog" aria-labelledby="LabelLancamento" aria-hidden="true">
