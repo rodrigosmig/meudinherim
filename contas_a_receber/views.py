@@ -119,7 +119,7 @@ def editContasReceber(request):
 			return HttpResponseRedirect(reverse('contas_a_receber:index'))
 
 		form = ContasAReceberForm(request.POST, instance = conta)
-		print(form.is_valid())
+
 		if(form.is_valid()):
 			form.save()
 			messages.success(request, "Conta " + conta.descricao + " alterada com sucesso!")
