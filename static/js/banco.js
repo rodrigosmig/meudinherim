@@ -217,7 +217,7 @@ $(function() {
 				},
 				success: function(lancamentos) {
 					$('#select_data').show();
-					console.log(lancamentos)
+
 					//limpa a tabela
 					table.clear().draw();
 					

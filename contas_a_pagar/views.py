@@ -178,7 +178,7 @@ def banco(request):
 		user = request.user
 		bancos = ContaBanco.objects.filter(user = user)
 		
-		bancosJson = serializers.serialize('json', bancos, use_natural_foreign_keys=True, use_natural_primary_keys=True)
+		bancosJson = serializers.serialize('json', bancos)
 
 		return HttpResponse(bancosJson, content_type="application/json")
 
